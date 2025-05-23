@@ -1,0 +1,64 @@
+{
+	"name": "GarosNotes",
+	"version": "0.1.0",
+	"description": "Block de notas con Electron",
+	"main": "main.js",
+	"type": "module",
+	"scripts": {
+		"start": "electron .",
+		"build": "electron-builder"
+	},
+	"build": {
+		"appId": "com.garosdev.garosnotes",
+		"productName": "GarosNotes",
+		"files": [
+			"dist/**/*",
+			"src/**/*",
+			"img/**/*",
+			"main.js",
+			"preload.js"
+		],
+		"extraResources": [
+			{
+				"from": "src/img",
+				"to": "img"
+			}
+		],
+		"directories": {
+			"output": "release"
+		},
+		"win": {
+			"icon": "src/img/img_note_bg.ico",
+			"target": [
+				"nsis"
+			]
+		},
+		"nsis": {
+			"oneClick": false,
+			"perMachine": false,
+			"allowToChangeInstallationDirectory": true
+		}
+	},
+	"keywords": [
+		"notes",
+		"note-taking",
+		"desktop app",
+		"notepad",
+		"markdown",
+		"rich text editor",
+		"offline notes",
+		"note organizer",
+		"GarosNotes",
+		"personal notes",
+		"simple notes",
+		"writing app",
+		"to-do",
+		"minimalist notes"
+	],
+	"author": "Oscar Garzon / GarosDev",
+	"license": "ISC",
+	"devDependencies": {
+		"electron": "^36.2.1",
+		"electron-builder": "^26.0.12"
+	}
+}

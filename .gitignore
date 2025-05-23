@@ -1,0 +1,13 @@
+# Ocultar dependencias y carpetas de build
+node_modules/
+release/
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Archivos de entorno (si usas .env en el futuro)
+.env

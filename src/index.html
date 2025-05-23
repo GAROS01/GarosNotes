@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>GarosNotes</title>
+		<link rel="stylesheet" href="./styles/index.css" />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+			rel="stylesheet"
+		/>
+		<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet" />
+	</head>
+	<body>
+        
+    <div id="modal">
+        <div class="modal-inputs">
+            <h3>Crear Nueva Carpeta</h3>
+            <input type="text" id="folder-name" placeholder="Nombre de la carpeta">
+            <div class="modal-buttons">
+                <button class="boton aceptar" id="save-folder">Guardar</button>
+                <button class="boton" id="close-modal">Cancelar</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="modal-rename">
+        <div class="modal-inputs">
+            <h3>Editar nombre de carpeta</h3>
+            <input type="text" id="folder-new-name" placeholder="Titulo de la nota">
+            <div class="modal-buttons">
+                <button class="boton aceptar" id="save-folder-rename">Guardar</button>
+                <button class="boton" id="close-modal-folder-rename">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-delete">
+        <div class="modal-inputs">
+            <h3 id="titulo-variable">Quieres eliminar eliminar este elemento?</h3>
+            <div class="modal-buttons">
+                <button class="boton aceptar" id="delete-file">Confirmar</button>
+                <button class="boton" id="close-modal-delete-file">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="app">
+        <button id="toggle-aside">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="3">
+                <path d="M20 12l-10 0"></path>
+                <path d="M20 12l-4 4"></path>
+                <path d="M20 12l-4 -4"></path>
+                <path d="M4 4l0 16"></path>
+              </svg>
+        </button>
+        <aside id="sidebar">
+            <div id="sidebar-container">
+                <div id="folders-container">
+    
+                    <div class="titulo-boton">
+                        <h2>carpetas</h2>
+        
+                        <button class="boton" id="create-folder">Crear carpeta  ➕</button>
+                    </div>
+                    
+                    <div class="folders-container">
+                        <ul id="folders">
+                            
+                        </ul>
+                    </div>
+        
+                </div>
+    
+                <div id="file-list-container">
+    
+                    <div class="titulo-boton">
+                        <h2>notas</h2>
+                        <button class="boton" id="create-note">Crear nota  ➕</button>
+                    </div>
+    
+                    <div class="files-container">
+                        <ul id="file-list">
+                            <!-- Aquí se mostrarán los archivos de la carpeta seleccionada -->
+                        </ul>
+                    </div>
+    
+                </div>
+            </div>
+            <button id="toggle-aside-hide">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="3">
+                    <path d="M10 12l10 0"></path>
+                    <path d="M10 12l4 4"></path>
+                    <path d="M10 12l4 -4"></path>
+                    <path d="M4 4l0 16"></path>
+                  </svg>
+            </button>
+            
+        </aside>
+
+        <div id="placeholder-message">
+            <img class="logo" src="./img/img_note_bg.png" alt="logo RevNotes">
+            <h2>No hay ninguna nota seleccionada</h2>
+            <p>Selecciona una nota o crea una nueva para empezar a escribir.</p>
+        </div>
+        
+        <main id="main" style="display: none;">
+            <input type="text" id="titulo-nota">
+            <div id="editor-container" spellcheck="false"></div>
+
+                <!-- <textarea id="editor" placeholder="Crea una nota primero"></textarea> -->
+            </div>
+            <!-- <button class="boton" id="save-btn">Guardar nota 🗃️</button> -->
+        </main>
+
+    </div>
+
+
+    <script type="module" src="renderer.js"></script>
+    <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+    
+    </body>
+</html>
