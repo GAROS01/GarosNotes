@@ -18,7 +18,7 @@ textarea:focus {
     outline: none;
 }
 
-#modal {
+#modal, #modal-rename, #modal-delete, #modal-create-note {
     display: none;
     position: fixed;
     top: 0;
@@ -26,7 +26,7 @@ textarea:focus {
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
+    z-index: 110000;
     text-align: center;
 }
 
@@ -35,18 +35,6 @@ textarea:focus {
     padding: 10px;
     margin-bottom: 10px;
     z-index: 110000;
-}
-
-#modal-rename, #modal-delete {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 110000;
-    text-align: center;
 }
 
 .modal-inputs {
@@ -62,7 +50,7 @@ textarea:focus {
     color: white;
 }
 
-#modal-rename input, #modal input {
+#modal-rename input, #modal input, #modal-create-note input {
     width: 100%;
     padding: 10px;
     margin-bottom: 10px;
@@ -70,6 +58,11 @@ textarea:focus {
     border-radius: 10px;
     color: white;
     border: none;
+    outline: none;
+}
+
+#modal-rename input:focus, #modal input:focus, #modal-create-note input:focus {
+    background-color: #676767;
 }
 
 .modal-buttons {
@@ -349,6 +342,11 @@ body {
     white-space: normal;
     /* permite múltiples líneas */
     word-break: break-word;
+}
+
+.folder-item.selected {
+    background-color: #575757 !important;
+    border-left: 3px solid #9e03d6;
 }
 
 .folder-item .controls-folders button {

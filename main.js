@@ -21,8 +21,8 @@ function createWindow() {
 	});
 
 	win.loadFile(path.join(__dirname, "src", "index.html"));
-	win.webContents.openDevTools(); // Para debug
-	// win.removeMenu();
+	// win.webContents.openDevTools(); // <- Activa esto temporalmente
+	win.removeMenu();
 }
 
 app.whenReady().then(createWindow);
@@ -79,6 +79,125 @@ ipcMain.handle("eliminar-carpeta", async (event, nombreCarpeta) => {
 		// Eliminar la carpeta y todo su contenido
 		fs.rmSync(documentsPath, { recursive: true, force: true });
 		return { ok: true, path: documentsPath };
+	} catch (error) {
+		return { ok: false, error: error.message };
+	}
+});
+
+// IPC Handlers para notas
+ipcMain.handle(
+	"crear-nota",
+	async (event, nombreCarpeta, nombreNota, contenido = "") => {
+		console.log("Creando nota:", nombreNota, "en carpeta:", nombreCarpeta);
+		const notaPath = path.join(
+			os.homedir(),
+			"Documents",
+			"GarosNotes",
+			nombreCarpeta,
+			`${nombreNota}.txt`
+		);
+		try {
+			// Verificar que la carpeta existe
+			const carpetaPath = path.join(
+				os.homedir(),
+				"Documents",
+				"GarosNotes",
+				nombreCarpeta
+			);
+			if (!fs.existsSync(carpetaPath)) {
+				return { ok: false, error: "La carpeta no existe" };
+			}
+
+			// Crear el archivo .txt
+			fs.writeFileSync(notaPath, contenido, "utf8");
+			return { ok: true, path: notaPath };
+		} catch (error) {
+			return { ok: false, error: error.message };
+		}
+	}
+);
+
+ipcMain.handle("listar-notas", async (event, nombreCarpeta) => {
+	console.log("Listando notas de carpeta:", nombreCarpeta);
+	const carpetaPath = path.join(
+		os.homedir(),
+		"Documents",
+		"GarosNotes",
+		nombreCarpeta
+	);
+	try {
+		if (!fs.existsSync(carpetaPath)) {
+			return { ok: false, error: "La carpeta no existe" };
+		}
+
+		const archivos = fs
+			.readdirSync(carpetaPath, { withFileTypes: true })
+			.filter((dirent) => dirent.isFile() && dirent.name.endsWith(".txt"))
+			.map((dirent) => dirent.name.replace(".txt", "")); // Quitar la extensión .txt
+
+		return { ok: true, notas: archivos };
+	} catch (error) {
+		return { ok: false, error: error.message };
+	}
+});
+
+ipcMain.handle("leer-nota", async (event, nombreCarpeta, nombreNota) => {
+	console.log("Leyendo nota:", nombreNota, "de carpeta:", nombreCarpeta);
+	const notaPath = path.join(
+		os.homedir(),
+		"Documents",
+		"GarosNotes",
+		nombreCarpeta,
+		`${nombreNota}.txt`
+	);
+	try {
+		if (!fs.existsSync(notaPath)) {
+			return { ok: false, error: "La nota no existe" };
+		}
+
+		const contenido = fs.readFileSync(notaPath, "utf8");
+		return { ok: true, contenido };
+	} catch (error) {
+		return { ok: false, error: error.message };
+	}
+});
+
+ipcMain.handle(
+	"guardar-nota",
+	async (event, nombreCarpeta, nombreNota, contenido) => {
+		console.log("Guardando nota:", nombreNota, "en carpeta:", nombreCarpeta);
+		const notaPath = path.join(
+			os.homedir(),
+			"Documents",
+			"GarosNotes",
+			nombreCarpeta,
+			`${nombreNota}.txt`
+		);
+		try {
+			fs.writeFileSync(notaPath, contenido, "utf8");
+			return { ok: true, path: notaPath };
+		} catch (error) {
+			return { ok: false, error: error.message };
+		}
+	}
+);
+
+ipcMain.handle("eliminar-nota", async (event, nombreCarpeta, nombreNota) => {
+	console.log("Eliminando nota:", nombreNota, "de carpeta:", nombreCarpeta);
+	const notaPath = path.join(
+		os.homedir(),
+		"Documents",
+		"GarosNotes",
+		nombreCarpeta,
+		`${nombreNota}.txt`
+	);
+	try {
+		if (!fs.existsSync(notaPath)) {
+			return { ok: false, error: "La nota no existe" };
+		}
+
+		fs.unlinkSync(notaPath);
+		return { ok: true, path: notaPath };
 	} catch (error) {
 		return { ok: false, error: error.message };
 	}
