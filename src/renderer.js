@@ -117,34 +117,6 @@ class FolderManager {
 		document.getElementById("modal-delete").style.display = "none";
 		this.carpetaAEliminar = null;
 	}
-
-	bindEvents() {
-		document.getElementById("create-folder").addEventListener("click", () => {
-			console.log("Click en crear carpeta");
-			this.abrirModal();
-		});
-
-		document.getElementById("close-modal").addEventListener("click", () => {
-			this.cerrarModal();
-		});
-
-		document.getElementById("save-folder").addEventListener("click", async () => {
-			const nombre = document.getElementById("folder-name").value.trim();
-			console.log("Click en guardar, nombre:", nombre);
-			if (!nombre) {
-				alert("El nombre no puede estar vacío");
-				return;
-			}
-			await this.crearCarpeta(nombre);
-		});
-
-		document.addEventListener("keydown", (e) => {
-			if (e.key === "Escape") {
-				this.cerrarModal();
-				this.cerrarModalEliminar();
-			}
-		});
-	}
 }
 
 class NotesManager {
@@ -254,17 +226,41 @@ class NotesManager {
 	}
 
 	abrirModalCrearNota() {
-		if (!this.carpetaActual) {
-			alert("Primero selecciona una carpeta");
-			return;
-		}
+		// Siempre abrir el modal
 		document.getElementById("modal-create-note").style.display = "block";
 		document.getElementById("note-name").value = "";
-		document.getElementById("note-name").focus();
+
+		if (!this.carpetaActual) {
+			// Mostrar mensaje de error dentro del modal
+			document.getElementById("error-message").style.display = "block";
+			document.getElementById("note-name").disabled = true;
+			document.getElementById("save-note").disabled = true;
+
+			// Cambiar el placeholder para indicar el problema
+			document.getElementById("note-name").placeholder =
+				"Selecciona una carpeta primero";
+		} else {
+			// Ocultar mensaje de error y habilitar campos
+			document.getElementById("error-message").style.display = "none";
+			document.getElementById("note-name").disabled = false;
+			document.getElementById("save-note").disabled = false;
+			document.getElementById("note-name").placeholder = "Nombre de la nota";
+
+			// Hacer focus en el input
+			setTimeout(() => {
+				document.getElementById("note-name").focus();
+			}, 100);
+		}
 	}
 
 	cerrarModalCrearNota() {
 		document.getElementById("modal-create-note").style.display = "none";
+		// Limpiar el estado del modal
+		document.getElementById("error-message").style.display = "none";
+		document.getElementById("note-name").disabled = false;
+		document.getElementById("save-note").disabled = false;
+		document.getElementById("note-name").placeholder = "Nombre de la nota";
+		document.getElementById("note-name").value = "";
 	}
 
 	abrirModalEliminarNota(nombreNota) {
@@ -303,33 +299,97 @@ class NotesManager {
 		}
 		this.notaAEliminar = null;
 	}
+}
 
-	bindEvents() {
-		document.getElementById("create-note").addEventListener("click", () => {
-			this.abrirModalCrearNota();
+// Variables globales para evitar múltiples instancias
+let folderManager = null;
+let notesManager = null;
+let eventosRegistrados = false;
+
+// Función para registrar eventos una sola vez
+function registrarEventos() {
+	if (eventosRegistrados) return;
+
+	// Eventos de carpetas
+	document.getElementById("create-folder").addEventListener("click", () => {
+		console.log("Click en crear carpeta");
+		folderManager.abrirModal();
+	});
+
+	document.getElementById("close-modal").addEventListener("click", () => {
+		folderManager.cerrarModal();
+	});
+
+	document.getElementById("save-folder").addEventListener("click", async () => {
+		const nombre = document.getElementById("folder-name").value.trim();
+		console.log("Click en guardar carpeta, nombre:", nombre);
+		if (!nombre) {
+			alert("El nombre no puede estar vacío");
+			return;
+		}
+		await folderManager.crearCarpeta(nombre);
+	});
+
+	// Eventos de notas
+	document.getElementById("create-note").addEventListener("click", () => {
+		console.log("Click en crear nota");
+		notesManager.abrirModalCrearNota();
+	});
+
+	document
+		.getElementById("close-modal-create-note")
+		.addEventListener("click", () => {
+			notesManager.cerrarModalCrearNota();
 		});
 
-		document
-			.getElementById("close-modal-create-note")
-			.addEventListener("click", () => {
-				this.cerrarModalCrearNota();
-			});
+	document.getElementById("save-note").addEventListener("click", async () => {
+		const nombre = document.getElementById("note-name").value.trim();
+		console.log("Click en guardar nota, nombre:", nombre);
 
-		if (document.getElementById("save-note")) {
-			document.getElementById("save-note").addEventListener("click", async () => {
-				const nombre = document.getElementById("note-name").value.trim();
-				if (!nombre) {
-					alert("El nombre no puede estar vacío");
-					return;
-				}
-				if (!this.carpetaActual) {
-					alert("Primero selecciona una carpeta");
-					return;
-				}
-				await this.crearNota(this.carpetaActual, nombre);
-			});
+		// Verificar si hay carpeta seleccionada
+		if (!notesManager.carpetaActual) {
+			// El botón debería estar deshabilitado, pero por si acaso
+			document.getElementById("error-message").style.display = "block";
+			return;
 		}
-	}
+
+		if (!nombre) {
+			alert("El nombre no puede estar vacío");
+			return;
+		}
+
+		await notesManager.crearNota(notesManager.carpetaActual, nombre);
+	});
+
+	// Eventos de eliminación
+	document.getElementById("delete-file").addEventListener("click", async () => {
+		console.log("Click en eliminar");
+		if (folderManager.carpetaAEliminar) {
+			await folderManager.eliminarCarpeta(folderManager.carpetaAEliminar);
+		} else if (notesManager.notaAEliminar && notesManager.carpetaActual) {
+			await notesManager.eliminarNota();
+		}
+	});
+
+	document
+		.getElementById("close-modal-delete-file")
+		.addEventListener("click", () => {
+			folderManager.cerrarModalEliminar();
+			notesManager.notaAEliminar = null;
+			document.getElementById("modal-delete").style.display = "none";
+		});
+
+	// Eventos de teclado
+	document.addEventListener("keydown", (e) => {
+		if (e.key === "Escape") {
+			folderManager.cerrarModal();
+			folderManager.cerrarModalEliminar();
+			notesManager.cerrarModalCrearNota();
+		}
+	});
+
+	eventosRegistrados = true;
+	console.log("Eventos registrados correctamente");
 }
 
 // Inicialización
@@ -343,31 +403,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
 	console.log("window.api disponible:", window.api);
 
-	const folderManager = new FolderManager("folders");
-	const notesManager = new NotesManager("file-list");
+	// Crear instancias una sola vez
+	folderManager = new FolderManager("folders");
+	notesManager = new NotesManager("file-list");
 
+	// Hacer disponible globalmente
 	window.notesManager = notesManager;
 	window.folderManager = folderManager;
 
-	folderManager.bindEvents();
-	notesManager.bindEvents();
+	// Registrar eventos una sola vez
+	registrarEventos();
+
+	// Mostrar carpetas iniciales
 	folderManager.mostrarCarpetas();
-
-	// UN SOLO evento para el botón eliminar
-	document.getElementById("delete-file").addEventListener("click", async () => {
-		if (folderManager.carpetaAEliminar) {
-			await folderManager.eliminarCarpeta(folderManager.carpetaAEliminar);
-		} else if (notesManager.notaAEliminar && notesManager.carpetaActual) {
-			await notesManager.eliminarNota();
-		}
-	});
-
-	// UN SOLO evento para cerrar modal de eliminar
-	document
-		.getElementById("close-modal-delete-file")
-		.addEventListener("click", () => {
-			folderManager.cerrarModalEliminar();
-			notesManager.notaAEliminar = null;
-			document.getElementById("modal-delete").style.display = "none";
-		});
 });

@@ -48,9 +48,12 @@
     </div>
 
 
-    <div id="modal-create-note" style="display: none;">
+    <div id="modal-create-note">
         <div class="modal-inputs">
             <h3>Crear Nueva Nota</h3>
+            <div id="error-message" style="display: none; color: #ff4444; margin-bottom: 10px; font-size: 14px;">
+                ⚠️ Primero debes seleccionar una carpeta
+            </div>
             <input type="text" id="note-name" placeholder="Nombre de la nota">
             <div class="modal-buttons">
                 <button class="boton aceptar" id="save-note">Guardar</button>
