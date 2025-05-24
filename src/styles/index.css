@@ -300,7 +300,8 @@ body {
 
 #sidebar-container {
     display: flex;
-    gap: 30px;
+    gap: 20px;
+    /* Reducido de 30px a 20px para compactar más */
     padding: 1rem;
     width: auto;
     height: 100%;
@@ -309,7 +310,8 @@ body {
 }
 
 #folders-container {
-    width: 170px;
+    width: 140px;
+    /* Reducido de 170px a 120px (-50px) */
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -358,8 +360,8 @@ body {
 }
 
 #file-list-container {
-    width: auto;
-    width: 200px;
+    width: 170px;
+    /* Reducido de 200px a 150px (-50px) */
     height: 100%;
     overflow-y: hidden;
     /* Habilita el scroll vertical */
