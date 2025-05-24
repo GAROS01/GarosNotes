@@ -54,8 +54,7 @@ GarosNotes/
 │   ├── index.html
 │   ├── renderer.js
 │   ├── preload.js
-│   ├── img/
-│   │   └── img_note_bg.ico
+│   ├── img/  
 │   └── styles/
 │       └── index.css
 └── README.md
@@ -65,6 +64,10 @@ GarosNotes/
 
 - Puedes cambiar el icono de la app reemplazando el archivo `src/img/img_note_bg.ico`.
 - El almacenamiento de notas y carpetas se realiza en `Documents/GarosNotes` de tu usuario.
+
+## Créditos
+
+Esta aplicación no es un diseño original. La idea principal y el diseño de la interfaz fueron tomados de [RevNotes-Desktop](https://github.com/RevienMaker/RevNotes-Desktop) por RevienMaker. ¡Gracias por el excelente trabajo!
 
 ## Licencia
 
