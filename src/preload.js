@@ -6,4 +6,6 @@ contextBridge.exposeInMainWorld("api", {
 	crearCarpeta: (nombreCarpeta) =>
 		ipcRenderer.invoke("crear-carpeta", nombreCarpeta),
 	listarCarpetas: () => ipcRenderer.invoke("listar-carpetas"),
+	eliminarCarpeta: (nombreCarpeta) =>
+		ipcRenderer.invoke("eliminar-carpeta", nombreCarpeta),
 });

@@ -61,3 +61,25 @@ ipcMain.handle("listar-carpetas", async () => {
 		return { ok: false, error: error.message };
 	}
 });
+
+ipcMain.handle("eliminar-carpeta", async (event, nombreCarpeta) => {
+	console.log("Eliminando carpeta:", nombreCarpeta);
+	const documentsPath = path.join(
+		os.homedir(),
+		"Documents",
+		"GarosNotes",
+		nombreCarpeta
+	);
+	try {
+		// Verificar si la carpeta existe
+		if (!fs.existsSync(documentsPath)) {
+			return { ok: false, error: "La carpeta no existe" };
+		}
+
+		// Eliminar la carpeta y todo su contenido
+		fs.rmSync(documentsPath, { recursive: true, force: true });
+		return { ok: true, path: documentsPath };
+	} catch (error) {
+		return { ok: false, error: error.message };
+	}
+});
