@@ -3,7 +3,6 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    /* Incluye bordes y paddings dentro del ancho/alto */
     font-family: "Poppins", sans-serif;
 }
 
@@ -18,6 +17,7 @@ textarea:focus {
     outline: none;
 }
 
+/* ===== MODALES ===== */
 #modal, #modal-rename, #modal-delete, #modal-create-note {
     display: none;
     position: fixed;
@@ -28,13 +28,6 @@ textarea:focus {
     background: rgba(0, 0, 0, 0.5);
     z-index: 110000;
     text-align: center;
-}
-
-#modal input {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
-    z-index: 110000;
 }
 
 .modal-inputs {
@@ -70,25 +63,252 @@ textarea:focus {
     gap: 10px;
 }
 
-
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-}
-
+/* ===== LAYOUT PRINCIPAL ===== */
 #app {
     display: flex;
-    width: 100%;
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
     padding: 0;
     background-color: #3f3f3f;
     color: white;
+    transition: all 0.3s ease;
+    overflow: hidden;
 }
 
+/* ===== SIDEBAR ===== */
+#sidebar {
+    position: relative;
+    display: flex;
+    gap: 30px;
+    padding: 0;
+    width: auto;
+    height: 100%;
+    background-color: #363636;
+    color: white;
+    transition: transform 0.3s ease;
+}
+
+#sidebar.hidden {
+    transform: translateX(-100%);
+}
+
+#sidebar-container {
+    display: flex;
+    gap: 20px;
+    padding: 1rem;
+    width: auto;
+    height: 100%;
+    background-color: #363636;
+    color: white;
+}
+
+/* ===== CONTENEDORES DE CARPETAS Y NOTAS ===== */
+#folders-container {
+    width: 140px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#file-list-container {
+    width: 170px;
+    height: 100%;
+    overflow-y: hidden;
+    overflow-x: hidden;
+    padding-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#folders {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#file-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 19px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ===== ELEMENTOS DE CARPETAS Y NOTAS ===== */
+.folder-item {
+    display: flex;
+    height: auto;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem;
+    margin: 0.5rem 0;
+    background: #363636;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all .5s;
+    white-space: normal;
+    word-break: break-word;
+}
+
+.folder-item.selected {
+    background-color: #575757 !important;
+    border-left: 3px solid #9e03d6;
+}
+
+.file-item {
+    display: flex;
+    padding: 15px;
+    gap: 10px;
+    justify-content: space-between;
+    color: white;
+    padding: 8px;
+    margin: 5px 0;
+    cursor: pointer;
+    border-radius: 5px;
+    background-color: #363636;
+    transition: background-color 0.3s ease;
+    white-space: normal;
+    word-break: break-word;
+}
+
+.folder-item:hover, .file-item:hover {
+    background-color: #575757;
+}
+
+/* ===== CONTROLES DE BOTONES ===== */
+.controls-folders {
+    display: flex;
+    gap: 10px;
+    height: 20px;
+    max-height: 40px;
+}
+
+.controls-folders button {
+    background-color: transparent !important;
+    border: none !important;
+    color: white !important;
+    font-size: 14px !important;
+    padding: 4px 6px !important;
+    border-radius: 3px !important;
+    transition: all 0.3s ease !important;
+    cursor: pointer !important;
+    min-width: 24px;
+    min-height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.controls-folders button:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    transform: scale(1.1);
+}
+
+/* ===== SCROLL PERSONALIZADO ===== */
+.files-container, .folders-container {
+    max-height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 5px;
+    padding-bottom: 40px;
+}
+
+.files-container::-webkit-scrollbar, .folders-container::-webkit-scrollbar {
+    width: 10px;
+    height: 5px;
+}
+
+.files-container::-webkit-scrollbar-thumb, .folders-container::-webkit-scrollbar-thumb {
+    background: transparent;
+    border-radius: 10px;
+}
+
+.files-container:hover::-webkit-scrollbar-thumb, .folders-container:hover::-webkit-scrollbar-thumb {
+    background: #575757;
+}
+
+/* ===== BOTONES GENERALES ===== */
+.boton {
+    color: white;
+    font-size: 13px;
+    font-weight: 600;
+    width: 100%;
+    padding: 10px;
+    box-shadow: none;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    background-color: #474747;
+    transition: background-color 0.3s ease;
+}
+
+.boton:hover {
+    background-color: #575757;
+}
+
+.aceptar {
+    color: white;
+    background-color: #616161;
+    font-size: 13px;
+    font-weight: 600;
+    width: 100%;
+    padding: 10px;
+    box-shadow: none;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+/* ===== BOTONES DE TOGGLE SIDEBAR ===== */
+#toggle-aside {
+    display: none;
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    width: 50px;
+    height: 50px;
+    font-size: 20px;
+    color: white;
+    background-color: #363636;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+
+#toggle-aside-hide {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    display: flex;
+    width: 50px;
+    height: 50px;
+    font-size: 20px;
+    color: white;
+    background-color: #363636;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+
+#toggle-aside:hover, #toggle-aside-hide:hover {
+    background-color: #575757;
+}
+
+/* ===== ÁREA PRINCIPAL DE CONTENIDO ===== */
 #placeholder-message {
     width: 100%;
-    height: 100%;
+    height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -96,6 +316,7 @@ body {
     gap: 20px;
     padding: 20px;
     text-align: center;
+    box-sizing: border-box;
 }
 
 #placeholder-message h2 {
@@ -113,72 +334,60 @@ body {
 
 #main {
     width: 100%;
-    height: 100%;
+    height: 100vh;
     color: white;
-
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    align-items: stretch;
-    gap: 15px;
     padding: 20px;
+    box-sizing: border-box;
 }
 
-#editor {
-    width: 100%;
-    height: 99%;
-    font-size: 1rem;
-    border-radius: 5px;
+/* ===== EDITOR DE NOTAS ===== */
+#titulo-nota {
     border: none;
-    resize: none;
+    font-size: 30px;
+    background-color: transparent;
+    color: white;
+    margin-bottom: 15px;
+    padding: 0;
+    flex-shrink: 0;
 }
 
 #editor-container {
     border: none;
     color: white;
-    height: 85%;
+    flex: 1;
+    min-height: 0;
     font-size: 13px;
+    display: flex;
+    flex-direction: column;
 }
 
-#editor-container .ql-editor::-webkit-scrollbar {
-    width: 10px;
-}
-
-#editor-container .ql-editor::-webkit-scrollbar-thumb {
-    background: transparent;
-    border-radius: 10px;
-}
-
-#editor-container .ql-editor:hover::-webkit-scrollbar-thumb {
-    background: #575757;
-    /* Se hace más visible al pasar el mouse */
-}
-
-#titulo-nota {
-    margin-bottom: 20px;
-    font-weight: 700;
-    width: 100%;
-}
-
-/* ----------------- Editor de texto ------------------------------- */
-
+/* ===== QUILL EDITOR STYLES ===== */
 .ql-toolbar.ql-snow {
     background-color: #363636 !important;
     border: none !important;
     color: white !important;
     border-radius: 10px;
-    /* margin-bottom: 20px; */
+    flex-shrink: 0;
+    margin-bottom: 10px;
 }
 
 .ql-container.ql-snow {
     background-color: transparent;
     color: white;
     border: none;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
 }
 
 .ql-editor {
-    min-height: 400px;
+    flex: 1;
+    min-height: 0;
     font-size: 16px;
+    padding: 12px 15px;
+    overflow-y: auto;
 }
 
 .ql-picker, .ql-picker-label, .ql-stroke {
@@ -195,13 +404,6 @@ body {
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-.ql-editor .ql-video {
-    width: 100%;
-    height: 80%;
-    border-radius: 6px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
 .ql-snow .ql-picker,
 .ql-snow .ql-picker-label,
 .ql-snow .ql-picker-item {
@@ -212,7 +414,6 @@ body {
     background-color: #2c2c2c !important;
 }
 
-/* SVG icons */
 .ql-snow .ql-stroke {
     stroke: white !important;
 }
@@ -221,12 +422,6 @@ body {
     stroke: white !important;
 }
 
-/* .ql-snow .ql-picker.ql-expanded .ql-picker-options {
-    background-color: #2e2e2e !important;
-    border-color: #555 !important;
-  } */
-
-/* Hover y active states */
 .ql-toolbar button:hover,
 .ql-toolbar button.ql-active {
     background-color: #444 !important;
@@ -237,432 +432,15 @@ body {
     stroke: white !important;
 }
 
-.ql-snow .ql-picker.ql-color .ql-picker-options,
-.ql-snow .ql-picker.ql-background .ql-picker-options {
-    border: 1px solid #555;
-}
-
-.ql-snow .ql-picker.ql-color .ql-picker-item,
-.ql-snow .ql-picker.ql-background .ql-picker-item {
-    border: 1px solid transparent;
-    margin: 2px;
-    width: 20px;
-    height: 20px;
-}
-
 .ql-snow .ql-fill, .ql-snow .ql-stroke.ql-fill {
     fill: white !important;
 }
-
 
 .ql-editor ul[data-checked=true]>li::before {
     color: greenyellow !important;
 }
 
-
-/* ----------------- Editor de texto ------------------------------- */
-
-#editor::-webkit-scrollbar {
-    width: 10px;
-}
-
-#editor::-webkit-scrollbar-thumb {
-    background: transparent;
-    border-radius: 10px;
-}
-
-#editor:hover::-webkit-scrollbar-thumb {
-    background: #575757;
-    /* Se hace más visible al pasar el mouse */
-}
-
-#titulo-nota, #editor {
-    background-color: transparent;
-    border: none;
-    color: white;
-}
-
-#sidebar {
-    position: relative;
-    display: flex;
-    gap: 30px;
-    padding: 0rem;
-    width: auto;
-    height: 100%;
-    background-color: #363636;
-    color: white;
-    transition: transform 0.3s ease;
-}
-
-#sidebar.hidden {
-    transform: translateX(-100%);
-}
-
-#toggle-aside {
-    display: none;
-    position: fixed;
-    /* Cambiar a fixed para que siempre esté visible */
-    top: 20px;
-    left: 20px;
-    width: 50px;
-    height: 50px;
-    font-size: 20px;
-    color: white;
-    background-color: #363636;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
-    z-index: 1000;
-    /* Asegurar que esté por encima */
-    align-items: center;
-    justify-content: center;
-}
-
-#toggle-aside-hide {
-    position: absolute;
-    /* Cambiar a posición absoluta */
-    bottom: 20px;
-    /* Posicionar en la parte inferior */
-    left: 20px;
-    /* Posicionar en la parte izquierda */
-    display: flex;
-    width: 50px;
-    height: 50px;
-    font-size: 20px;
-    color: white;
-    background-color: #363636;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
-    align-items: center;
-    justify-content: center;
-    z-index: 10;
-    /* Asegurar que esté por encima de otros elementos */
-}
-
-#toggle-aside:hover, #toggle-aside-hide:hover {
-    background-color: #575757;
-}
-
-/* Ajustar el contenido principal cuando el sidebar está oculto */
-#app {
-    display: flex;
-    width: 100%;
-    height: 100%;
-    padding: 0;
-    background-color: #3f3f3f;
-    color: white;
-    transition: all 0.3s ease;
-}
-
-/* Cuando el sidebar está oculto, el main ocupa todo el ancho */
-#sidebar.hidden~#placeholder-message,
-#sidebar.hidden~#main {
-    margin-left: 0;
-    width: 100%;
-}
-
-#sidebar-container {
-    display: flex;
-    gap: 20px;
-    /* Reducido de 30px a 20px para compactar más */
-    padding: 1rem;
-    width: auto;
-    height: 100%;
-    background-color: #363636;
-    color: white;
-}
-
-#folders-container {
-    width: 140px;
-    /* Reducido de 170px a 120px (-50px) */
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-#folders {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.controls-folders {
-    display: flex;
-    gap: 10px;
-    height: 20px;
-    max-height: 40px;
-}
-
-.folder-item {
-    display: flex;
-    height: auto;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.5rem;
-    margin: 0.5rem 0;
-    background: #363636;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: all .5s;
-    white-space: normal;
-    /* permite múltiples líneas */
-    word-break: break-word;
-}
-
-.folder-item.selected {
-    background-color: #575757 !important;
-    border-left: 3px solid #9e03d6;
-}
-
-.folder-item .controls-folders button,
-.file-item .controls-folders button {
-    background-color: transparent;
-    border: none;
-    color: white;
-    font-size: 14px;
-    padding: 4px 6px;
-    border-radius: 3px;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.folder-item .controls-folders button:hover,
-.file-item .controls-folders button:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-    transform: scale(1.1);
-}
-
-/* Asegurar que ambos botones de eliminar tengan el mismo estilo */
-.controls-folders button {
-    background-color: transparent !important;
-    border: none !important;
-    color: white !important;
-    font-size: 14px !important;
-    padding: 4px 6px !important;
-    border-radius: 3px !important;
-    transition: all 0.3s ease !important;
-    cursor: pointer !important;
-    min-width: 24px;
-    min-height: 24px;
-}
-
-.controls-folders button:hover {
-    background-color: rgba(255, 255, 255, 0.1) !important;
-    transform: scale(1.1);
-}
-
-#file-list-container {
-    width: 170px;
-    /* Reducido de 200px a 150px (-50px) */
-    height: 100%;
-    overflow-y: hidden;
-    /* Habilita el scroll vertical */
-    overflow-x: hidden;
-    /* Evita el scroll horizontal */
-    padding-bottom: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.boton {
-    color: white;
-
-    font-size: 13px;
-    font-weight: 600;
-
-    width: 100%;
-    padding: 10px;
-    box-shadow: none;
-    border: none;
-    cursor: pointer;
-
-    border-radius: 5px;
-    background-color: #474747;
-    transition: background-color 0.3s ease;
-}
-
-.aceptar {
-    color: white;
-    background-color: transparent;
-
-    font-size: 13px;
-    font-weight: 600;
-
-    width: 100%;
-    padding: 10px;
-    box-shadow: none;
-    border: none;
-    cursor: pointer;
-
-    border-radius: 5px;
-    background-color: #616161;
-    transition: background-color 0.3s ease;
-}
-
-#save-btn {
-    width: auto;
-    padding: 10px 40px;
-    font-size: 15px;
-}
-
-#file-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    font-size: 19px;
-
-    display: flex;
-    flex-direction: column;
-}
-
-.files-container {
-    max-height: 100%;
-    /* Ajusta esto según el diseño */
-    overflow-y: auto;
-    /* Habilita el scroll vertical */
-    overflow-x: hidden;
-    /* Evita el scroll horizontal */
-    padding-right: 5px;
-    padding-bottom: 40px;
-}
-
-.files-container::-webkit-scrollbar {
-    width: 10px;
-    height: 5px;
-}
-
-.files-container::-webkit-scrollbar-thumb {
-    background: transparent;
-    border-radius: 10px;
-}
-
-.files-container:hover::-webkit-scrollbar-thumb {
-    background: #575757;
-    /* Se hace más visible al pasar el mouse */
-}
-
-.folders-container {
-    max-height: 100%;
-    /* Ajusta esto según el diseño */
-    overflow-y: auto;
-    /* Habilita el scroll vertical */
-    overflow-x: hidden;
-    /* Evita el scroll horizontal */
-    padding-right: 5px;
-    padding-bottom: 40px;
-}
-
-.folders-container::-webkit-scrollbar {
-    width: 10px;
-    height: 5px;
-}
-
-.folders-container::-webkit-scrollbar-thumb {
-    background: transparent;
-    border-radius: 10px;
-}
-
-.folders-container:hover::-webkit-scrollbar-thumb {
-    background: #575757;
-    /* Se hace más visible al pasar el mouse */
-}
-
-#file-list li {
-    padding: 0.5rem;
-    margin: 0.5rem 0;
-    background: #363636;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.file-item {
-    display: flex;
-    padding: 15px;
-    gap: 10px;
-    justify-content: space-between;
-    color: white;
-    padding: 8px;
-    margin: 5px 0;
-    cursor: pointer;
-    border-radius: 5px;
-    background-color: #363636;
-    transition: background-color 0.3s ease;
-    white-space: normal;
-    /* permite múltiples líneas */
-    word-break: break-word;
-}
-
-.folder-item:hover, .file-item:hover, .boton:hover {
-    background-color: #575757;
-}
-
-.eliminar-nota {
-    border: none;
-    background-color: transparent;
-    color: white;
-}
-
-#titulo-nota {
-    border: none;
-    font-size: 30px;
-}
-
-#toggle-aside {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 50px;
-    height: 50px;
-    margin-top: 20px;
-    margin-left: 1.1rem;
-    font-size: 20px;
-
-    color: white;
-    border-radius: 50%;
-    background-color: #363636;
-    border: none;
-    cursor: pointer;
-
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
-}
-
-#toggle-aside-hide {
-    position: absolute;
-    /* Cambiar a posición absoluta */
-    bottom: 20px;
-    /* Posicionar en la parte inferior */
-    left: 20px;
-    /* Posicionar en la parte izquierda */
-    display: flex;
-    width: 50px;
-    height: 50px;
-    font-size: 20px;
-    color: white;
-    background-color: #363636;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
-    align-items: center;
-    justify-content: center;
-    z-index: 10;
-    /* Asegurar que esté por encima de otros elementos */
-}
-
-#toggle-aside:hover, #toggle-aside-hide:hover {
-    background-color: #575757;
-}
-
-/* Posición fija en la esquina inferior izquierda */
+/* ===== CONFIGURACIONES (SETTINGS) ===== */
 .settings-container {
     position: fixed;
     bottom: 20px;
@@ -690,7 +468,6 @@ body {
     display: none;
     position: absolute;
     left: 100%;
-    /* aparece a la derecha del botón */
     bottom: 14%;
     z-index: 100;
     padding: .7rem;
@@ -712,7 +489,6 @@ body {
     border: none;
     border-radius: 10px;
     padding: 10px;
-    /* box-shadow: 2px 2px 5px rgba(0,0,0,0.2); */
 }
 
 .toggle-switch {
@@ -729,12 +505,7 @@ body {
 
 .toggle-switch input {
     display: none;
-    /* Oculta el checkbox original */
 }
-
-/* .toggle-switch:hover{
-    background-color: #616161;
-  } */
 
 .toggle-switch svg {
     width: 20px;
@@ -761,7 +532,6 @@ body {
     transition: transform 0.2s;
 }
 
-/* Cuando el checkbox está seleccionado */
 .toggle-switch input:checked+.slider {
     background-color: #9e03d6;
 }
@@ -775,33 +545,54 @@ body {
     white-space: nowrap;
 }
 
+/* ===== RESPONSIVE SIDEBAR TOGGLE ===== */
+/* Cuando el sidebar está oculto, expandir el contenido */
+.sidebar-hidden #main,
+.sidebar-hidden #placeholder-message {
+    width: 100vw !important;
+    height: 100vh !important;
+    margin-left: 0 !important;
+    transition: all 0.3s ease;
+}
 
-/* responsive desing Mobile */
+/* Regla de respaldo usando el selector adjacent */
+#sidebar.hidden~#main,
+#sidebar.hidden~#placeholder-message {
+    width: 100vw !important;
+    height: 100vh !important;
+    margin-left: 0 !important;
+    transition: all 0.3s ease;
+}
 
-/* Pantallas pequeñas (teléfonos grandes en modo vertical) */
+/* ===== RESPONSIVE DESIGN MOBILE ===== */
 @media (max-width: 1024px) {
-    #app {
-        display: flex;
-        flex-direction: column;
-        overflow-y: hidden;
-        overflow-x: hidden;
-        /* Habilita el scroll vertical */
+    #main {
+        width: 100%;
+        height: 100vh;
+        padding: 15px;
     }
 
-    #sidebar {
-        position: absolute;
-        top: 0;
-        left: 0;
-        /* background: #333; */
-        background: transparent;
-        height: 100%;
-        z-index: 10;
-        padding: 0rem;
-        width: auto;
-        max-height: 100%;
-        gap: 10px;
-        /* max-width: 100dvw;
-        min-width: 100dvw; */
+    #titulo-nota {
+        font-size: 24px;
+        margin-bottom: 10px;
+    }
+
+    .ql-editor {
+        font-size: 14px;
+        padding: 10px 12px;
+    }
+
+    #placeholder-message {
+        height: 100vh;
+        padding: 15px;
+    }
+
+    #placeholder-message h2 {
+        font-size: 24px;
+    }
+
+    #placeholder-message p {
+        font-size: 16px;
     }
 
     #sidebar.hidden {
@@ -811,7 +602,6 @@ body {
     #toggle-aside {
         display: flex;
         position: fixed;
-        /* Mantener fixed en móvil también */
         top: 20px;
         left: 20px;
         align-items: center;
@@ -820,170 +610,14 @@ body {
     }
 
     #toggle-aside-hide {
-        position: absolute;
-        bottom: 20px;
-        left: 20px;
         display: flex;
         align-items: center;
         justify-content: center;
     }
 
-    #main {
-        width: 100%;
-        height: 95%;
-        /* margin-top: 50px; */
-    }
-
-    .ql-editor {
-        width: 100%;
-        height: 100% !important;
-    }
-
-    .ql-editor img {
-        width: 80%;
-        height: auto;
-        border-radius: 6px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .ql-editor .ql-video {
-        width: 100%;
-        height: 80%;
-    }
-
-    #editor-container {
-        border: none;
-        color: white;
-        font-size: 13px;
-    }
-
-    #titulo-nota {
-        padding-left: 70px;
-        width: 100%;
-    }
-
-    /* #sidebar {
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
-        padding: 1rem;
-        width: auto;
-        height: auto;
-    } */
-
-    /* #folders-container{
-        width: 100%;
-        height: auto;
-        display: flex;
-        flex-direction: column;
-        gap: 0px;
-    }
-
-    #file-list-container{
-        width: 100%;
-        height: auto;
-        display: flex;
-        flex-direction: column;
-        gap: 0px;
-        margin: 0;
-        padding: 0;
-    } */
-
-    h2 {
-        font-size: 18px;
-    }
-
-    /* .files-container {
-        max-height: 100%;
-        overflow-y: hidden; 
-        overflow-x: auto; 
-        padding-right: 5px;
-        padding-bottom: 0px;
-    }
-    .folders-container {
-        max-height: 100%; 
-        overflow-y: hidden;  
-        overflow-x: auto; 
-        padding-right: 5px;
-        padding-bottom: 0px;
-    } */
-
-    /* .boton{
-        align-items: center;
-        justify-content: center;
-    
-        width: auto;
-        height: 100%;
-    } */
-
-    .modal-buttons .boton {
-        width: 100%;
-    }
-
-    .titulo-boton {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    /* .titulo-boton{
-        display: flex;
-        width: 100%;
-        height: 35px;
-        flex-direction: row;
-        gap: 30px;
-        
-        justify-content: start;
-        align-items: center;
-    } */
-
-    /* #folders, #file-list {
-        list-style: none;
-        display: flex;
-        flex-direction: row;
-        padding: 0;
-        margin: 0;
-        gap: 15px;
-    } */
-
-    .file-item, .folder-item {
-        display: flex;
-        width: auto;
-        /* white-space: nowrap;  */
-        font-size: 15px;
-        gap: 4px;
-    }
-
-    #placeholder-message {
-        width: 100%;
-        padding: 20px;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 20px;
-        text-align: center;
-    }
-
-    #error-message {
-        background-color: rgba(255, 68, 68, 0.1);
-        border: 1px solid #ff4444;
-        border-radius: 5px;
-        padding: 8px;
-        text-align: center;
-    }
-
-    #note-name:disabled {
-        background-color: #3a3a3a !important;
-        color: #888 !important;
-        cursor: not-allowed;
-    }
-
-    button:disabled {
-        background-color: #3a3a3a !important;
-        color: #888 !important;
-        cursor: not-allowed;
-        opacity: 0.6;
+    .sidebar-hidden #main,
+    .sidebar-hidden #placeholder-message {
+        width: 100vw !important;
+        height: 100vh !important;
     }
 }

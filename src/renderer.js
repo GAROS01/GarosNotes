@@ -236,6 +236,14 @@ class NotesManager {
 
 				// Configurar autoguardado DESPUÉS de cargar todo
 				this.configurarAutoguardado();
+
+				// Forzar que Quill recalcule su tamaño después de un pequeño delay
+				setTimeout(() => {
+					if (window.quill) {
+						window.quill.getModule("toolbar").container.style.display = "block";
+						window.quill.focus();
+					}
+				}, 100);
 			} else {
 				alert("Error: " + res.error);
 			}
@@ -593,15 +601,16 @@ function registrarEventos() {
 		});
 
 	// Eventos para toggle del sidebar
-	document.getElementById("toggle-aside").addEventListener("click", () => {
-		console.log("Click en mostrar sidebar");
-		mostrarSidebar();
-	});
+	const toggleAsideShow = document.getElementById("toggle-aside");
+	const toggleAsideHide = document.getElementById("toggle-aside-hide");
 
-	document.getElementById("toggle-aside-hide").addEventListener("click", () => {
-		console.log("Click en ocultar sidebar");
-		ocultarSidebar();
-	});
+	if (toggleAsideShow) {
+		toggleAsideShow.addEventListener("click", mostrarSidebar);
+	}
+
+	if (toggleAsideHide) {
+		toggleAsideHide.addEventListener("click", ocultarSidebar);
+	}
 
 	// Eventos de teclado
 	document.addEventListener("keydown", (e) => {
@@ -626,30 +635,37 @@ function registrarEventos() {
 function mostrarSidebar() {
 	const sidebar = document.getElementById("sidebar");
 	const toggleAside = document.getElementById("toggle-aside");
+	const app = document.getElementById("app");
 
-	sidebar.classList.remove("hidden");
-	toggleAside.style.display = "none";
-
-	console.log("Sidebar mostrado");
+	if (sidebar && toggleAside && app) {
+		sidebar.classList.remove("hidden");
+		app.classList.remove("sidebar-hidden");
+		toggleAside.style.display = "none";
+		console.log("Sidebar mostrado");
+	}
 }
 
 function ocultarSidebar() {
 	const sidebar = document.getElementById("sidebar");
 	const toggleAside = document.getElementById("toggle-aside");
+	const app = document.getElementById("app");
 
-	sidebar.classList.add("hidden");
-	toggleAside.style.display = "flex";
-
-	console.log("Sidebar ocultado");
+	if (sidebar && toggleAside && app) {
+		sidebar.classList.add("hidden");
+		app.classList.add("sidebar-hidden");
+		toggleAside.style.display = "flex";
+		console.log("Sidebar ocultado");
+	}
 }
 
 function toggleSidebar() {
 	const sidebar = document.getElementById("sidebar");
-
-	if (sidebar.classList.contains("hidden")) {
-		mostrarSidebar();
-	} else {
-		ocultarSidebar();
+	if (sidebar) {
+		if (sidebar.classList.contains("hidden")) {
+			mostrarSidebar();
+		} else {
+			ocultarSidebar();
+		}
 	}
 }
 
