@@ -592,6 +592,17 @@ function registrarEventos() {
 			document.getElementById("modal-delete").style.display = "none";
 		});
 
+	// Eventos para toggle del sidebar
+	document.getElementById("toggle-aside").addEventListener("click", () => {
+		console.log("Click en mostrar sidebar");
+		mostrarSidebar();
+	});
+
+	document.getElementById("toggle-aside-hide").addEventListener("click", () => {
+		console.log("Click en ocultar sidebar");
+		ocultarSidebar();
+	});
+
 	// Eventos de teclado
 	document.addEventListener("keydown", (e) => {
 		if (e.key === "Escape") {
@@ -599,10 +610,47 @@ function registrarEventos() {
 			folderManager.cerrarModalEliminar();
 			notesManager.cerrarModalCrearNota();
 		}
+
+		// Atajo de teclado para toggle sidebar: Ctrl + B
+		if (e.ctrlKey && e.key === "b") {
+			e.preventDefault();
+			toggleSidebar();
+		}
 	});
 
 	eventosRegistrados = true;
 	console.log("Eventos registrados correctamente");
+}
+
+// Funciones para manejar el sidebar
+function mostrarSidebar() {
+	const sidebar = document.getElementById("sidebar");
+	const toggleAside = document.getElementById("toggle-aside");
+
+	sidebar.classList.remove("hidden");
+	toggleAside.style.display = "none";
+
+	console.log("Sidebar mostrado");
+}
+
+function ocultarSidebar() {
+	const sidebar = document.getElementById("sidebar");
+	const toggleAside = document.getElementById("toggle-aside");
+
+	sidebar.classList.add("hidden");
+	toggleAside.style.display = "flex";
+
+	console.log("Sidebar ocultado");
+}
+
+function toggleSidebar() {
+	const sidebar = document.getElementById("sidebar");
+
+	if (sidebar.classList.contains("hidden")) {
+		mostrarSidebar();
+	} else {
+		ocultarSidebar();
+	}
 }
 
 // Inicialización

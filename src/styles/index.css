@@ -295,7 +295,73 @@ body {
 }
 
 #sidebar.hidden {
-    transform: translateX(0%);
+    transform: translateX(-100%);
+}
+
+#toggle-aside {
+    display: none;
+    position: fixed;
+    /* Cambiar a fixed para que siempre esté visible */
+    top: 20px;
+    left: 20px;
+    width: 50px;
+    height: 50px;
+    font-size: 20px;
+    color: white;
+    background-color: #363636;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    z-index: 1000;
+    /* Asegurar que esté por encima */
+    align-items: center;
+    justify-content: center;
+}
+
+#toggle-aside-hide {
+    position: absolute;
+    /* Cambiar a posición absoluta */
+    bottom: 20px;
+    /* Posicionar en la parte inferior */
+    left: 20px;
+    /* Posicionar en la parte izquierda */
+    display: flex;
+    width: 50px;
+    height: 50px;
+    font-size: 20px;
+    color: white;
+    background-color: #363636;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    /* Asegurar que esté por encima de otros elementos */
+}
+
+#toggle-aside:hover, #toggle-aside-hide:hover {
+    background-color: #575757;
+}
+
+/* Ajustar el contenido principal cuando el sidebar está oculto */
+#app {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    background-color: #3f3f3f;
+    color: white;
+    transition: all 0.3s ease;
+}
+
+/* Cuando el sidebar está oculto, el main ocupa todo el ancho */
+#sidebar.hidden~#placeholder-message,
+#sidebar.hidden~#main {
+    margin-left: 0;
+    width: 100%;
 }
 
 #sidebar-container {
@@ -550,7 +616,7 @@ body {
 
 #toggle-aside {
     display: none;
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 50px;
@@ -570,24 +636,30 @@ body {
 }
 
 #toggle-aside-hide {
-    display: none;
+    position: absolute;
+    /* Cambiar a posición absoluta */
+    bottom: 20px;
+    /* Posicionar en la parte inferior */
+    left: 20px;
+    /* Posicionar en la parte izquierda */
+    display: flex;
     width: 50px;
     height: 50px;
-    margin-top: 20px;
     font-size: 20px;
-
     color: white;
-    border-radius: 50%;
     background-color: #363636;
     border: none;
     cursor: pointer;
-
     border-radius: 5px;
     transition: background-color 0.3s ease;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    /* Asegurar que esté por encima de otros elementos */
 }
 
 #toggle-aside:hover, #toggle-aside-hide:hover {
-    background-color: #2e2e2e;
+    background-color: #575757;
 }
 
 /* Posición fija en la esquina inferior izquierda */
@@ -736,24 +808,21 @@ body {
         transform: translateX(-130%);
     }
 
-    #sidebar-container {
-        display: flex;
-        gap: 30px;
-        padding: 1rem;
-        width: auto;
-        height: 100%;
-        background-color: #363636;
-        color: white;
-    }
-
     #toggle-aside {
         display: flex;
-        position: absolute;
+        position: fixed;
+        /* Mantener fixed en móvil también */
+        top: 20px;
+        left: 20px;
         align-items: center;
         justify-content: center;
+        z-index: 1000;
     }
 
     #toggle-aside-hide {
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
         display: flex;
         align-items: center;
         justify-content: center;
