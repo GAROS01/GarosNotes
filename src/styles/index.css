@@ -271,7 +271,7 @@ textarea:focus {
 #toggle-aside {
     display: none;
     position: fixed;
-    top: 20px;
+    bottom: 20px;
     left: 20px;
     width: 50px;
     height: 50px;
@@ -653,18 +653,15 @@ textarea:focus {
 
     #placeholder-message h2 {
         font-size: 26px;
-        /* Tamaño apropiado para móvil */
     }
 
     #placeholder-message p {
         font-size: 18px;
-        /* Tamaño apropiado para móvil */
         line-height: 1.4;
     }
 
     .logo {
         width: 60px;
-        /* Más pequeño en móvil */
     }
 
     #sidebar.hidden {
@@ -675,7 +672,7 @@ textarea:focus {
     #toggle-aside {
         display: flex;
         position: fixed;
-        top: 20px;
+        bottom: 20px;
         left: 20px;
         align-items: center;
         justify-content: center;
