@@ -125,7 +125,8 @@ class NotesManager {
 		this.carpetaActual = null;
 		this.notaActual = null;
 		this.notaAEliminar = null;
-		this.autoguardadoTimer = null; // Timer para el autoguardado
+		this.autoguardadoTimer = null;
+		this.eventoTituloRegistrado = false; // Para evitar eventos duplicados
 	}
 
 	async crearNota(nombreCarpeta, nombreNota) {
@@ -208,7 +209,10 @@ class NotesManager {
 				document.getElementById("placeholder-message").style.display = "none";
 				document.getElementById("main").style.display = "flex";
 
-				// Cargar contenido
+				// Actualizar estado ANTES de cargar el título
+				this.notaActual = { carpeta: nombreCarpeta, nombre: nombreNota };
+
+				// Cargar título
 				document.getElementById("titulo-nota").value = nombreNota;
 
 				// Inicializar Quill si no existe
@@ -218,24 +222,19 @@ class NotesManager {
 
 				// Cargar contenido en Quill
 				if (window.quill) {
-					// Si el contenido está vacío, usar setText, si no usar setContents para preservar formato
 					if (res.contenido.trim() === "") {
 						window.quill.setText("");
 					} else {
 						try {
-							// Intentar cargar como Delta (formato Quill)
 							const delta = JSON.parse(res.contenido);
 							window.quill.setContents(delta);
 						} catch (e) {
-							// Si falla, cargar como texto plano
 							window.quill.setText(res.contenido);
 						}
 					}
 				}
 
-				this.notaActual = { carpeta: nombreCarpeta, nombre: nombreNota };
-
-				// Configurar autoguardado
+				// Configurar autoguardado DESPUÉS de cargar todo
 				this.configurarAutoguardado();
 			} else {
 				alert("Error: " + res.error);
@@ -286,33 +285,38 @@ class NotesManager {
 			clearTimeout(this.autoguardadoTimer);
 		}
 
-		// Configurar eventos de autoguardado
+		// Configurar eventos de autoguardado para Quill
 		window.quill.on("text-change", () => {
 			console.log("Cambio detectado en el editor");
 
-			// Limpiar timer anterior
 			if (this.autoguardadoTimer) {
 				clearTimeout(this.autoguardadoTimer);
 			}
 
-			// Configurar nuevo timer para guardar después de 1 segundo de inactividad
 			this.autoguardadoTimer = setTimeout(() => {
 				this.guardarNotaActual();
 			}, 1000);
 		});
 
-		// También guardar cuando cambie el título
-		document.getElementById("titulo-nota").addEventListener("input", () => {
-			console.log("Cambio detectado en el título");
+		// Configurar evento del título SOLO una vez
+		if (!this.eventoTituloRegistrado) {
+			const tituloInput = document.getElementById("titulo-nota");
 
-			if (this.autoguardadoTimer) {
-				clearTimeout(this.autoguardadoTimer);
-			}
+			tituloInput.addEventListener("input", () => {
+				console.log("Cambio detectado en el título");
 
-			this.autoguardadoTimer = setTimeout(() => {
-				this.renombrarNotaActual();
-			}, 1000);
-		});
+				if (this.autoguardadoTimer) {
+					clearTimeout(this.autoguardadoTimer);
+				}
+
+				this.autoguardadoTimer = setTimeout(() => {
+					this.renombrarNotaActual();
+				}, 1500); // Un poco más de tiempo para renombrar
+			});
+
+			this.eventoTituloRegistrado = true;
+			console.log("Evento de título registrado");
+		}
 	}
 
 	async guardarNotaActual() {
@@ -341,10 +345,29 @@ class NotesManager {
 	}
 
 	async renombrarNotaActual() {
-		if (!this.notaActual) return;
+		if (!this.notaActual) {
+			console.log("No hay nota actual para renombrar");
+			return;
+		}
 
 		const nuevoNombre = document.getElementById("titulo-nota").value.trim();
-		if (!nuevoNombre || nuevoNombre === this.notaActual.nombre) return;
+		console.log(
+			"Intentando renombrar:",
+			this.notaActual.nombre,
+			"→",
+			nuevoNombre
+		);
+
+		if (!nuevoNombre) {
+			console.log("Nombre vacío, revirtiendo");
+			document.getElementById("titulo-nota").value = this.notaActual.nombre;
+			return;
+		}
+
+		if (nuevoNombre === this.notaActual.nombre) {
+			console.log("El nombre no ha cambiado");
+			return;
+		}
 
 		try {
 			// Primero guardar el contenido actual
@@ -358,22 +381,38 @@ class NotesManager {
 			);
 
 			if (res.ok) {
-				console.log("Nota renombrada correctamente");
+				console.log(
+					"Nota renombrada correctamente de",
+					this.notaActual.nombre,
+					"a",
+					nuevoNombre
+				);
+
+				// Actualizar el estado interno
 				this.notaActual.nombre = nuevoNombre;
+
 				// Actualizar la lista de notas
 				await this.mostrarNotasDeCarpeta(this.notaActual.carpeta);
+
+				// Mostrar indicador de guardado
+				this.mostrarIndicadorGuardado("✓ Renombrado");
 			} else {
 				console.error("Error al renombrar nota:", res.error);
+				alert("Error al renombrar: " + res.error);
+
 				// Revertir el título si hay error
 				document.getElementById("titulo-nota").value = this.notaActual.nombre;
 			}
 		} catch (error) {
 			console.error("Error en renombrarNotaActual:", error);
+			alert("Error al renombrar: " + error.message);
+
+			// Revertir el título si hay error
+			document.getElementById("titulo-nota").value = this.notaActual.nombre;
 		}
 	}
 
-	mostrarIndicadorGuardado() {
-		// Crear o actualizar indicador de guardado
+	mostrarIndicadorGuardado(mensaje = "✓ Guardado") {
 		let indicador = document.getElementById("save-indicator");
 		if (!indicador) {
 			indicador = document.createElement("div");
@@ -393,10 +432,9 @@ class NotesManager {
 			document.body.appendChild(indicador);
 		}
 
-		indicador.textContent = "✓ Guardado";
+		indicador.textContent = mensaje;
 		indicador.style.opacity = "1";
 
-		// Ocultar después de 2 segundos
 		setTimeout(() => {
 			indicador.style.opacity = "0";
 		}, 2000);
