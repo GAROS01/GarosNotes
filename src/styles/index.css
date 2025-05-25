@@ -86,10 +86,15 @@ textarea:focus {
     background-color: #363636;
     color: white;
     transition: transform 0.3s ease;
+    flex-shrink: 0;
+    /* No se encoge */
 }
 
 #sidebar.hidden {
     transform: translateX(-100%);
+    width: 0;
+    /* Cuando está oculto, no ocupa espacio */
+    overflow: hidden;
 }
 
 #sidebar-container {
@@ -307,7 +312,7 @@ textarea:focus {
 
 /* ===== ÁREA PRINCIPAL DE CONTENIDO ===== */
 #placeholder-message {
-    width: 100%;
+    flex: 1;
     height: 100vh;
     display: flex;
     flex-direction: column;
@@ -321,19 +326,38 @@ textarea:focus {
 
 #placeholder-message h2 {
     font-size: 30px;
+    margin: 0;
+    color: white;
 }
 
 #placeholder-message p {
     font-size: 20px;
+    margin: 0;
+    color: #cccccc;
+    max-width: 600px;
+    line-height: 1.5;
 }
 
 .logo {
-    width: 60px;
+    width: 80px;
+    /* Más pequeño que antes */
     height: auto;
+    margin-bottom: 10px;
+    opacity: 0.8;
+}
+
+/* Contenedor específico para el mensaje de bienvenida */
+.welcome-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    max-width: 700px;
 }
 
 #main {
-    width: 100%;
+    flex: 1;
+    /* Cambiar de width: 100% a flex: 1 */
     height: 100vh;
     color: white;
     display: flex;
@@ -547,27 +571,66 @@ textarea:focus {
 
 /* ===== RESPONSIVE SIDEBAR TOGGLE ===== */
 /* Cuando el sidebar está oculto, expandir el contenido */
-.sidebar-hidden #main,
-.sidebar-hidden #placeholder-message {
-    width: 100vw !important;
-    height: 100vh !important;
-    margin-left: 0 !important;
+#app {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    padding: 0;
+    background-color: #3f3f3f;
+    color: white;
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+/* Estado normal - con sidebar visible */
+#sidebar {
+    position: relative;
+    display: flex;
+    gap: 30px;
+    padding: 0;
+    width: auto;
+    height: 100%;
+    background-color: #363636;
+    color: white;
+    transition: transform 0.3s ease;
+    flex-shrink: 0;
+    /* No se encoge */
+}
+
+#sidebar.hidden {
+    transform: translateX(-100%);
+    width: 0;
+    /* Cuando está oculto, no ocupa espacio */
+    overflow: hidden;
+}
+
+/* El contenido principal debe expandirse */
+#main, #placeholder-message {
+    flex: 1;
+    /* Ocupa todo el espacio disponible */
+    width: 100%;
+    height: 100vh;
     transition: all 0.3s ease;
 }
 
-/* Regla de respaldo usando el selector adjacent */
+/* Cuando usamos la clase sidebar-hidden */
+.sidebar-hidden #main,
+.sidebar-hidden #placeholder-message {
+    width: 100vw !important;
+    max-width: 100vw !important;
+}
+
+/* También para el selector hermano */
 #sidebar.hidden~#main,
 #sidebar.hidden~#placeholder-message {
     width: 100vw !important;
-    height: 100vh !important;
-    margin-left: 0 !important;
-    transition: all 0.3s ease;
+    max-width: 100vw !important;
 }
 
 /* ===== RESPONSIVE DESIGN MOBILE ===== */
 @media (max-width: 1024px) {
     #main {
-        width: 100%;
+        flex: 1;
         height: 100vh;
         padding: 15px;
     }
@@ -583,20 +646,30 @@ textarea:focus {
     }
 
     #placeholder-message {
+        flex: 1;
         height: 100vh;
         padding: 15px;
     }
 
     #placeholder-message h2 {
-        font-size: 24px;
+        font-size: 26px;
+        /* Tamaño apropiado para móvil */
     }
 
     #placeholder-message p {
-        font-size: 16px;
+        font-size: 18px;
+        /* Tamaño apropiado para móvil */
+        line-height: 1.4;
+    }
+
+    .logo {
+        width: 60px;
+        /* Más pequeño en móvil */
     }
 
     #sidebar.hidden {
         transform: translateX(-130%);
+        width: 0;
     }
 
     #toggle-aside {
