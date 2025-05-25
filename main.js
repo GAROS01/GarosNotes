@@ -202,3 +202,46 @@ ipcMain.handle("eliminar-nota", async (event, nombreCarpeta, nombreNota) => {
 		return { ok: false, error: error.message };
 	}
 });
+
+ipcMain.handle(
+	"renombrar-nota",
+	async (event, nombreCarpeta, nombreViejo, nombreNuevo) => {
+		console.log(
+			"Renombrando nota:",
+			nombreViejo,
+			"→",
+			nombreNuevo,
+			"en carpeta:",
+			nombreCarpeta
+		);
+		const rutaVieja = path.join(
+			os.homedir(),
+			"Documents",
+			"GarosNotes",
+			nombreCarpeta,
+			`${nombreViejo}.txt`
+		);
+		const rutaNueva = path.join(
+			os.homedir(),
+			"Documents",
+			"GarosNotes",
+			nombreCarpeta,
+			`${nombreNuevo}.txt`
+		);
+
+		try {
+			if (!fs.existsSync(rutaVieja)) {
+				return { ok: false, error: "La nota no existe" };
+			}
+
+			if (fs.existsSync(rutaNueva)) {
+				return { ok: false, error: "Ya existe una nota con ese nombre" };
+			}
+
+			fs.renameSync(rutaVieja, rutaNueva);
+			return { ok: true, path: rutaNueva };
+		} catch (error) {
+			return { ok: false, error: error.message };
+		}
+	}
+);

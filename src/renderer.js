@@ -125,6 +125,7 @@ class NotesManager {
 		this.carpetaActual = null;
 		this.notaActual = null;
 		this.notaAEliminar = null;
+		this.autoguardadoTimer = null; // Timer para el autoguardado
 	}
 
 	async crearNota(nombreCarpeta, nombreNota) {
@@ -210,12 +211,32 @@ class NotesManager {
 				// Cargar contenido
 				document.getElementById("titulo-nota").value = nombreNota;
 
-				// Si usas Quill (editor enriquecido)
+				// Inicializar Quill si no existe
+				if (!window.quill) {
+					this.inicializarQuill();
+				}
+
+				// Cargar contenido en Quill
 				if (window.quill) {
-					window.quill.setText(res.contenido);
+					// Si el contenido está vacío, usar setText, si no usar setContents para preservar formato
+					if (res.contenido.trim() === "") {
+						window.quill.setText("");
+					} else {
+						try {
+							// Intentar cargar como Delta (formato Quill)
+							const delta = JSON.parse(res.contenido);
+							window.quill.setContents(delta);
+						} catch (e) {
+							// Si falla, cargar como texto plano
+							window.quill.setText(res.contenido);
+						}
+					}
 				}
 
 				this.notaActual = { carpeta: nombreCarpeta, nombre: nombreNota };
+
+				// Configurar autoguardado
+				this.configurarAutoguardado();
 			} else {
 				alert("Error: " + res.error);
 			}
@@ -223,6 +244,191 @@ class NotesManager {
 			console.error("Error en abrirNota:", error);
 			alert("Error al abrir nota: " + error.message);
 		}
+	}
+
+	inicializarQuill() {
+		console.log("Inicializando Quill...");
+
+		// Configuración de Quill
+		const toolbarOptions = [
+			["bold", "italic", "underline", "strike"],
+			["blockquote", "code-block"],
+			[{ header: 1 }, { header: 2 }],
+			[{ list: "ordered" }, { list: "bullet" }],
+			[{ script: "sub" }, { script: "super" }],
+			[{ indent: "-1" }, { indent: "+1" }],
+			[{ direction: "rtl" }],
+			[{ size: ["small", false, "large", "huge"] }],
+			[{ header: [1, 2, 3, 4, 5, 6, false] }],
+			[{ color: [] }, { background: [] }],
+			[{ font: [] }],
+			[{ align: [] }],
+			["clean"],
+			["link", "image"],
+		];
+
+		window.quill = new Quill("#editor-container", {
+			theme: "snow",
+			modules: {
+				toolbar: toolbarOptions,
+			},
+			placeholder: "Escribe tu nota aquí...",
+		});
+
+		console.log("Quill inicializado correctamente");
+	}
+
+	configurarAutoguardado() {
+		if (!window.quill || !this.notaActual) return;
+
+		// Limpiar timer anterior si existe
+		if (this.autoguardadoTimer) {
+			clearTimeout(this.autoguardadoTimer);
+		}
+
+		// Configurar eventos de autoguardado
+		window.quill.on("text-change", () => {
+			console.log("Cambio detectado en el editor");
+
+			// Limpiar timer anterior
+			if (this.autoguardadoTimer) {
+				clearTimeout(this.autoguardadoTimer);
+			}
+
+			// Configurar nuevo timer para guardar después de 1 segundo de inactividad
+			this.autoguardadoTimer = setTimeout(() => {
+				this.guardarNotaActual();
+			}, 1000);
+		});
+
+		// También guardar cuando cambie el título
+		document.getElementById("titulo-nota").addEventListener("input", () => {
+			console.log("Cambio detectado en el título");
+
+			if (this.autoguardadoTimer) {
+				clearTimeout(this.autoguardadoTimer);
+			}
+
+			this.autoguardadoTimer = setTimeout(() => {
+				this.renombrarNotaActual();
+			}, 1000);
+		});
+	}
+
+	async guardarNotaActual() {
+		if (!this.notaActual || !window.quill) return;
+
+		try {
+			// Obtener contenido como Delta (formato JSON de Quill)
+			const contenido = JSON.stringify(window.quill.getContents());
+
+			const res = await window.api.guardarNota(
+				this.notaActual.carpeta,
+				this.notaActual.nombre,
+				contenido
+			);
+
+			if (res.ok) {
+				console.log("Nota guardada automáticamente");
+				// Opcional: mostrar indicador visual de guardado
+				this.mostrarIndicadorGuardado();
+			} else {
+				console.error("Error al guardar nota:", res.error);
+			}
+		} catch (error) {
+			console.error("Error en guardarNotaActual:", error);
+		}
+	}
+
+	async renombrarNotaActual() {
+		if (!this.notaActual) return;
+
+		const nuevoNombre = document.getElementById("titulo-nota").value.trim();
+		if (!nuevoNombre || nuevoNombre === this.notaActual.nombre) return;
+
+		try {
+			// Primero guardar el contenido actual
+			await this.guardarNotaActual();
+
+			// Luego renombrar el archivo
+			const res = await window.api.renombrarNota(
+				this.notaActual.carpeta,
+				this.notaActual.nombre,
+				nuevoNombre
+			);
+
+			if (res.ok) {
+				console.log("Nota renombrada correctamente");
+				this.notaActual.nombre = nuevoNombre;
+				// Actualizar la lista de notas
+				await this.mostrarNotasDeCarpeta(this.notaActual.carpeta);
+			} else {
+				console.error("Error al renombrar nota:", res.error);
+				// Revertir el título si hay error
+				document.getElementById("titulo-nota").value = this.notaActual.nombre;
+			}
+		} catch (error) {
+			console.error("Error en renombrarNotaActual:", error);
+		}
+	}
+
+	mostrarIndicadorGuardado() {
+		// Crear o actualizar indicador de guardado
+		let indicador = document.getElementById("save-indicator");
+		if (!indicador) {
+			indicador = document.createElement("div");
+			indicador.id = "save-indicator";
+			indicador.style.cssText = `
+				position: fixed;
+				top: 20px;
+				right: 20px;
+				background: #4CAF50;
+				color: white;
+				padding: 8px 16px;
+				border-radius: 4px;
+				font-size: 14px;
+				z-index: 9999;
+				transition: opacity 0.3s;
+			`;
+			document.body.appendChild(indicador);
+		}
+
+		indicador.textContent = "✓ Guardado";
+		indicador.style.opacity = "1";
+
+		// Ocultar después de 2 segundos
+		setTimeout(() => {
+			indicador.style.opacity = "0";
+		}, 2000);
+	}
+
+	async eliminarNota() {
+		if (this.notaAEliminar && this.carpetaActual) {
+			try {
+				const res = await window.api.eliminarNota(
+					this.carpetaActual,
+					this.notaAEliminar
+				);
+				if (res.ok) {
+					console.log("Nota eliminada exitosamente");
+					document.getElementById("modal-delete").style.display = "none";
+					await this.mostrarNotasDeCarpeta(this.carpetaActual);
+
+					// Si era la nota actual, cerrar editor
+					if (this.notaActual && this.notaActual.nombre === this.notaAEliminar) {
+						document.getElementById("main").style.display = "none";
+						document.getElementById("placeholder-message").style.display = "flex";
+						this.notaActual = null;
+					}
+				} else {
+					alert("Error: " + res.error);
+				}
+			} catch (error) {
+				console.error("Error en eliminarNota:", error);
+				alert("Error al eliminar nota: " + error.message);
+			}
+		}
+		this.notaAEliminar = null;
 	}
 
 	abrirModalCrearNota() {
@@ -270,35 +476,6 @@ class NotesManager {
 		).textContent = `¿Quieres eliminar la nota "${nombreNota}"?`;
 		document.getElementById("modal-delete").style.display = "block";
 	}
-
-	async eliminarNota() {
-		if (this.notaAEliminar && this.carpetaActual) {
-			try {
-				const res = await window.api.eliminarNota(
-					this.carpetaActual,
-					this.notaAEliminar
-				);
-				if (res.ok) {
-					console.log("Nota eliminada exitosamente");
-					document.getElementById("modal-delete").style.display = "none";
-					await this.mostrarNotasDeCarpeta(this.carpetaActual);
-
-					// Si era la nota actual, cerrar editor
-					if (this.notaActual && this.notaActual.nombre === this.notaAEliminar) {
-						document.getElementById("main").style.display = "none";
-						document.getElementById("placeholder-message").style.display = "flex";
-						this.notaActual = null;
-					}
-				} else {
-					alert("Error: " + res.error);
-				}
-			} catch (error) {
-				console.error("Error en eliminarNota:", error);
-				alert("Error al eliminar nota: " + error.message);
-			}
-		}
-		this.notaAEliminar = null;
-	}
 }
 
 // Variables globales para evitar múltiples instancias
@@ -316,6 +493,35 @@ function registrarEventos() {
 		folderManager.abrirModal();
 	});
 
+	// Eventos de notas
+	document.getElementById("create-note").addEventListener("click", () => {
+		console.log("Click en crear nota");
+		notesManager.abrirModalCrearNota();
+	});
+
+	document.getElementById("save-note").addEventListener("click", async () => {
+		const nombre = document.getElementById("note-name").value.trim();
+		console.log("Click en guardar nota, nombre:", nombre);
+
+		if (!notesManager.carpetaActual) {
+			document.getElementById("error-message").style.display = "block";
+			return;
+		}
+
+		if (!nombre) {
+			alert("El nombre no puede estar vacío");
+			return;
+		}
+
+		await notesManager.crearNota(notesManager.carpetaActual, nombre);
+	});
+
+	document
+		.getElementById("close-modal-create-note")
+		.addEventListener("click", () => {
+			notesManager.cerrarModalCrearNota();
+		});
+
 	document.getElementById("close-modal").addEventListener("click", () => {
 		folderManager.cerrarModal();
 	});
@@ -328,37 +534,6 @@ function registrarEventos() {
 			return;
 		}
 		await folderManager.crearCarpeta(nombre);
-	});
-
-	// Eventos de notas
-	document.getElementById("create-note").addEventListener("click", () => {
-		console.log("Click en crear nota");
-		notesManager.abrirModalCrearNota();
-	});
-
-	document
-		.getElementById("close-modal-create-note")
-		.addEventListener("click", () => {
-			notesManager.cerrarModalCrearNota();
-		});
-
-	document.getElementById("save-note").addEventListener("click", async () => {
-		const nombre = document.getElementById("note-name").value.trim();
-		console.log("Click en guardar nota, nombre:", nombre);
-
-		// Verificar si hay carpeta seleccionada
-		if (!notesManager.carpetaActual) {
-			// El botón debería estar deshabilitado, pero por si acaso
-			document.getElementById("error-message").style.display = "block";
-			return;
-		}
-
-		if (!nombre) {
-			alert("El nombre no puede estar vacío");
-			return;
-		}
-
-		await notesManager.crearNota(notesManager.carpetaActual, nombre);
 	});
 
 	// Eventos de eliminación
