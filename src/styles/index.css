@@ -351,12 +351,44 @@ body {
     border-left: 3px solid #9e03d6;
 }
 
-.folder-item .controls-folders button {
+.folder-item .controls-folders button,
+.file-item .controls-folders button {
     background-color: transparent;
     border: none;
-    /* padding: 0px 2px; */
-    transition: all .5s;
+    color: white;
+    font-size: 14px;
+    padding: 4px 6px;
+    border-radius: 3px;
+    transition: all 0.3s ease;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.folder-item .controls-folders button:hover,
+.file-item .controls-folders button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: scale(1.1);
+}
+
+/* Asegurar que ambos botones de eliminar tengan el mismo estilo */
+.controls-folders button {
+    background-color: transparent !important;
+    border: none !important;
+    color: white !important;
+    font-size: 14px !important;
+    padding: 4px 6px !important;
+    border-radius: 3px !important;
+    transition: all 0.3s ease !important;
+    cursor: pointer !important;
+    min-width: 24px;
+    min-height: 24px;
+}
+
+.controls-folders button:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    transform: scale(1.1);
 }
 
 #file-list-container {
