@@ -4,7 +4,7 @@
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>GarosNotes</title>
-		<link rel="stylesheet" href="./styles/index.css" />
+		<link rel="stylesheet" href="./styles/styles.css" />
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link
@@ -14,126 +14,224 @@
 		<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet" />
 	</head>
 	<body>
-        
-    <div id="modal">
-        <div class="modal-inputs">
-            <h3>Crear Nueva Carpeta</h3>
-            <input type="text" id="folder-name" placeholder="Nombre de la carpeta">
-            <div class="modal-buttons">
-                <button class="boton aceptar" id="save-folder">Guardar</button>
-                <button class="boton" id="close-modal">Cancelar</button>
-            </div>
-        </div>
-    </div>
-    
-    <div id="modal-rename">
-        <div class="modal-inputs">
-            <h3>Editar nombre de carpeta</h3>
-            <input type="text" id="folder-new-name" placeholder="Titulo de la nota">
-            <div class="modal-buttons">
-                <button class="boton aceptar" id="save-folder-rename">Guardar</button>
-                <button class="boton" id="close-modal-folder-rename">Cancelar</button>
-            </div>
-        </div>
-    </div>
+		<!-- Modales -->
+		<div
+			id="modal"
+			class="modal"
+			role="dialog"
+			aria-labelledby="modal-title"
+			aria-hidden="true"
+		>
+			<div class="modal-inputs">
+				<h3 id="modal-title">Crear Nueva Carpeta</h3>
+				<input
+					type="text"
+					id="folder-name"
+					placeholder="Nombre de la carpeta"
+					aria-label="Nombre de la carpeta"
+				/>
+				<div class="modal-buttons">
+					<button class="boton aceptar" id="save-folder">Guardar</button>
+					<button class="boton" id="close-modal">Cancelar</button>
+				</div>
+			</div>
+		</div>
 
-    <div id="modal-delete">
-        <div class="modal-inputs">
-            <h3 id="titulo-variable">Quieres eliminar eliminar este elemento?</h3>
-            <div class="modal-buttons">
-                <button class="boton aceptar" id="delete-file">Confirmar</button>
-                <button class="boton" id="close-modal-delete-file">Cancelar</button>
-            </div>
-        </div>
-    </div>
+		<div
+			id="modal-rename"
+			class="modal"
+			role="dialog"
+			aria-labelledby="modal-rename-title"
+			aria-hidden="true"
+		>
+			<div class="modal-inputs">
+				<h3 id="modal-rename-title">Editar nombre de carpeta</h3>
+				<input
+					type="text"
+					id="folder-new-name"
+					placeholder="Nuevo nombre de la carpeta"
+					aria-label="Nuevo nombre de la carpeta"
+				/>
+				<div class="modal-buttons">
+					<button class="boton aceptar" id="save-folder-rename">Guardar</button>
+					<button class="boton" id="close-modal-folder-rename">Cancelar</button>
+				</div>
+			</div>
+		</div>
 
+		<div
+			id="modal-delete"
+			class="modal"
+			role="dialog"
+			aria-labelledby="modal-delete-title"
+			aria-hidden="true"
+		>
+			<div class="modal-inputs">
+				<h3 id="modal-delete-title">¿Quieres eliminar este elemento?</h3>
+				<div class="modal-buttons">
+					<button class="boton aceptar" id="delete-file">Confirmar</button>
+					<button class="boton" id="close-modal-delete-file">Cancelar</button>
+				</div>
+			</div>
+		</div>
 
-    <div id="modal-create-note">
-        <div class="modal-inputs">
-            <h3>Crear Nueva Nota</h3>
-            <div id="error-message" style="display: none; color: #ff4444; margin-bottom: 10px; font-size: 14px;">
-                ⚠️ Primero debes seleccionar una carpeta
-            </div>
-            <input type="text" id="note-name" placeholder="Nombre de la nota">
-            <div class="modal-buttons">
-                <button class="boton aceptar" id="save-note">Guardar</button>
-                <button class="boton" id="close-modal-create-note">Cancelar</button>
-            </div>
-        </div>
-    </div>
+		<div
+			id="modal-create-note"
+			class="modal"
+			role="dialog"
+			aria-labelledby="modal-note-title"
+			aria-hidden="true"
+		>
+			<div class="modal-inputs">
+				<h3 id="modal-note-title">Crear Nueva Nota</h3>
+				<div id="error-message" role="alert">
+					⚠️ Primero debes seleccionar una carpeta
+				</div>
+				<input
+					type="text"
+					id="note-name"
+					placeholder="Nombre de la nota"
+					aria-label="Nombre de la nota"
+				/>
+				<div class="modal-buttons">
+					<button class="boton aceptar" id="save-note">Guardar</button>
+					<button class="boton" id="close-modal-create-note">Cancelar</button>
+				</div>
+			</div>
+		</div>
 
-    <div id="app">
-        <button id="toggle-aside">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="3">
-                <path d="M20 12l-10 0"></path>
-                <path d="M20 12l-4 4"></path>
-                <path d="M20 12l-4 -4"></path>
-                <path d="M4 4l0 16"></path>
-              </svg>
-        </button>
-        <aside id="sidebar">
-            <div id="sidebar-container">
-                <div id="folders-container">
-                    <div class="titulo-boton">
-                        <h2>carpetas</h2>
-                        <button class="boton" id="create-folder">Crear carpeta  ➕</button>
-                    </div>
-                    
-                    <div class="folders-container">
-                        <ul id="folders">
-                            
-                        </ul>
-                    </div>
-                </div>
+		<!-- Aplicación principal -->
+		<div id="app">
+			<!-- Botón para mostrar sidebar -->
+			<button
+				id="toggle-aside"
+				aria-label="Mostrar barra lateral"
+				title="Mostrar barra lateral (Ctrl+B)"
+			>
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					width="24"
+					height="24"
+					stroke-width="3"
+					aria-hidden="true"
+				>
+					<path d="M20 12l-10 0"></path>
+					<path d="M20 12l-4 4"></path>
+					<path d="M20 12l-4 -4"></path>
+					<path d="M4 4l0 16"></path>
+				</svg>
+			</button>
 
-                <div id="file-list-container">
-                    <div class="titulo-boton">
-                        <h2>notas</h2>
-                        <button class="boton" id="create-note">Crear nota  ➕</button>
-                    </div>
+			<!-- Barra lateral -->
+			<aside
+				id="sidebar"
+				role="complementary"
+				aria-label="Navegación de carpetas y notas"
+			>
+				<div id="sidebar-container">
+					<!-- Sección de carpetas -->
+					<section id="folders-container" aria-labelledby="folders-heading">
+						<div class="titulo-boton">
+							<h2 id="folders-heading">Carpetas</h2>
+							<button
+								class="boton"
+								id="create-folder"
+								aria-label="Crear nueva carpeta"
+							>
+								Crear carpeta ➕
+							</button>
+						</div>
 
-                    <div class="files-container">
-                        <ul id="file-list">
-                            <!-- Aquí se mostrarán los archivos de la carpeta seleccionada -->
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            
-            <button id="toggle-aside-hide">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="3">
-                    <path d="M10 12l10 0"></path>
-                    <path d="M10 12l4 4"></path>
-                    <path d="M10 12l4 -4"></path>
-                    <path d="M4 4l0 16"></path>
-                </svg>
-            </button>
-        </aside>
+						<div class="folders-container">
+							<ul id="folders" role="list" aria-label="Lista de carpetas">
+								<!-- Las carpetas se cargan dinámicamente -->
+							</ul>
+						</div>
+					</section>
 
-        <div id="placeholder-message">
-            <div class="welcome-content">
-                <img src="img/img_note_bg.ico" alt="GarosNotes Logo" class="logo">
-                <h2>¡Bienvenido a GarosNotes!</h2>
-                <p>Tu aplicación personal para tomar notas de forma rápida y organizada. 
-                   Crea carpetas para organizar tus ideas y comienza a escribir tus pensamientos.</p>
-                <p>👈 Selecciona una carpeta del lado izquierdo para comenzar, o crea una nueva carpeta para empezar a organizar tus notas.</p>
-            </div>
-        </div>
-        
-        <main id="main" style="display: none;">
-            <input type="text" id="titulo-nota">
-            <div id="editor-container" spellcheck="false"></div>
+					<!-- Sección de notas -->
+					<section id="file-list-container" aria-labelledby="notes-heading">
+						<div class="titulo-boton">
+							<h2 id="notes-heading">Notas</h2>
+							<button class="boton" id="create-note" aria-label="Crear nueva nota">
+								Crear nota ➕
+							</button>
+						</div>
 
-                <!-- <textarea id="editor" placeholder="Crea una nota primero"></textarea> -->
-            </div>
-            <!-- <button class="boton" id="save-btn">Guardar nota 🗃️</button> -->
-        </main>
+						<div class="files-container">
+							<ul id="file-list" role="list" aria-label="Lista de notas">
+								<!-- Las notas se cargan dinámicamente -->
+							</ul>
+						</div>
+					</section>
+				</div>
 
-    </div>
+				<!-- Botón para ocultar sidebar -->
+				<button
+					id="toggle-aside-hide"
+					aria-label="Ocultar barra lateral"
+					title="Ocultar barra lateral (Ctrl+B)"
+				>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						width="24"
+						height="24"
+						stroke-width="3"
+						aria-hidden="true"
+					>
+						<path d="M10 12l10 0"></path>
+						<path d="M10 12l4 4"></path>
+						<path d="M10 12l4 -4"></path>
+						<path d="M4 4l0 16"></path>
+					</svg>
+				</button>
+			</aside>
 
+			<!-- Mensaje de bienvenida -->
+			<div id="placeholder-message" role="main" aria-labelledby="welcome-heading">
+				<div class="welcome-content">
+					<img src="img/img_note_bg.ico" alt="Logotipo de GarosNotes" class="logo" />
+					<h1 id="welcome-heading">¡Bienvenido a GarosNotes!</h1>
+					<p>
+						Tu aplicación personal para tomar notas de forma rápida y organizada. Crea
+						carpetas para organizar tus ideas y comienza a escribir tus pensamientos.
+					</p>
+					<p>
+						👈 Selecciona una carpeta del lado izquierdo para comenzar, o crea una
+						nueva carpeta para empezar a organizar tus notas.
+					</p>
+				</div>
+			</div>
 
-    <script type="module" src="renderer.js"></script>
-    <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
-    
-    </body>
+			<!-- Editor principal -->
+			<main id="main" role="main" aria-labelledby="note-title">
+				<input
+					type="text"
+					id="titulo-nota"
+					aria-label="Título de la nota"
+					placeholder="Título de la nota"
+				/>
+				<div
+					id="editor-container"
+					role="textbox"
+					aria-label="Contenido de la nota"
+					aria-multiline="true"
+				></div>
+			</main>
+		</div>
+
+		<!-- Scripts -->
+		<script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+		<script type="module" src="renderer.js"></script>
+	</body>
 </html>
