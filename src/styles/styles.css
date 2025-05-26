@@ -324,8 +324,14 @@ textarea:focus {
     box-sizing: border-box;
 }
 
-#placeholder-message h2 {
+#placeholder-message h1 {
     font-size: 30px;
+    margin: 0;
+    color: white;
+}
+
+#placeholder-message h2 {
+    font-size: 28px;
     margin: 0;
     color: white;
 }
@@ -353,17 +359,6 @@ textarea:focus {
     align-items: center;
     gap: 15px;
     max-width: 700px;
-}
-
-#main {
-    flex: 1;
-    /* Cambiar de width: 100% a flex: 1 */
-    height: 100vh;
-    color: white;
-    display: flex;
-    flex-direction: column;
-    padding: 20px;
-    box-sizing: border-box;
 }
 
 /* ===== EDITOR DE NOTAS ===== */
@@ -651,8 +646,12 @@ textarea:focus {
         padding: 15px;
     }
 
-    #placeholder-message h2 {
+    #placeholder-message h1 {
         font-size: 26px;
+    }
+
+    #placeholder-message h2 {
+        font-size: 24px;
     }
 
     #placeholder-message p {
@@ -690,4 +689,48 @@ textarea:focus {
         width: 100vw !important;
         height: 100vh !important;
     }
+}
+
+/* ===== MENSAJE DE ERROR EN MODAL ===== */
+#error-message {
+    display: none;
+    color: #ff4444;
+    margin-bottom: 10px;
+    font-size: 14px;
+    background-color: rgba(255, 68, 68, 0.1);
+    border: 1px solid #ff4444;
+    border-radius: 5px;
+    padding: 8px;
+    text-align: center;
+}
+
+/* ===== EDITOR PRINCIPAL OCULTO POR DEFECTO ===== */
+#main {
+    flex: 1;
+    height: 100vh;
+    color: white;
+    display: none;
+    /* Oculto por defecto - movido del inline */
+    flex-direction: column;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Cuando se muestra el editor */
+#main.active {
+    display: flex;
+}
+
+/* ===== CORRECCIÓN DE TÍTULOS ===== */
+#placeholder-message h1 {
+    font-size: 30px;
+    margin: 0;
+    color: white;
+}
+
+/* Eliminar la regla duplicada de h2 */
+#placeholder-message h2 {
+    font-size: 28px;
+    margin: 0;
+    color: white;
 }
