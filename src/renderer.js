@@ -254,35 +254,63 @@ class NotesManager {
 	}
 
 	inicializarQuill() {
-		console.log("Inicializando Quill...");
+		console.log("Inicializando Quill 2.0.3...");
 
-		// Configuración de Quill
-		const toolbarOptions = [
-			["bold", "italic", "underline", "strike"],
-			["blockquote", "code-block"],
-			[{ header: 1 }, { header: 2 }],
-			[{ list: "ordered" }, { list: "bullet" }],
-			[{ script: "sub" }, { script: "super" }],
-			[{ indent: "-1" }, { indent: "+1" }],
-			[{ direction: "rtl" }],
-			[{ size: ["small", false, "large", "huge"] }],
-			[{ header: [1, 2, 3, 4, 5, 6, false] }],
-			[{ color: [] }, { background: [] }],
-			[{ font: [] }],
-			[{ align: [] }],
-			["clean"],
-			["link", "image"],
-		];
+		// Configuración actualizada para Quill 2.0.3
+		const toolbarOptions = {
+			container: [
+				[{ header: [1, 2, 3, 4, 5, 6, false] }],
+				[{ font: [] }],
+				[{ size: ["small", false, "large", "huge"] }],
+				["bold", "italic", "underline", "strike"],
+				[{ color: [] }, { background: [] }],
+				[{ script: "sub" }, { script: "super" }],
+				[{ list: "ordered" }, { list: "bullet" }, { list: "check" }],
+				[{ indent: "-1" }, { indent: "+1" }],
+				[{ direction: "rtl" }],
+				[{ align: [] }],
+				["blockquote", "code-block"],
+				["link", "image", "video"],
+				["clean"],
+			],
+		};
 
+		// Inicializar Quill 2.0.3
 		window.quill = new Quill("#editor-container", {
 			theme: "snow",
 			modules: {
 				toolbar: toolbarOptions,
+				history: {
+					delay: 1000,
+					maxStack: 50,
+					userOnly: false,
+				},
 			},
+			formats: [
+				"header",
+				"font",
+				"size",
+				"bold",
+				"italic",
+				"underline",
+				"strike",
+				"color",
+				"background",
+				"script",
+				"list",
+				"bullet",
+				"check",
+				"indent",
+				"direction",
+				"align",
+				"blockquote",
+				"code-block",
+				"link",
+				"image",
+				"video",
+			],
 			placeholder: "Escribe tu nota aquí...",
 		});
-
-		console.log("Quill inicializado correctamente");
 	}
 
 	configurarAutoguardado() {
