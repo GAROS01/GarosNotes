@@ -197,18 +197,18 @@ textarea:focus {
     font-size: 14px !important;
     padding: 4px 6px !important;
     border-radius: 3px !important;
-    transition: all 0.3s ease !important;
+    transition: opacity 0.2s ease !important;
     cursor: pointer !important;
     min-width: 24px;
     min-height: 24px;
     display: flex;
     align-items: center;
     justify-content: center;
+    opacity: 0.8;
 }
 
 .controls-folders button:hover {
-    background-color: rgba(255, 255, 255, 0.1) !important;
-    transform: scale(1.1);
+    opacity: 1;
 }
 
 /* ===== SCROLL PERSONALIZADO ===== */
