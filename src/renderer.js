@@ -22,14 +22,32 @@ class FolderManager {
 	}
 
 	async eliminarCarpeta(nombre) {
-		console.log("Intentando eliminar carpeta:", nombre);
+		console.log("=== ELIMINANDO CARPETA ===");
+		console.log("Nombre de carpeta a eliminar:", nombre);
+		
 		try {
 			const res = await window.api.eliminarCarpeta(nombre);
+			console.log("Respuesta del API:", res);
+			
 			if (res.ok) {
 				console.log("Carpeta eliminada exitosamente");
 				this.cerrarModalEliminar();
 				await this.mostrarCarpetas();
+				
+				// Si era la carpeta actual de notas, limpiar la vista
+				if (window.notesManager && window.notesManager.carpetaActual === nombre) {
+					window.notesManager.carpetaActual = null;
+					window.notesManager.noteList.innerHTML = "<li>Selecciona una carpeta</li>";
+					
+					// Si había una nota abierta, cerrar el editor
+					if (window.notesManager.notaActual) {
+						document.getElementById("main").style.display = "none";
+						document.getElementById("placeholder-message").style.display = "flex";
+						window.notesManager.notaActual = null;
+					}
+				}
 			} else {
+				console.error("Error del servidor:", res.error);
 				alert("Error: " + res.error);
 			}
 		} catch (error) {
@@ -106,16 +124,32 @@ class FolderManager {
 	}
 
 	abrirModalEliminar(nombreCarpeta) {
+		console.log("=== ABRIENDO MODAL ELIMINAR CARPETA ===");
+		console.log("Carpeta a eliminar:", nombreCarpeta);
+		
 		this.carpetaAEliminar = nombreCarpeta;
-		document.getElementById(
-			"titulo-variable"
-		).textContent = `¿Quieres eliminar la carpeta "${nombreCarpeta}"?`;
+		
+		// Actualizar el texto del modal
+		const tituloElement = document.getElementById("titulo-variable");
+		if (tituloElement) {
+			tituloElement.textContent = `¿Quieres eliminar la carpeta "${nombreCarpeta}"?`;
+		} else {
+			// Si no existe el elemento titulo-variable, usar el título del modal
+			const modalTitle = document.querySelector("#modal-delete h3");
+			if (modalTitle) {
+				modalTitle.textContent = `¿Quieres eliminar la carpeta "${nombreCarpeta}"?`;
+			}
+		}
+		
 		document.getElementById("modal-delete").style.display = "block";
+		console.log("Modal abierto, carpetaAEliminar:", this.carpetaAEliminar);
 	}
 
 	cerrarModalEliminar() {
+		console.log("=== CERRANDO MODAL ELIMINAR ===");
 		document.getElementById("modal-delete").style.display = "none";
 		this.carpetaAEliminar = null;
+		console.log("Modal cerrado, carpetaAEliminar:", this.carpetaAEliminar);
 	}
 }
 
@@ -254,63 +288,73 @@ class NotesManager {
 	}
 
 	inicializarQuill() {
-		console.log("Inicializando Quill 2.0.3...");
+		console.log("=== INICIANDO QUILL CON SYNTAX: TRUE ===");
 
-		// Configuración actualizada para Quill 2.0.3
-		const toolbarOptions = {
-			container: [
-				[{ header: [1, 2, 3, 4, 5, 6, false] }],
-				[{ font: [] }],
-				[{ size: ["small", false, "large", "huge"] }],
-				["bold", "italic", "underline", "strike"],
-				[{ color: [] }, { background: [] }],
-				[{ script: "sub" }, { script: "super" }],
-				[{ list: "ordered" }, { list: "bullet" }, { list: "check" }],
-				[{ indent: "-1" }, { indent: "+1" }],
-				[{ direction: "rtl" }],
-				[{ align: [] }],
-				["blockquote", "code-block"],
-				["link", "image", "video"],
-				["clean"],
+		// Verificar que highlight.js está disponible
+		if (typeof hljs === "undefined") {
+			console.error("❌ highlight.js NO está disponible");
+			return;
+		} else {
+			console.log("✅ highlight.js está disponible");
+		}
+
+		// Verificar que Quill está disponible
+		if (typeof Quill === "undefined") {
+			console.error("❌ Quill NO está disponible");
+			return;
+		} else {
+			console.log("✅ Quill está disponible");
+		}
+
+		// Configurar highlight.js
+		hljs.configure({
+			languages: [
+				"javascript",
+				"python",
+				"java",
+				"cpp",
+				"html",
+				"css",
+				"json",
+				"sql",
+				"bash",
+				"typescript",
+				"php",
+				"csharp",
 			],
-		};
+		});
+		console.log("✅ highlight.js configurado");
 
-		// Inicializar Quill 2.0.3
+		// Inicializar Quill con el módulo syntax: true según la documentación
 		window.quill = new Quill("#editor-container", {
 			theme: "snow",
 			modules: {
-				toolbar: toolbarOptions,
+				syntax: true, // ← Esta es la clave según la documentación
+				toolbar: [
+					[{ header: [1, 2, 3, 4, 5, 6, false] }],
+					[{ font: [] }],
+					[{ size: ["small", false, "large", "huge"] }],
+					["bold", "italic", "underline", "strike"],
+					[{ color: [] }, { background: [] }],
+					[{ script: "sub" }, { script: "super" }],
+					[{ list: "ordered" }, { list: "bullet" }, { list: "check" }],
+					[{ indent: "-1" }, { indent: "+1" }],
+					[{ direction: "rtl" }],
+					[{ align: [] }],
+					["blockquote", "code-block"], // ← Botón para bloques de código
+					["link", "image", "video"],
+					["clean"],
+				],
 				history: {
 					delay: 1000,
 					maxStack: 50,
 					userOnly: false,
 				},
 			},
-			formats: [
-				"header",
-				"font",
-				"size",
-				"bold",
-				"italic",
-				"underline",
-				"strike",
-				"color",
-				"background",
-				"script",
-				"list",
-				"bullet",
-				"check",
-				"indent",
-				"direction",
-				"align",
-				"blockquote",
-				"code-block",
-				"link",
-				"image",
-				"video",
-			],
 			placeholder: "Escribe tu nota aquí...",
 		});
+
+		console.log("✅ Quill inicializado con syntax: true");
 	}
 
 	configurarAutoguardado() {
@@ -477,12 +521,18 @@ class NotesManager {
 	}
 
 	async eliminarNota() {
+		console.log("=== ELIMINANDO NOTA ===");
+		console.log("Nota a eliminar:", this.notaAEliminar);
+		console.log("Carpeta actual:", this.carpetaActual);
+		
 		if (this.notaAEliminar && this.carpetaActual) {
 			try {
 				const res = await window.api.eliminarNota(
 					this.carpetaActual,
 					this.notaAEliminar
 				);
+				console.log("Respuesta del API:", res);
+				
 				if (res.ok) {
 					console.log("Nota eliminada exitosamente");
 					document.getElementById("modal-delete").style.display = "none";
@@ -493,14 +543,18 @@ class NotesManager {
 						document.getElementById("main").style.display = "none";
 						document.getElementById("placeholder-message").style.display = "flex";
 						this.notaActual = null;
+						console.log("Editor cerrado porque se eliminó la nota actual");
 					}
 				} else {
+					console.error("Error del servidor:", res.error);
 					alert("Error: " + res.error);
 				}
 			} catch (error) {
 				console.error("Error en eliminarNota:", error);
 				alert("Error al eliminar nota: " + error.message);
 			}
+		} else {
+			console.log("No se puede eliminar: notaAEliminar o carpetaActual faltantes");
 		}
 		this.notaAEliminar = null;
 	}
@@ -544,11 +598,25 @@ class NotesManager {
 	}
 
 	abrirModalEliminarNota(nombreNota) {
+		console.log("=== ABRIENDO MODAL ELIMINAR NOTA ===");
+		console.log("Nota a eliminar:", nombreNota);
+		
 		this.notaAEliminar = nombreNota;
-		document.getElementById(
-			"titulo-variable"
-		).textContent = `¿Quieres eliminar la nota "${nombreNota}"?`;
+		
+		// Actualizar el texto del modal
+		const tituloElement = document.getElementById("titulo-variable");
+		if (tituloElement) {
+			tituloElement.textContent = `¿Quieres eliminar la nota "${nombreNota}"?`;
+		} else {
+			// Si no existe el elemento titulo-variable, usar el título del modal
+			const modalTitle = document.querySelector("#modal-delete h3");
+			if (modalTitle) {
+				modalTitle.textContent = `¿Quieres eliminar la nota "${nombreNota}"?`;
+			}
+		}
+		
 		document.getElementById("modal-delete").style.display = "block";
+		console.log("Modal abierto, notaAEliminar:", this.notaAEliminar);
 	}
 }
 
@@ -701,24 +769,36 @@ function toggleSidebar() {
 document.addEventListener("DOMContentLoaded", () => {
 	console.log("DOM cargado");
 
-	if (typeof window.api === "undefined") {
-		console.error("window.api no está disponible");
-		return;
-	}
+	// Esperar a que las librerías estén disponibles
+	const esperarLibrerias = () => {
+		return new Promise((resolve) => {
+			const checkLibs = () => {
+				if (typeof hljs !== "undefined" && typeof Quill !== "undefined") {
+					console.log("✅ Todas las librerías están disponibles");
+					resolve();
+				} else {
+					console.log("⏳ Esperando librerías...");
+					setTimeout(checkLibs, 100);
+				}
+			};
+			checkLibs();
+		});
+	};
 
-	console.log("window.api disponible:", window.api);
+	esperarLibrerias().then(() => {
+		if (typeof window.api === "undefined") {
+			console.error("window.api no está disponible");
+			return;
+		}
 
-	// Crear instancias una sola vez
-	folderManager = new FolderManager("folders");
-	notesManager = new NotesManager("file-list");
+		// Crear instancias
+		folderManager = new FolderManager("folders");
+		notesManager = new NotesManager("file-list");
 
-	// Hacer disponible globalmente
-	window.notesManager = notesManager;
-	window.folderManager = folderManager;
-
-	// Registrar eventos una sola vez
-	registrarEventos();
-
-	// Mostrar carpetas iniciales
-	folderManager.mostrarCarpetas();
+		// Resto de la inicialización...
+		window.notesManager = notesManager;
+		window.folderManager = folderManager;
+		registrarEventos();
+		folderManager.mostrarCarpetas();
+	});
 });
