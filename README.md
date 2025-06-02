@@ -10,7 +10,6 @@ GarosNotes es una aplicación de escritorio minimalista para tomar y organizar n
 - **Autoguardado**: Las notas se guardan automáticamente mientras escribes.
 - **Almacenamiento local**: Todas tus notas se guardan en `Documents/GarosNotes` de tu equipo.
 - **Interfaz responsive**: Sidebar ocultable con atajos de teclado (Ctrl + B).
-- **Atajos de teclado**: Navegación rápida y cierre de modales con Escape.
 - **Funciona completamente offline**: No requiere conexión a internet.
 
 ## Instalación y uso
@@ -33,13 +32,13 @@ GarosNotes es una aplicación de escritorio minimalista para tomar y organizar n
 2. Instala las dependencias:
 
    ```sh
-   npm install
+   pnpm install
    ```
 
 3. Inicia la aplicación en modo desarrollo:
 
    ```sh
-   npm start
+   pnpm start
    ```
 
 ### Empaquetar la aplicación
@@ -47,7 +46,7 @@ GarosNotes es una aplicación de escritorio minimalista para tomar y organizar n
 Para generar el instalador de la aplicación:
 
 ```sh
-npm run build
+pnpm run build
 ```
 
 El instalador se generará en la carpeta `release`.
@@ -112,9 +111,9 @@ GarosNotes/
 ### Scripts disponibles
 
 ```sh
-npm start          # Inicia la aplicación en modo desarrollo
-npm run build      # Genera el instalador para distribución
-npm run dist       # Genera el instalador sin publicar
+pnpm start          # Inicia la aplicación en modo desarrollo
+pnpm run build      # Genera el instalador para distribución
+pnpm run dist       # Genera el instalador sin publicar
 ```
 
 ### Arquitectura
