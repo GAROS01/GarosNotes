@@ -20,7 +20,13 @@ class NotesManager {
 			if (res.ok) {
 				console.log("Nota creada exitosamente");
 				this.cerrarModalCrearNota();
+
+				// Actualizar la lista de notas
 				await this.mostrarNotasDeCarpeta(nombreCarpeta);
+
+				// Abrir automáticamente la nota recién creada
+				console.log("Abriendo nota recién creada:", nombreNota);
+				await this.abrirNota(nombreCarpeta, nombreNota);
 			} else {
 				alert("Error: " + res.error);
 			}
@@ -116,13 +122,17 @@ class NotesManager {
 				// Configurar autoguardado DESPUÉS de cargar todo
 				this.configurarAutoguardado();
 
-				// Forzar que Quill recalcule su tamaño después de un pequeño delay
+				// Forzar que Quill recalcule su tamaño y hacer focus en el editor
 				setTimeout(() => {
 					if (window.quill) {
 						window.quill.getModule("toolbar").container.style.display = "block";
+						// Para notas nuevas, hacer focus en el editor para empezar a escribir
 						window.quill.focus();
+						console.log("Focus establecido en el editor de la nueva nota");
 					}
 				}, 100);
+
+				console.log("Nota abierta correctamente:", nombreNota);
 			} else {
 				alert("Error: " + res.error);
 			}
@@ -236,7 +246,7 @@ class NotesManager {
 
 				this.autoguardadoTimer = setTimeout(() => {
 					this.renombrarNotaActual();
-				}, 1500); // Un poco más de tiempo para renombrar
+				}, 5000); //
 			});
 
 			this.eventoTituloRegistrado = true;
