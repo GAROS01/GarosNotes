@@ -9,6 +9,8 @@ contextBridge.exposeInMainWorld("api", {
 	listarCarpetas: () => ipcRenderer.invoke("listar-carpetas"),
 	eliminarCarpeta: (nombreCarpeta) =>
 		ipcRenderer.invoke("eliminar-carpeta", nombreCarpeta),
+	renombrarCarpeta: (nombreViejo, nombreNuevo) =>
+		ipcRenderer.invoke("renombrar-carpeta", nombreViejo, nombreNuevo),
 
 	// Notas
 	crearNota: (nombreCarpeta, nombreNota, contenido) =>

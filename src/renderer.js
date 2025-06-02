@@ -8,104 +8,146 @@ let eventosRegistrados = false;
 
 // Función para registrar eventos una sola vez
 function registrarEventos() {
-	if (eventosRegistrados) return;
+    if (eventosRegistrados) return;
 
-	// Eventos de carpetas
-	document.getElementById("create-folder").addEventListener("click", () => {
-		console.log("Click en crear carpeta");
-		folderManager.abrirModal();
-	});
+    // Eventos de carpetas
+    document.getElementById("create-folder").addEventListener("click", () => {
+        console.log("Click en crear carpeta");
+        folderManager.abrirModal();
+    });
 
-	// Eventos de notas
-	document.getElementById("create-note").addEventListener("click", () => {
-		console.log("Click en crear nota");
-		notesManager.abrirModalCrearNota();
-	});
+    // Eventos de notas
+    document.getElementById("create-note").addEventListener("click", () => {
+        console.log("Click en crear nota");
+        notesManager.abrirModalCrearNota();
+    });
 
-	document.getElementById("save-note").addEventListener("click", async () => {
-		const nombre = document.getElementById("note-name").value.trim();
-		console.log("Click en guardar nota, nombre:", nombre);
+    document.getElementById("save-note").addEventListener("click", async () => {
+        const nombre = document.getElementById("note-name").value.trim();
+        console.log("Click en guardar nota, nombre:", nombre);
 
-		if (!notesManager.carpetaActual) {
-			document.getElementById("error-message").style.display = "block";
-			return;
-		}
+        if (!notesManager.carpetaActual) {
+            document.getElementById("error-message").style.display = "block";
+            return;
+        }
 
-		if (!nombre) {
-			alert("El nombre no puede estar vacío");
-			return;
-		}
+        if (!nombre) {
+            alert("El nombre no puede estar vacío");
+            return;
+        }
 
-		await notesManager.crearNota(notesManager.carpetaActual, nombre);
-	});
+        await notesManager.crearNota(notesManager.carpetaActual, nombre);
+    });
 
-	document
-		.getElementById("close-modal-create-note")
-		.addEventListener("click", () => {
-			notesManager.cerrarModalCrearNota();
-		});
+    document
+        .getElementById("close-modal-create-note")
+        .addEventListener("click", () => {
+            notesManager.cerrarModalCrearNota();
+        });
 
-	document.getElementById("close-modal").addEventListener("click", () => {
-		folderManager.cerrarModal();
-	});
+    document.getElementById("close-modal").addEventListener("click", () => {
+        folderManager.cerrarModal();
+    });
 
-	document.getElementById("save-folder").addEventListener("click", async () => {
-		const nombre = document.getElementById("folder-name").value.trim();
-		console.log("Click en guardar carpeta, nombre:", nombre);
-		if (!nombre) {
-			alert("El nombre no puede estar vacío");
-			return;
-		}
-		await folderManager.crearCarpeta(nombre);
-	});
+    // Eventos del modal de renombrar carpeta
+    document.getElementById("close-modal-folder-rename").addEventListener("click", () => {
+        folderManager.cerrarModalRenombrar();
+    });
 
-	// Eventos de eliminación
-	document.getElementById("delete-file").addEventListener("click", async () => {
-		console.log("Click en eliminar");
-		if (folderManager.carpetaAEliminar) {
-			await folderManager.eliminarCarpeta(folderManager.carpetaAEliminar);
-		} else if (notesManager.notaAEliminar && notesManager.carpetaActual) {
-			await notesManager.eliminarNota();
-		}
-	});
+    document.getElementById("save-folder-rename").addEventListener("click", async () => {
+        const nuevoNombre = document.getElementById("folder-new-name").value.trim();
+        console.log("Click en renombrar carpeta, nuevo nombre:", nuevoNombre);
+        
+        if (!nuevoNombre) {
+            alert("El nombre no puede estar vacío");
+            return;
+        }
 
-	document
-		.getElementById("close-modal-delete-file")
-		.addEventListener("click", () => {
-			folderManager.cerrarModalEliminar();
-			notesManager.notaAEliminar = null;
-			document.getElementById("modal-delete").style.display = "none";
-		});
+        if (nuevoNombre === folderManager.carpetaARenombrar) {
+            folderManager.cerrarModalRenombrar();
+            return;
+        }
 
-	// Eventos para toggle del sidebar
-	const toggleAsideShow = document.getElementById("toggle-aside");
-	const toggleAsideHide = document.getElementById("toggle-aside-hide");
+        await folderManager.renombrarCarpeta(folderManager.carpetaARenombrar, nuevoNombre);
+    });
 
-	if (toggleAsideShow) {
-		toggleAsideShow.addEventListener("click", mostrarSidebar);
-	}
+    document.getElementById("save-folder").addEventListener("click", async () => {
+        const nombre = document.getElementById("folder-name").value.trim();
+        console.log("Click en guardar carpeta, nombre:", nombre);
+        if (!nombre) {
+            alert("El nombre no puede estar vacío");
+            return;
+        }
+        await folderManager.crearCarpeta(nombre);
+    });
 
-	if (toggleAsideHide) {
-		toggleAsideHide.addEventListener("click", ocultarSidebar);
-	}
+    // Eventos de eliminación
+    document.getElementById("delete-file").addEventListener("click", async () => {
+        console.log("Click en eliminar");
+        if (folderManager.carpetaAEliminar) {
+            await folderManager.eliminarCarpeta(folderManager.carpetaAEliminar);
+        } else if (notesManager.notaAEliminar && notesManager.carpetaActual) {
+            await notesManager.eliminarNota();
+        }
+    });
 
-	// Eventos de teclado
-	document.addEventListener("keydown", (e) => {
-		if (e.key === "Escape") {
-			folderManager.cerrarModal();
-			folderManager.cerrarModalEliminar();
-			notesManager.cerrarModalCrearNota();
-		}
+    document
+        .getElementById("close-modal-delete-file")
+        .addEventListener("click", () => {
+            folderManager.cerrarModalEliminar();
+            notesManager.notaAEliminar = null;
+            document.getElementById("modal-delete").style.display = "none";
+        });
 
-		// Atajo de teclado para toggle sidebar: Ctrl + B
-		if (e.ctrlKey && e.key === "b") {
-			e.preventDefault();
-			toggleSidebar();
-		}
-	});
+    // Eventos para toggle del sidebar
+    const toggleAsideShow = document.getElementById("toggle-aside");
+    const toggleAsideHide = document.getElementById("toggle-aside-hide");
 
-	eventosRegistrados = true;
-	console.log("Eventos registrados correctamente");
+    if (toggleAsideShow) {
+        toggleAsideShow.addEventListener("click", mostrarSidebar);
+    }
+
+    if (toggleAsideHide) {
+        toggleAsideHide.addEventListener("click", ocultarSidebar);
+    }
+
+    // Eventos de teclado
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+            folderManager.cerrarModal();
+            folderManager.cerrarModalEliminar();
+            folderManager.cerrarModalRenombrar(); // Nuevo
+            notesManager.cerrarModalCrearNota();
+        }
+
+        // Atajo de teclado para toggle sidebar: Ctrl + B
+        if (e.ctrlKey && e.key === "b") {
+            e.preventDefault();
+            toggleSidebar();
+        }
+    });
+
+    // Eventos Enter para los modales
+    document.getElementById("folder-name").addEventListener("keypress", (e) => {
+        if (e.key === "Enter") {
+            document.getElementById("save-folder").click();
+        }
+    });
+
+    document.getElementById("folder-new-name").addEventListener("keypress", (e) => {
+        if (e.key === "Enter") {
+            document.getElementById("save-folder-rename").click();
+        }
+    });
+
+    document.getElementById("note-name").addEventListener("keypress", (e) => {
+        if (e.key === "Enter") {
+            document.getElementById("save-note").click();
+        }
+    });
+
+    eventosRegistrados = true;
+    console.log("Eventos registrados correctamente");
 }
 
 // Funciones para manejar el sidebar

@@ -245,3 +245,34 @@ ipcMain.handle(
 		}
 	}
 );
+
+ipcMain.handle("renombrar-carpeta", async (event, nombreViejo, nombreNuevo) => {
+	console.log("Renombrando carpeta:", nombreViejo, "→", nombreNuevo);
+	const rutaVieja = path.join(
+		os.homedir(),
+		"Documents",
+		"GarosNotes",
+		nombreViejo
+	);
+	const rutaNueva = path.join(
+		os.homedir(),
+		"Documents",
+		"GarosNotes",
+		nombreNuevo
+	);
+
+	try {
+		if (!fs.existsSync(rutaVieja)) {
+			return { ok: false, error: "La carpeta no existe" };
+		}
+
+		if (fs.existsSync(rutaNueva)) {
+			return { ok: false, error: "Ya existe una carpeta con ese nombre" };
+		}
+
+		fs.renameSync(rutaVieja, rutaNueva);
+		return { ok: true, path: rutaNueva };
+	} catch (error) {
+		return { ok: false, error: error.message };
+	}
+});

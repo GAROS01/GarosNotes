@@ -2,6 +2,7 @@ class FolderManager {
 	constructor(folderListId) {
 		this.folderList = document.getElementById(folderListId);
 		this.carpetaAEliminar = null; // Para almacenar qué carpeta se va a eliminar
+		this.carpetaARenombrar = null; // Nueva propiedad
 	}
 
 	async crearCarpeta(nombre) {
@@ -18,6 +19,32 @@ class FolderManager {
 		} catch (error) {
 			console.error("Error en crearCarpeta:", error);
 			alert("Error al crear carpeta: " + error.message);
+		}
+	}
+
+	async renombrarCarpeta(nombreViejo, nombreNuevo) {
+		console.log("Intentando renombrar carpeta:", nombreViejo, "→", nombreNuevo);
+		try {
+			const res = await window.api.renombrarCarpeta(nombreViejo, nombreNuevo);
+			if (res.ok) {
+				console.log("Carpeta renombrada exitosamente");
+				this.cerrarModalRenombrar();
+				await this.mostrarCarpetas();
+
+				// Si era la carpeta actual de notas, actualizar la referencia
+				if (window.notesManager && window.notesManager.carpetaActual === nombreViejo) {
+					window.notesManager.carpetaActual = nombreNuevo;
+					// Actualizar también la nota actual si existe
+					if (window.notesManager.notaActual) {
+						window.notesManager.notaActual.carpeta = nombreNuevo;
+					}
+				}
+			} else {
+				alert("Error: " + res.error);
+			}
+		} catch (error) {
+			console.error("Error en renombrarCarpeta:", error);
+			alert("Error al renombrar carpeta: " + error.message);
 		}
 	}
 
@@ -76,9 +103,19 @@ class FolderManager {
 						const controlsDiv = document.createElement("div");
 						controlsDiv.className = "controls-folders";
 
+						// Botón de renombrar
+						const btnRenombrar = document.createElement("button");
+						btnRenombrar.innerHTML = "✏️";
+						btnRenombrar.title = "Renombrar carpeta";
+						btnRenombrar.onclick = (e) => {
+							e.stopPropagation();
+							this.abrirModalRenombrar(nombre);
+						};
+
 						// Botón de eliminar
 						const btnEliminar = document.createElement("button");
 						btnEliminar.innerHTML = "🗑️";
+						btnEliminar.title = "Eliminar carpeta";
 						btnEliminar.onclick = (e) => {
 							e.stopPropagation();
 							this.abrirModalEliminar(nombre);
@@ -98,6 +135,7 @@ class FolderManager {
 							}
 						};
 
+						controlsDiv.appendChild(btnRenombrar);
 						controlsDiv.appendChild(btnEliminar);
 						li.appendChild(nombreSpan);
 						li.appendChild(controlsDiv);
@@ -121,6 +159,28 @@ class FolderManager {
 
 	cerrarModal() {
 		document.getElementById("modal").style.display = "none";
+	}
+
+	abrirModalRenombrar(nombreCarpeta) {
+		console.log("=== ABRIENDO MODAL RENOMBRAR CARPETA ===");
+		console.log("Carpeta a renombrar:", nombreCarpeta);
+
+		this.carpetaARenombrar = nombreCarpeta;
+		document.getElementById("modal-rename").style.display = "block";
+		document.getElementById("folder-new-name").value = nombreCarpeta;
+		
+		// Hacer focus y seleccionar todo el texto
+		setTimeout(() => {
+			const input = document.getElementById("folder-new-name");
+			input.focus();
+			input.select();
+		}, 100);
+	}
+
+	cerrarModalRenombrar() {
+		console.log("=== CERRANDO MODAL RENOMBRAR ===");
+		document.getElementById("modal-rename").style.display = "none";
+		this.carpetaARenombrar = null;
 	}
 
 	abrirModalEliminar(nombreCarpeta) {
