@@ -1,3 +1,5 @@
+Desktop\GarosNotes\README.md
+
 # GarosNotes
 
 GarosNotes es una aplicación de escritorio minimalista para tomar y organizar notas, desarrollada con [Electron](https://www.electronjs.org/).
@@ -10,6 +12,7 @@ GarosNotes es una aplicación de escritorio minimalista para tomar y organizar n
 - **Autoguardado**: Las notas se guardan automáticamente mientras escribes.
 - **Almacenamiento local**: Todas tus notas se guardan en `Documents/GarosNotes` de tu equipo.
 - **Interfaz responsive**: Sidebar ocultable con atajos de teclado (Ctrl + B).
+- **Atajos de teclado**: Navegación rápida y cierre de modales con Escape.
 - **Funciona completamente offline**: No requiere conexión a internet.
 
 ## Instalación y uso
@@ -32,13 +35,13 @@ GarosNotes es una aplicación de escritorio minimalista para tomar y organizar n
 2. Instala las dependencias:
 
    ```sh
-   pnpm install
+   npm install
    ```
 
 3. Inicia la aplicación en modo desarrollo:
 
    ```sh
-   pnpm start
+   npm start
    ```
 
 ### Empaquetar la aplicación
@@ -46,7 +49,7 @@ GarosNotes es una aplicación de escritorio minimalista para tomar y organizar n
 Para generar el instalador de la aplicación:
 
 ```sh
-pnpm run build
+npm run build
 ```
 
 El instalador se generará en la carpeta `release`.
@@ -57,6 +60,7 @@ El instalador se generará en la carpeta `release`.
 GarosNotes/
 ├── main.js                    # Proceso principal de Electron
 ├── package.json               # Configuración del proyecto y dependencias
+├── LICENSE                    # Licencia MIT del proyecto
 ├── preload.js                 # Script de preload (deprecado, movido a src/)
 ├── src/                       # Código fuente de la aplicación
 │   ├── index.html            # Página principal de la aplicación
@@ -77,11 +81,13 @@ GarosNotes/
 ## Funcionalidades principales
 
 ### Gestión de carpetas
+
 - **Crear**: Botón "+" en la sección de carpetas
 - **Renombrar**: Botón ✏️ junto a cada carpeta
 - **Eliminar**: Botón 🗑️ junto a cada carpeta
 
 ### Gestión de notas
+
 - **Crear**: Botón "+" en la sección de notas (requiere seleccionar una carpeta)
 - **Editar**: Click en cualquier nota para abrirla en el editor
 - **Renombrar**: Click en el título de la nota cuando está abierta
@@ -89,6 +95,7 @@ GarosNotes/
 - **Autoguardado**: Las notas se guardan automáticamente cada 3 segundos
 
 ### Atajos de teclado
+
 - **Ctrl + B**: Mostrar/ocultar sidebar
 - **Escape**: Cerrar modales abiertos
 - **Enter**: Confirmar en modales de texto
@@ -111,9 +118,9 @@ GarosNotes/
 ### Scripts disponibles
 
 ```sh
-pnpm start          # Inicia la aplicación en modo desarrollo
-pnpm run build      # Genera el instalador para distribución
-pnpm run dist       # Genera el instalador sin publicar
+npm start          # Inicia la aplicación en modo desarrollo
+npm run build      # Genera el instalador para distribución
+npm run dist       # Genera el instalador sin publicar
 ```
 
 ### Arquitectura
@@ -126,13 +133,23 @@ La aplicación sigue una arquitectura modular:
 - **NotesManager.js**: Lógica específica para notas y editor
 - **preload.js**: Bridge seguro entre main y renderer processes
 
+## Contribuir
+
+¡Las contribuciones son bienvenidas! Si encuentras un bug o tienes una idea para mejorar GarosNotes:
+
+1. Fork el proyecto
+2. Crea una rama para tu feature (`git checkout -b feature/nueva-funcionalidad`)
+3. Commit tus cambios (`git commit -am 'Agrega nueva funcionalidad'`)
+4. Push a la rama (`git push origin feature/nueva-funcionalidad`)
+5. Abre un Pull Request
+
 ## Créditos
 
 Esta aplicación no es un diseño original. La idea principal y el diseño de la interfaz fueron tomados de [RevNotes-Desktop](https://github.com/RevienMaker/RevNotes-Desktop) por RevienMaker. ¡Gracias por el excelente trabajo!
 
 ## Licencia
 
-ISC
+Este proyecto está licenciado bajo la [Licencia MIT](LICENSE) - consulta el archivo LICENSE para más detalles.
 
 ---
 
