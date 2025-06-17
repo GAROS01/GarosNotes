@@ -60,7 +60,6 @@ GarosNotes/
 ├── main.js                    # Proceso principal de Electron
 ├── package.json               # Configuración del proyecto y dependencias
 ├── LICENSE                    # Licencia MIT del proyecto
-├── preload.js                 # Script de preload (deprecado, movido a src/)
 ├── src/                       # Código fuente de la aplicación
 │   ├── index.html            # Página principal de la aplicación
 │   ├── renderer.js           # Lógica del proceso renderer y eventos
