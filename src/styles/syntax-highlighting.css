@@ -1,22 +1,18 @@
-/* ===== ESTILOS PARA BLOQUES DE CÓDIGO CON MÓDULO SYNTAX OFICIAL ===== */
-
-/* Estilos base para los bloques de código */
-.ql-syntax {
-    background-color: #1e1e1e !important;
-    color: #d4d4d4 !important;
-    font-family: 'Consolas', 'Monaco', 'Menlo', 'Ubuntu Mono', monospace !important;
-    padding: 16px !important;
-    border-radius: 8px !important;
-    border: 1px solid #3e3e3e !important;
-    overflow-x: auto !important;
-    margin: 12px 0 !important;
-    line-height: 1.6 !important;
-    font-size: 14px !important;
-    white-space: pre !important;
-    position: relative !important;
+.ql-editor .ql-syntax {
+    background-color: #1e1e1e;
+    color: #d4d4d4;
+    font-family: 'Consolas', 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    padding: 16px;
+    border-radius: 8px;
+    border: 1px solid #3e3e3e;
+    overflow-x: auto;
+    margin: 12px 0;
+    line-height: 1.6;
+    font-size: 14px;
+    white-space: pre;
+    position: relative;
 }
 
-/* Indicador de bloque de código */
 .ql-syntax::before {
     content: "code";
     position: absolute;
@@ -31,122 +27,103 @@
     z-index: 1;
 }
 
-/* Estilos para código inline */
 .ql-editor code {
-    background-color: #2d2d2d !important;
-    color: #f92672 !important;
-    padding: 3px 6px !important;
-    border-radius: 4px !important;
-    font-family: 'Consolas', 'Monaco', 'Menlo', monospace !important;
-    font-size: 13px !important;
-    border: 1px solid #444 !important;
+    background-color: #2d2d2d;
+    color: #f92672;
+    padding: 3px 6px;
+    border-radius: 4px;
+    font-family: 'Consolas', 'Monaco', 'Menlo', monospace;
+    font-size: 13px;
+    border: 1px solid #444;
 }
 
-/* ===== THEME ATOM ONE DARK PARA HIGHLIGHT.JS ===== */
-.hljs {
-    background: transparent !important;
-    /* Dejar que .ql-syntax maneje el fondo */
-    color: #d4d4d4 !important;
+.ql-syntax .hljs {
+    background: transparent;
+    color: #d4d4d4;
 }
 
-/* Comentarios */
-.hljs-comment,
-.hljs-quote {
-    color: #6a9955 !important;
-    font-style: italic !important;
+.ql-syntax .hljs-comment,
+.ql-syntax .hljs-quote {
+    color: #6a9955;
+    font-style: italic;
 }
 
-/* Palabras clave */
-.hljs-keyword,
-.hljs-selector-tag,
-.hljs-subst {
-    color: #569cd6 !important;
-    font-weight: bold !important;
+.ql-syntax .hljs-keyword,
+.ql-syntax .hljs-selector-tag,
+.ql-syntax .hljs-subst {
+    color: #569cd6;
+    font-weight: bold;
 }
 
-/* Números y literales */
-.hljs-number,
-.hljs-literal,
-.hljs-variable,
-.hljs-template-variable,
-.hljs-tag .hljs-attr {
-    color: #b5cea8 !important;
+.ql-syntax .hljs-number,
+.ql-syntax .hljs-literal,
+.ql-syntax .hljs-variable,
+.ql-syntax .hljs-template-variable,
+.ql-syntax .hljs-tag .hljs-attr {
+    color: #b5cea8;
 }
 
-/* Strings */
-.hljs-string,
-.hljs-doctag {
-    color: #ce9178 !important;
+.ql-syntax .hljs-string,
+.ql-syntax .hljs-doctag {
+    color: #ce9178;
 }
 
-/* Títulos y nombres de funciones */
-.hljs-title,
-.hljs-section,
-.hljs-selector-id {
-    color: #dcdcaa !important;
-    font-weight: bold !important;
+.ql-syntax .hljs-title,
+.ql-syntax .hljs-section,
+.ql-syntax .hljs-selector-id {
+    color: #dcdcaa;
+    font-weight: bold;
 }
 
-/* Tipos y clases */
-.hljs-type,
-.hljs-class .hljs-title,
-.hljs-tag {
-    color: #4ec9b0 !important;
+.ql-syntax .hljs-type,
+.ql-syntax .hljs-class .hljs-title,
+.ql-syntax .hljs-tag {
+    color: #4ec9b0;
 }
 
-/* Atributos */
-.hljs-attribute,
-.hljs-name,
-.hljs-property {
-    color: #9cdcfe !important;
+.ql-syntax .hljs-attribute,
+.ql-syntax .hljs-name,
+.ql-syntax .hljs-property {
+    color: #9cdcfe;
 }
 
-/* Expresiones regulares y enlaces */
-.hljs-regexp,
-.hljs-link {
-    color: #d16969 !important;
+.ql-syntax .hljs-regexp,
+.ql-syntax .hljs-link {
+    color: #d16969;
 }
 
-/* Símbolos */
-.hljs-symbol,
-.hljs-bullet {
-    color: #c586c0 !important;
+.ql-syntax .hljs-symbol,
+.ql-syntax .hljs-bullet {
+    color: #c586c0;
 }
 
-/* Built-ins */
-.hljs-built_in,
-.hljs-builtin-name {
-    color: #4fc1ff !important;
+.ql-syntax .hljs-built_in,
+.ql-syntax .hljs-builtin-name {
+    color: #4fc1ff;
 }
 
-/* Meta información */
-.hljs-meta {
-    color: #9b9b9b !important;
+.ql-syntax .hljs-meta {
+    color: #9b9b9b;
 }
 
-/* Eliminaciones en diff */
-.hljs-deletion {
-    background: #ff6b6b !important;
-    color: white !important;
+.ql-syntax .hljs-deletion {
+    background: #ff6b6b;
+    color: white;
 }
 
-/* Adiciones en diff */
-.hljs-addition {
-    background: #51cf66 !important;
-    color: white !important;
+.ql-syntax .hljs-addition {
+    background: #51cf66;
+    color: white;
 }
 
-/* Énfasis */
-.hljs-emphasis {
-    font-style: italic !important;
+.ql-syntax .hljs-emphasis {
+    font-style: italic;
 }
 
-/* Strong */
-.hljs-strong {
-    font-weight: bold !important;
+.ql-syntax .hljs-strong {
+    font-weight: bold;
 }
 
-/* Botón de código en la toolbar */
 .ql-snow .ql-toolbar button.ql-code-block {
     position: relative;
 }
@@ -157,11 +134,10 @@
     font-weight: bold;
 }
 
-.ql-snow .ql-toolbar button.ql-code-block:hover {
-    background-color: #555 !important;
+#app .ql-snow .ql-toolbar button.ql-code-block:hover {
+    background-color: #555;
 }
 
-/* Scrollbar para bloques de código largos */
 .ql-syntax::-webkit-scrollbar {
     height: 8px;
 }

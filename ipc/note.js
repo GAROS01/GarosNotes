@@ -26,8 +26,8 @@ export function registerNoteHandlers(ipcMain) {
             }
             const notas = fs
                 .readdirSync(carpeta, { withFileTypes: true })
-                .filter((dirent) => dirent.isFile() && dirent.name.endsWith(".txt"))
-                .map((dirent) => dirent.name.replace(".txt", ""));
+                .filter((dirent) => dirent.isFile() && dirent.name.endsWith(".json"))
+                .map((dirent) => dirent.name.replace(".json", ""));
             return { ok: true, notas };
         } catch (error) {
             return { ok: false, error: error.message };

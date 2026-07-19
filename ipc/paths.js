@@ -8,7 +8,7 @@ function folderPath(nombreCarpeta) {
 }
 
 function notePath(nombreCarpeta, nombreNota) {
-    return path.join(NOTES_BASE, nombreCarpeta, `${nombreNota}.txt`);
+    return path.join(NOTES_BASE, nombreCarpeta, `${nombreNota}.json`);
 }
 
 export { NOTES_BASE, folderPath, notePath };
