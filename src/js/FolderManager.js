@@ -1,3 +1,5 @@
+import { eventBus } from "./EventBus.js";
+
 class FolderManager {
 	constructor(folderListId) {
 		this.folderList = document.getElementById(folderListId);
@@ -31,14 +33,7 @@ class FolderManager {
 				this.cerrarModalRenombrar();
 				await this.mostrarCarpetas();
 
-				// Si era la carpeta actual de notas, actualizar la referencia
-				if (window.notesManager && window.notesManager.carpetaActual === nombreViejo) {
-					window.notesManager.carpetaActual = nombreNuevo;
-					// Actualizar también la nota actual si existe
-					if (window.notesManager.notaActual) {
-						window.notesManager.notaActual.carpeta = nombreNuevo;
-					}
-				}
+				eventBus.emit("folder:renamed", { oldName: nombreViejo, newName: nombreNuevo });
 			} else {
 				alert("Error: " + res.error);
 			}
@@ -61,18 +56,7 @@ class FolderManager {
 				this.cerrarModalEliminar();
 				await this.mostrarCarpetas();
 
-				// Si era la carpeta actual de notas, limpiar la vista
-				if (window.notesManager && window.notesManager.carpetaActual === nombre) {
-					window.notesManager.carpetaActual = null;
-					window.notesManager.noteList.innerHTML = "<li>Selecciona una carpeta</li>";
-
-					// Si había una nota abierta, cerrar el editor
-					if (window.notesManager.notaActual) {
-						document.getElementById("main").style.display = "none";
-						document.getElementById("placeholder-message").style.display = "flex";
-						window.notesManager.notaActual = null;
-					}
-				}
+				eventBus.emit("folder:deleted", { name: nombre });
 			} else {
 				console.error("Error del servidor:", res.error);
 				alert("Error: " + res.error);
@@ -129,10 +113,7 @@ class FolderManager {
 								.forEach((item) => item.classList.remove("selected"));
 							li.classList.add("selected");
 
-							// Mostrar notas de esta carpeta
-							if (window.notesManager) {
-								window.notesManager.mostrarNotasDeCarpeta(nombre);
-							}
+							eventBus.emit("folder:selected", { name: nombre });
 						};
 
 						controlsDiv.appendChild(btnRenombrar);

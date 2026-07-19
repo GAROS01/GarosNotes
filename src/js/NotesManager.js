@@ -1,5 +1,6 @@
 import Quill from 'quill';
 import hljs from 'highlight.js';
+import { eventBus } from "./EventBus.js";
 
 window.hljs = hljs;
 
@@ -10,7 +11,35 @@ class NotesManager {
 		this.notaActual = null;
 		this.notaAEliminar = null;
 		this.autoguardadoTimer = null;
-		this.eventoTituloRegistrado = false; // Para evitar eventos duplicados
+		this.eventoTituloRegistrado = false;
+		this._initEventListeners();
+	}
+
+	_initEventListeners() {
+		eventBus.on("folder:renamed", ({ oldName, newName }) => {
+			if (this.carpetaActual === oldName) {
+				this.carpetaActual = newName;
+				if (this.notaActual) {
+					this.notaActual.carpeta = newName;
+				}
+			}
+		});
+
+		eventBus.on("folder:deleted", ({ name }) => {
+			if (this.carpetaActual === name) {
+				this.carpetaActual = null;
+				this.noteList.innerHTML = "<li>Selecciona una carpeta</li>";
+				if (this.notaActual) {
+					document.getElementById("main").style.display = "none";
+					document.getElementById("placeholder-message").style.display = "flex";
+					this.notaActual = null;
+				}
+			}
+		});
+
+		eventBus.on("folder:selected", ({ name }) => {
+			this.mostrarNotasDeCarpeta(name);
+		});
 	}
 
 	async crearNota(nombreCarpeta, nombreNota) {
