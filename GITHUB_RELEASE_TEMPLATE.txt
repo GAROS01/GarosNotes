@@ -1,0 +1,80 @@
+🎉 GarosNotes v1.4.0 - GitHub Release Notes
+============================================
+
+Título: GarosNotes v1.4.0 - Vite Build System & Modern Frontend Stack
+
+Descripción:
+-----------
+
+Major update featuring Vite build system integration, modern frontend dependencies, and performance improvements.
+
+✨ What's New:
+- 🛠️ Vite integration for optimized bundling and faster builds
+- 📝 Upgraded to Quill 2.0.3 for better text editing
+- 🎨 Enhanced syntax highlighting with support for 13+ programming languages
+- ⚡ Improved performance with optimized renderer (45 lines of redundant code removed)
+- 🏗️ Better architecture with pnpm workspace configuration
+
+🔧 Technical Changes:
+- Updated build system: src/ → dist/
+- New scripts: dev, build (now includes Vite)
+- pnpm workspace support
+- Refactored event handling in renderer
+
+📊 Stats:
+- 9 files changed
+- 704 insertions, 159 deletions
+- 0 breaking changes
+- 100% backward compatible
+
+🚀 Installation:
+pnpm install
+pnpm run dev      # Development
+pnpm run build    # Create installer
+
+📦 Downloads:
+Use the installers in the release assets to install on Windows.
+
+💡 Notes:
+- No breaking changes from v1.3.0
+- Safe to upgrade
+- Vite provides better development experience and faster builds
+
+🙏 Special Thanks:
+Contributors and community members for feedback and support!
+
+---
+
+Raw Release Notes Copy-Paste Ready:
+
+---
+
+Major update with Vite build system integration and modern frontend stack!
+
+🌟 **Key Improvements:**
+- Integrated Vite for ultra-fast bundling and development
+- Upgraded to Quill 2.0.3 editor and highlight.js for better code highlighting
+- Optimized renderer with 45 lines of redundant code removed
+- Improved pnpm configuration with workspace support
+
+📝 **What Changed:**
+- Build process now uses Vite (src/ → dist/)
+- New `dev` script: `vite build && electron .`
+- Updated `build` script with Vite compilation
+- Better dependency management
+
+✅ **Compatibility:**
+- No breaking changes
+- Fully backward compatible
+- Safe to upgrade from v1.3.0
+
+🚀 **Getting Started:**
+```bash
+pnpm install
+pnpm run dev      # Development
+pnpm run build    # Production installer
+```
+
+**Version:** 1.4.0  
+**Release Date:** July 19, 2026  
+**License:** MIT
