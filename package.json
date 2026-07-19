@@ -18,7 +18,8 @@
             "src/**/*",
             "img/**/*",
             "main.js",
-            "preload.js"
+            "preload.js",
+            "ipc/**/*"
         ],
         "extraResources": [
             {
