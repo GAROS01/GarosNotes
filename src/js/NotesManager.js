@@ -1,8 +1,6 @@
-import Quill from 'quill';
-import hljs from 'highlight.js';
 import { eventBus } from "./EventBus.js";
-
-window.hljs = hljs;
+import { QuillEditor } from "./QuillEditor.js";
+import { AutoSave } from "./AutoSave.js";
 
 class NotesManager {
 	constructor(noteListId) {
@@ -10,8 +8,12 @@ class NotesManager {
 		this.carpetaActual = null;
 		this.notaActual = null;
 		this.notaAEliminar = null;
-		this.autoguardadoTimer = null;
-		this.eventoTituloRegistrado = false;
+		this.quillEditor = new QuillEditor();
+		this.autoSave = new AutoSave({
+			quillEditor: this.quillEditor,
+			onSave: () => this.guardarNotaActual(),
+			onRename: () => this.renombrarNotaActual(),
+		});
 		this._initEventListeners();
 	}
 
@@ -134,37 +136,13 @@ class NotesManager {
 				// Cargar título
 				document.getElementById("titulo-nota").value = nombreNota;
 
-				// Inicializar Quill si no existe
-				if (!window.quill) {
-					this.inicializarQuill();
+				if (!this.quillEditor.editor) {
+					this.quillEditor.init();
 				}
 
-				// Cargar contenido en Quill
-				if (window.quill) {
-					if (res.contenido.trim() === "") {
-						window.quill.setText("");
-					} else {
-						try {
-							const delta = JSON.parse(res.contenido);
-							window.quill.setContents(delta);
-						} catch (e) {
-							window.quill.setText(res.contenido);
-						}
-					}
-				}
-
-				// Configurar autoguardado DESPUÉS de cargar todo
-				this.configurarAutoguardado();
-
-				// Forzar que Quill recalcule su tamaño y hacer focus en el editor
-				setTimeout(() => {
-					if (window.quill) {
-						window.quill.getModule("toolbar").container.style.display = "block";
-						// Para notas nuevas, hacer focus en el editor para empezar a escribir
-						window.quill.focus();
-						console.log("Focus establecido en el editor de la nueva nota");
-					}
-				}, 100);
+				this.quillEditor.loadContent(res.contenido);
+				this.autoSave.setup();
+				this.quillEditor.focus();
 
 				console.log("Nota abierta correctamente:", nombreNota);
 			} else {
@@ -176,106 +154,13 @@ class NotesManager {
 		}
 	}
 
-	inicializarQuill() {
-		console.log("=== INICIANDO QUILL CON SYNTAX: TRUE ===");
 
-		hljs.configure({
-			languages: [
-				"javascript",
-				"python",
-				"java",
-				"cpp",
-				"html",
-				"css",
-				"json",
-				"sql",
-				"bash",
-				"typescript",
-				"php",
-				"csharp",
-			],
-		});
-		console.log("✅ highlight.js configurado");
-
-		window.quill = new Quill("#editor-container", {
-			theme: "snow",
-			modules: {
-				syntax: true,
-				toolbar: [
-					[{ header: [1, 2, 3, 4, 5, 6, false] }],
-					[{ font: [] }],
-					[{ size: ["small", false, "large", "huge"] }],
-					["bold", "italic", "underline", "strike"],
-					[{ color: [] }, { background: [] }],
-					[{ script: "sub" }, { script: "super" }],
-					[{ list: "ordered" }, { list: "bullet" }, { list: "check" }],
-					[{ indent: "-1" }, { indent: "+1" }],
-					[{ direction: "rtl" }],
-					[{ align: [] }],
-					["blockquote", "code-block"],
-					["link", "image", "video"],
-					["clean"],
-				],
-				history: {
-					delay: 1000,
-					maxStack: 50,
-					userOnly: false,
-				},
-			},
-			placeholder: "Escribe tu nota aquí...",
-		});
-
-		console.log("✅ Quill inicializado con syntax: true");
-	}
-
-	configurarAutoguardado() {
-		if (!window.quill || !this.notaActual) return;
-
-		// Limpiar timer anterior si existe
-		if (this.autoguardadoTimer) {
-			clearTimeout(this.autoguardadoTimer);
-		}
-
-		// Configurar eventos de autoguardado para Quill
-		window.quill.on("text-change", () => {
-			console.log("Cambio detectado en el editor");
-
-			if (this.autoguardadoTimer) {
-				clearTimeout(this.autoguardadoTimer);
-			}
-
-			this.autoguardadoTimer = setTimeout(() => {
-				this.guardarNotaActual();
-			}, 1000);
-		});
-
-		// Configurar evento del título SOLO una vez
-		if (!this.eventoTituloRegistrado) {
-			const tituloInput = document.getElementById("titulo-nota");
-
-			tituloInput.addEventListener("input", () => {
-				console.log("Cambio detectado en el título");
-
-				if (this.autoguardadoTimer) {
-					clearTimeout(this.autoguardadoTimer);
-				}
-
-				this.autoguardadoTimer = setTimeout(() => {
-					this.renombrarNotaActual();
-				}, 5000); //
-			});
-
-			this.eventoTituloRegistrado = true;
-			console.log("Evento de título registrado");
-		}
-	}
 
 	async guardarNotaActual() {
-		if (!this.notaActual || !window.quill) return;
+		if (!this.notaActual || !this.quillEditor.editor) return;
 
 		try {
-			// Obtener contenido como Delta (formato JSON de Quill)
-			const contenido = JSON.stringify(window.quill.getContents());
+			const contenido = this.quillEditor.getContent();
 
 			const res = await window.api.guardarNota(
 				this.notaActual.carpeta,
@@ -493,3 +378,4 @@ class NotesManager {
 
 // Exportar la clase para usar en módulos
 export { NotesManager };
+
