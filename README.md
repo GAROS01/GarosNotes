@@ -1,4 +1,4 @@
-# GarosNotes v1.4.0
+# GarosNotes v2.0.0
 
 GarosNotes es una aplicación de escritorio minimalista para tomar y organizar notas, desarrollada con [Electron](https://www.electronjs.org/) y [Vite](https://vitejs.dev/).
 
@@ -8,8 +8,8 @@ GarosNotes es una aplicación de escritorio minimalista para tomar y organizar n
 - **Gestión de notas**: Crear, editar, renombrar y eliminar notas en cada carpeta.
 - **Editor de texto enriquecido**: Utiliza [Quill.js 2.0](https://quilljs.com/) con resaltado de sintaxis avanzado para código.
 - **Resaltado de sintaxis**: Soporte para 13+ lenguajes de programación con [Highlight.js](https://highlightjs.org/).
-- **Autoguardado**: Las notas se guardan automáticamente cada 3 segundos mientras escribes.
-- **Almacenamiento local**: Todas tus notas se guardan en `Documents/GarosNotes` de tu equipo.
+- **Autoguardado**: Las notas se guardan automáticamente 1 segundo después de dejar de escribir.
+- **Almacenamiento local**: Tus notas se guardan como archivos `.json` (formato Delta de Quill) en `Documents/GarosNotes`.
 - **Interfaz responsive**: Sidebar ocultable con atajos de teclado (Ctrl + B).
 - **Funciona completamente offline**: No requiere conexión a internet.
 - **Build system moderno**: Utiliza Vite para compilación ultrarrápida y desarrollo optimizado.
@@ -74,17 +74,29 @@ GarosNotes/
 ├── LICENSE                          # Licencia MIT del proyecto
 ├── README.md                        # Documentación del proyecto
 ├── CHANGELOG.md                     # Historial de cambios por versión
-├── RELEASE_NOTES.md                 # Notas de lanzamiento v1.4.0
+├── RELEASE_NOTES.md                 # Notas de lanzamiento
+├── ipc/                            # Manejadores IPC del proceso main
+│   ├── paths.js                    # Utilidades de rutas (Documents/GarosNotes)
+│   ├── folders.js                  # Handlers de carpetas (CRUD)
+│   └── note.js                     # Handlers de notas (CRUD)
 ├── src/                             # Código fuente de la aplicación
 │   ├── index.html                  # Página principal de la aplicación
-│   ├── renderer.js                 # Lógica del proceso renderer y eventos
+│   ├── renderer.js                 # Entry point (bootstraps App)
 │   ├── preload.js                  # Bridge seguro entre main y renderer
-│   ├── js/                         # Módulos JavaScript
+│   ├── js/                         # Módulos JavaScript del renderer
+│   │   ├── App.js                  # Orquestador principal
+│   │   ├── EventBus.js             # Sistema de eventos desacoplados
 │   │   ├── FolderManager.js        # Gestión de carpetas
-│   │   └── NotesManager.js         # Gestión de notas y editor Quill
+│   │   ├── NotesManager.js         # Gestión de notas
+│   │   ├── QuillEditor.js          # Wrapper del editor Quill
+│   │   ├── AutoSave.js             # Autoguardado con debounce
+│   │   └── Shortcuts.js            # Atajos de teclado
 │   ├── styles/                     # Estilos CSS
-│   │   ├── styles.css              # Estilos principales
-│   │   └── syntax-highlighting.css # Estilos del resaltado de sintaxis
+│   │   ├── layout.css              # Layout principal, reset, placeholder
+│   │   ├── modals.css              # Estilos de modales
+│   │   ├── sidebar.css             # Sidebar, carpetas, notas, settings
+│   │   ├── quill-theme.css         # Tema oscuro de Quill
+│   │   └── syntax-highlighting.css # Resaltado de sintaxis (sin !important)
 │   └── img/                        # Recursos de imagen
 │       └── img_note_bg.ico         # Icono de la aplicación
 ├── dist/                           # Carpeta generada por Vite (build output)
@@ -139,7 +151,10 @@ Reemplaza el archivo: `src/img/img_note_bg.ico`
 ### Modificar estilos
 
 Edita los archivos en: `src/styles/`
-- `styles.css` - Estilos principales
+- `layout.css` - Layout principal y reset
+- `modals.css` - Estilos de modales
+- `sidebar.css` - Sidebar, carpetas, notas, settings
+- `quill-theme.css` - Tema oscuro de Quill
 - `syntax-highlighting.css` - Estilos del resaltado de sintaxis
 
 ### Cambiar nombre de la aplicación
@@ -154,12 +169,12 @@ Edita en `package.json`:
 
 ### Configurar almacenamiento
 
-Las notas se guardan en: `Documents/GarosNotes`  
-Para cambiar, edita `main.js` y reemplaza `os.homedir()` con tu ruta deseada
+Las notas se guardan como `.json` en: `Documents/GarosNotes`  
+Para cambiar la ruta base, edita `ipc/paths.js`
 
 ### Agregar más lenguajes de resaltado
 
-Edita `src/js/NotesManager.js` en la sección `hljs.configure()`:
+Edita `src/js/QuillEditor.js` en la sección `hljs.configure()`:
 ```javascript
 hljs.configure({
   languages: [
@@ -181,33 +196,32 @@ pnpm run dist      # Genera instalador sin publicación
 
 ### Arquitectura
 
-La aplicación sigue una arquitectura modular basada en Electron:
+La aplicación sigue una arquitectura modular basada en Electron con comunicación desacoplada vía EventBus:
 
-- **main.js**: Proceso principal de Electron
-  - Crea la ventana de la aplicación
-  - Maneja IPC (Inter-Process Communication)
-  - Accede al sistema de archivos
+### Main Process
+- **main.js**: Crea la ventana de Electron e importa los handlers IPC
+- **ipc/paths.js**: Utilidades de rutas compartidas (`Documents/GarosNotes`)
+- **ipc/folders.js**: `registerFolderHandlers()` — CRUD de carpetas
+- **ipc/note.js**: `registerNoteHandlers()` — CRUD de notas (formato `.json`)
 
-- **src/preload.js**: Bridge seguro entre procesos
-  - Expone API segura en `window.api`
-  - Implementa context isolation
-  - Previene inyección de código
+### Preload Bridge
+- **src/preload.js**: Expone `window.api` con `contextBridge` (contextIsolation)
 
-- **src/renderer.js**: Coordinador principal
-  - Inicializa FolderManager y NotesManager
-  - Registra eventos de UI
-  - Maneja atajos de teclado
+### Renderer Process
+- **src/renderer.js**: Entry point mínimo. Importa `App` y lo arranca en `DOMContentLoaded`
+- **src/js/App.js**: Orquestador. Crea FolderManager, NotesManager, Shortcuts. Registra eventos DOM.
+- **src/js/EventBus.js**: EventEmitter singleton. Desacopla FolderManager ↔ NotesManager.
+- **src/js/FolderManager.js**: CRUD de carpetas + UI. Emite eventos (`folder:renamed`, `folder:deleted`, `folder:selected`).
+- **src/js/NotesManager.js**: CRUD de notas, modales, estado. Escucha eventos del bus y orquesta QuillEditor + AutoSave.
+- **src/js/QuillEditor.js**: Wrapper de Quill.js + highlight.js. Inicializa editor, carga/obtiene contenido.
+- **src/js/AutoSave.js**: Scheduling con debounce (1s contenido, 5s título). Evita fugas de listeners.
+- **src/js/Shortcuts.js**: Atajos de teclado (Escape, Ctrl+B, Enter en modales).
 
-- **src/js/FolderManager.js**: Gestión de carpetas
-  - Crear, renombrar, eliminar carpetas
-  - Cargar lista de carpetas
-  - Actualizar UI de carpetas
-
-- **src/js/NotesManager.js**: Gestión de notas
-  - CRUD de notas (crear, leer, actualizar, eliminar)
-  - Integración con Quill editor
-  - Autoguardado automático cada 3 segundos
-  - Renombrado de notas
+### Flujo de Datos
+```
+Renderer (UI) → window.api (preload) → ipcRenderer.invoke()
+  → ipc/note.js o ipc/folders.js (handler) → fs operations → response
+```
 
 ### Build System con Vite
 
@@ -230,16 +244,22 @@ Renderer (UI) → window.api (preload) → ipcRenderer.invoke()
 
 ## Versiones Recientes
 
-### v1.4.0 (19 de Julio de 2026) ✨ Actual
+### v2.0.0 (19 de Julio de 2026) ✨ Actual
+- 🏗️ **Refactor arquitectónico completo** — Separación de responsabilidades
+- 🔌 **EventBus** — Comunicación desacoplada entre módulos (sin `window.*`)
+- 🧩 **App.js + Shortcuts.js** — Orquestador y atajos extraídos de renderer.js
+- 🎨 **CSS modular** — `layout.css`, `modals.css`, `sidebar.css`, `quill-theme.css`
+- 🧼 **Sin !important** — Selectores con especificidad en syntax-highlighting.css
+- ✂️ **QuillEditor.js + AutoSave.js** — Editor y autoguardado extraídos de NotesManager
+- 🔌 **IPC por dominio** — `ipc/folders.js`, `ipc/note.js`, `ipc/paths.js`
+- 📄 **Extension .json** — Las notas ahora usan `.json` (formato Delta real)
+
+### v1.4.0 (19 de Julio de 2026)
 - ✨ Integración de Vite como build system
 - 📦 Actualizado a Quill.js 2.0.3
 - 🎨 Highlight.js para resaltado de sintaxis avanzado
 - ⚡ Optimizaciones de rendimiento
 - 🏗️ Configuración mejorada con pnpm workspace
-
-### v1.3.0
-- Versión anterior con build system básico
-- Gestión completa de carpetas y notas
 
 Para ver más detalles, consulta [CHANGELOG.md](CHANGELOG.md) y [RELEASE_NOTES.md](RELEASE_NOTES.md)
 

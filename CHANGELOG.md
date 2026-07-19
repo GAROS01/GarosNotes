@@ -1,5 +1,44 @@
 # Changelog - GarosNotes
 
+## [2.0.0] - 2026-07-19
+
+### 🏗️ Refactor Arquitectónico Completo
+
+#### 🔌 Sistema de Eventos
+- **Nuevo:** `EventBus.js` — EventEmitter singleton para comunicación desacoplada
+- **Eliminado:** `window.notesManager` y `window.folderManager` como globales
+- **FolderManager** ahora emite eventos (`folder:renamed`, `folder:deleted`, `folder:selected`)
+- **NotesManager** escucha eventos del bus en lugar de ser manipulado directamente
+
+#### 🧩 Separación de Responsabilidades
+- **Nuevo:** `App.js` — Orquestador principal (crea instancias, registra eventos DOM)
+- **Nuevo:** `Shortcuts.js` — Atajos de teclado (Escape, Ctrl+B, Enter)
+- **renderer.js** reducido a entry point mínimo (~10 líneas)
+
+#### ✂️ Editor y Autoguardado
+- **Nuevo:** `QuillEditor.js` — Inicialización de Quill + hljs, carga/obtención de contenido
+- **Nuevo:** `AutoSave.js` — Scheduling con debounce (1s contenido, 5s título), sin fugas de listeners
+- **NotesManager.js** reducido en ~100 líneas, ahora orquesta los submódulos
+
+#### 🔌 IPC por Dominio
+- **Nuevo:** `ipc/paths.js` — Utilidades de rutas compartidas
+- **Nuevo:** `ipc/folders.js` — Handlers de carpetas (crear, listar, eliminar, renombrar)
+- **Nuevo:** `ipc/note.js` — Handlers de notas (crear, listar, leer, guardar, eliminar, renombrar)
+- **main.js** reducido de 278 a ~22 líneas (solo creación de ventana + registro)
+
+#### 🎨 CSS Modular
+- **Nuevo:** `layout.css` — Reset, layout, placeholder, responsive
+- **Nuevo:** `modals.css` — Estilos de modales
+- **Nuevo:** `sidebar.css` — Sidebar, carpetas, notas, toggle, settings
+- **Nuevo:** `quill-theme.css` — Overrides de Quill (tema oscuro)
+- **Eliminado:** `styles.css` (reemplazado por los 4 archivos modulares)
+- **Refactor:** `syntax-highlighting.css` — Todos los `!important` eliminados usando selectores anidados
+
+#### 📄 Formato de Archivo
+- **Cambio:** Extensión `.txt` → `.json` (el contenido es JSON Delta de Quill)
+
+---
+
 ## [1.4.0] - 2026-07-19
 
 ### ✨ Cambios Principales
