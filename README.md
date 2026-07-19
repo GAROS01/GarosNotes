@@ -247,23 +247,6 @@ Renderer (UI) → window.api (preload) → ipcRenderer.invoke()
 ### v2.0.1 (19 de Julio de 2026) ✨ Actual
 - 🐛 **Fix**: Quill syntax module ahora recibe `hljs` como opción explícita — corrige error al abrir notas
 
-### v2.0.0 (19 de Julio de 2026)
-- 🏗️ **Refactor arquitectónico completo** — Separación de responsabilidades
-- 🔌 **EventBus** — Comunicación desacoplada entre módulos (sin `window.*`)
-- 🧩 **App.js + Shortcuts.js** — Orquestador y atajos extraídos de renderer.js
-- 🎨 **CSS modular** — `layout.css`, `modals.css`, `sidebar.css`, `quill-theme.css`
-- 🧼 **Sin !important** — Selectores con especificidad en syntax-highlighting.css
-- ✂️ **QuillEditor.js + AutoSave.js** — Editor y autoguardado extraídos de NotesManager
-- 🔌 **IPC por dominio** — `ipc/folders.js`, `ipc/note.js`, `ipc/paths.js`
-- 📄 **Extension .json** — Las notas ahora usan `.json` (formato Delta real)
-
-### v1.4.0 (19 de Julio de 2026)
-- ✨ Integración de Vite como build system
-- 📦 Actualizado a Quill.js 2.0.3
-- 🎨 Highlight.js para resaltado de sintaxis avanzado
-- ⚡ Optimizaciones de rendimiento
-- 🏗️ Configuración mejorada con pnpm workspace
-
 Para ver más detalles, consulta [CHANGELOG.md](CHANGELOG.md) y [RELEASE_NOTES.md](RELEASE_NOTES.md)
 
 ## Contribuir
