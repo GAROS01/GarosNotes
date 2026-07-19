@@ -1,25 +1,25 @@
+# GarosNotes v1.4.0
 
-# GarosNotes
-
-GarosNotes es una aplicación de escritorio minimalista para tomar y organizar notas, desarrollada con [Electron](https://www.electronjs.org/).
+GarosNotes es una aplicación de escritorio minimalista para tomar y organizar notas, desarrollada con [Electron](https://www.electronjs.org/) y [Vite](https://vitejs.dev/).
 
 ## Características
 
 - **Gestión de carpetas**: Crear, renombrar y eliminar carpetas para organizar tus notas.
 - **Gestión de notas**: Crear, editar, renombrar y eliminar notas en cada carpeta.
-- **Editor de texto enriquecido**: Utiliza Quill.js con resaltado de sintaxis para código.
-- **Autoguardado**: Las notas se guardan automáticamente mientras escribes.
+- **Editor de texto enriquecido**: Utiliza [Quill.js 2.0](https://quilljs.com/) con resaltado de sintaxis avanzado para código.
+- **Resaltado de sintaxis**: Soporte para 13+ lenguajes de programación con [Highlight.js](https://highlightjs.org/).
+- **Autoguardado**: Las notas se guardan automáticamente cada 3 segundos mientras escribes.
 - **Almacenamiento local**: Todas tus notas se guardan en `Documents/GarosNotes` de tu equipo.
 - **Interfaz responsive**: Sidebar ocultable con atajos de teclado (Ctrl + B).
-- **Atajos de teclado**: Navegación rápida y cierre de modales con Escape.
 - **Funciona completamente offline**: No requiere conexión a internet.
+- **Build system moderno**: Utiliza Vite para compilación ultrarrápida y desarrollo optimizado.
 
 ## Instalación y uso
 
 ### Requisitos
 
 - [Node.js](https://nodejs.org/) (v18 o superior recomendado)
-- [npm](https://www.npmjs.com/) (incluido con Node.js)
+- [pnpm](https://pnpm.io/) (gestor de paquetes moderno, recomendado)
 - [Git](https://git-scm.com/) (opcional)
 
 ### Instalación
@@ -27,7 +27,7 @@ GarosNotes es una aplicación de escritorio minimalista para tomar y organizar n
 1. Clona el repositorio o descarga el código fuente:
 
    ```sh
-   git clone https://github.com/tuusuario/GarosNotes.git
+   git clone https://github.com/GAROS01/GarosNotes.git
    cd GarosNotes
    ```
 
@@ -40,40 +40,56 @@ GarosNotes es una aplicación de escritorio minimalista para tomar y organizar n
 3. Inicia la aplicación en modo desarrollo:
 
    ```sh
-   pnpm start
+   pnpm run dev
    ```
+
+### Comandos Disponibles
+
+```sh
+pnpm run dev       # Desarrollo: compila con Vite y abre Electron
+pnpm start         # Inicia solo Electron (sin recompilar)
+pnpm run build     # Crea el instalador para distribución (Windows)
+pnpm run dist      # Crea el instalador sin publicación
+```
 
 ### Empaquetar la aplicación
 
-Para generar el instalador de la aplicación:
+Para generar el instalador (.exe) de la aplicación:
 
 ```sh
 pnpm run build
 ```
 
-El instalador se generará en la carpeta `release`.
+El instalador se generará en la carpeta `release/`.
 
 ## Estructura del proyecto
 
 ```
 GarosNotes/
-├── main.js                    # Proceso principal de Electron
-├── package.json               # Configuración del proyecto y dependencias
-├── LICENSE                    # Licencia MIT del proyecto
-├── src/                       # Código fuente de la aplicación
-│   ├── index.html            # Página principal de la aplicación
-│   ├── renderer.js           # Lógica del proceso renderer y eventos
-│   ├── preload.js            # Script de preload actualizado
-│   ├── js/                   # Módulos JavaScript
-│   │   ├── FolderManager.js  # Gestión de carpetas
-│   │   └── NotesManager.js   # Gestión de notas y editor
-│   ├── styles/               # Estilos CSS
-│   │   ├── styles.css        # Estilos principales de la aplicación
-│   │   └── syntax-highlighting.css  # Estilos para resaltado de sintaxis
-│   └── img/                  # Recursos de imagen
-│       └── img_note_bg.ico   # Icono de la aplicación
-├── release/                  # Carpeta generada con los instaladores
-└── README.md                 # Documentación del proyecto
+├── main.js                          # Proceso principal de Electron
+├── package.json                     # Configuración del proyecto y dependencias
+├── vite.config.js                   # Configuración de Vite (build tool)
+├── pnpm-workspace.yaml              # Configuración de workspace pnpm
+├── pnpm-lock.yaml                   # Lockfile de pnpm
+├── LICENSE                          # Licencia MIT del proyecto
+├── README.md                        # Documentación del proyecto
+├── CHANGELOG.md                     # Historial de cambios por versión
+├── RELEASE_NOTES.md                 # Notas de lanzamiento v1.4.0
+├── src/                             # Código fuente de la aplicación
+│   ├── index.html                  # Página principal de la aplicación
+│   ├── renderer.js                 # Lógica del proceso renderer y eventos
+│   ├── preload.js                  # Bridge seguro entre main y renderer
+│   ├── js/                         # Módulos JavaScript
+│   │   ├── FolderManager.js        # Gestión de carpetas
+│   │   └── NotesManager.js         # Gestión de notas y editor Quill
+│   ├── styles/                     # Estilos CSS
+│   │   ├── styles.css              # Estilos principales
+│   │   └── syntax-highlighting.css # Estilos del resaltado de sintaxis
+│   └── img/                        # Recursos de imagen
+│       └── img_note_bg.ico         # Icono de la aplicación
+├── dist/                           # Carpeta generada por Vite (build output)
+├── release/                        # Carpeta generada con los instaladores
+└── node_modules/                   # Dependencias (generado por pnpm)
 ```
 
 ## Funcionalidades principales
@@ -100,36 +116,132 @@ GarosNotes/
 
 ## Tecnologías utilizadas
 
-- **[Electron](https://www.electronjs.org/)**: Framework para aplicaciones de escritorio
-- **[Quill.js](https://quilljs.com/)**: Editor de texto enriquecido
-- **[Highlight.js](https://highlightjs.org/)**: Resaltado de sintaxis para código
+### Frontend
+- **[Quill.js 2.0](https://quilljs.com/)**: Editor de texto enriquecido y moderno
+- **[Highlight.js](https://highlightjs.org/)**: Resaltado de sintaxis para 13+ lenguajes
 - **HTML5, CSS3, JavaScript ES6+**: Tecnologías web estándar
+
+### Backend & Desktop
+- **[Electron 36.2.1](https://www.electronjs.org/)**: Framework para aplicaciones de escritorio multiplataforma
+- **Node.js APIs**: Acceso al sistema de archivos y operaciones del SO
+
+### Build & Development
+- **[Vite 8.1.5](https://vitejs.dev/)**: Build tool ultrarrápido y moderno
+- **[pnpm](https://pnpm.io/)**: Gestor de paquetes eficiente
+- **[electron-builder](https://www.electron.build/)**: Generador de instaladores
 
 ## Personalización
 
-- **Icono de la aplicación**: Reemplaza el archivo `src/img/img_note_bg.ico`
-- **Estilos**: Modifica los archivos CSS en `src/styles/`
-- **Almacenamiento**: Las notas se guardan en `Documents/GarosNotes` de tu usuario
+### Cambiar icono de la aplicación
+
+Reemplaza el archivo: `src/img/img_note_bg.ico`
+
+### Modificar estilos
+
+Edita los archivos en: `src/styles/`
+- `styles.css` - Estilos principales
+- `syntax-highlighting.css` - Estilos del resaltado de sintaxis
+
+### Cambiar nombre de la aplicación
+
+Edita en `package.json`:
+```json
+{
+  "name": "tu-nombre",
+  "productName": "Tu Nombre"
+}
+```
+
+### Configurar almacenamiento
+
+Las notas se guardan en: `Documents/GarosNotes`  
+Para cambiar, edita `main.js` y reemplaza `os.homedir()` con tu ruta deseada
+
+### Agregar más lenguajes de resaltado
+
+Edita `src/js/NotesManager.js` en la sección `hljs.configure()`:
+```javascript
+hljs.configure({
+  languages: [
+    'javascript', 'python', 'java', // agregar más aquí
+  ],
+});
+```
 
 ## Desarrollo
 
 ### Scripts disponibles
 
 ```sh
-pnpm start          # Inicia la aplicación en modo desarrollo
-pnpm run build      # Genera el instalador para distribución
-pnpm run dist       # Genera el instalador sin publicar
+pnpm run dev       # Compila con Vite y abre Electron en desarrollo
+pnpm start         # Inicia Electron sin recompilar
+pnpm run build     # Genera instalador (.exe) para Windows
+pnpm run dist      # Genera instalador sin publicación
 ```
 
 ### Arquitectura
 
-La aplicación sigue una arquitectura modular:
+La aplicación sigue una arquitectura modular basada en Electron:
 
-- **main.js**: Proceso principal, maneja la ventana y los IPC handlers
-- **renderer.js**: Coordinador de eventos y inicialización
-- **FolderManager.js**: Lógica específica para carpetas
-- **NotesManager.js**: Lógica específica para notas y editor
-- **preload.js**: Bridge seguro entre main y renderer processes
+- **main.js**: Proceso principal de Electron
+  - Crea la ventana de la aplicación
+  - Maneja IPC (Inter-Process Communication)
+  - Accede al sistema de archivos
+
+- **src/preload.js**: Bridge seguro entre procesos
+  - Expone API segura en `window.api`
+  - Implementa context isolation
+  - Previene inyección de código
+
+- **src/renderer.js**: Coordinador principal
+  - Inicializa FolderManager y NotesManager
+  - Registra eventos de UI
+  - Maneja atajos de teclado
+
+- **src/js/FolderManager.js**: Gestión de carpetas
+  - Crear, renombrar, eliminar carpetas
+  - Cargar lista de carpetas
+  - Actualizar UI de carpetas
+
+- **src/js/NotesManager.js**: Gestión de notas
+  - CRUD de notas (crear, leer, actualizar, eliminar)
+  - Integración con Quill editor
+  - Autoguardado automático cada 3 segundos
+  - Renombrado de notas
+
+### Build System con Vite
+
+**vite.config.js** configura:
+- Root: `src/` (punto de entrada)
+- Output: `dist/` (compilado)
+- Base: `./` (rutas relativas)
+
+**Flujo de compilación:**
+```
+src/ (fuente) → Vite → dist/ (compilado) → Electron carga dist/index.html
+```
+
+### Flow de Datos
+
+```
+Renderer (UI) → window.api (preload) → ipcRenderer.invoke() 
+  → main.js (IPC handler) → fs operations → response
+```
+
+## Versiones Recientes
+
+### v1.4.0 (19 de Julio de 2026) ✨ Actual
+- ✨ Integración de Vite como build system
+- 📦 Actualizado a Quill.js 2.0.3
+- 🎨 Highlight.js para resaltado de sintaxis avanzado
+- ⚡ Optimizaciones de rendimiento
+- 🏗️ Configuración mejorada con pnpm workspace
+
+### v1.3.0
+- Versión anterior con build system básico
+- Gestión completa de carpetas y notas
+
+Para ver más detalles, consulta [CHANGELOG.md](CHANGELOG.md) y [RELEASE_NOTES.md](RELEASE_NOTES.md)
 
 ## Contribuir
 
