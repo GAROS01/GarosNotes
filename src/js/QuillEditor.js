@@ -20,7 +20,7 @@ class QuillEditor {
         this.editor = new Quill("#editor-container", {
             theme: "snow",
             modules: {
-                syntax: true,
+                syntax: { hljs },
                 toolbar: [
                     [{ header: [1, 2, 3, 4, 5, 6, false] }],
                     [{ font: [] }],
