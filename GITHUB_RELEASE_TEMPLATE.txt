@@ -1,80 +1,80 @@
-🎉 GarosNotes v1.4.0 - GitHub Release Notes
-============================================
+🎉 GarosNotes v1.4.0 - Notas de Lanzamiento
+==========================================
 
-Título: GarosNotes v1.4.0 - Vite Build System & Modern Frontend Stack
+Título: GarosNotes v1.4.0 - Sistema Vite & Stack Frontend Moderno
 
 Descripción:
 -----------
 
-Major update featuring Vite build system integration, modern frontend dependencies, and performance improvements.
+Actualización importante con integración del sistema de construcción Vite, dependencias frontend modernas y mejoras de rendimiento.
 
-✨ What's New:
-- 🛠️ Vite integration for optimized bundling and faster builds
-- 📝 Upgraded to Quill 2.0.3 for better text editing
-- 🎨 Enhanced syntax highlighting with support for 13+ programming languages
-- ⚡ Improved performance with optimized renderer (45 lines of redundant code removed)
-- 🏗️ Better architecture with pnpm workspace configuration
+✨ Novedades:
+- 🛠️ Integración de Vite para bundling optimizado y construcciones más rápidas
+- 📝 Actualizado a Quill 2.0.3 para mejor edición de texto
+- 🎨 Resaltado de sintaxis mejorado con soporte para 13+ lenguajes de programación
+- ⚡ Rendimiento mejorado con renderer optimizado (45 líneas de código redundante eliminadas)
+- 🏗️ Mejor arquitectura con configuración de workspace en pnpm
 
-🔧 Technical Changes:
-- Updated build system: src/ → dist/
-- New scripts: dev, build (now includes Vite)
-- pnpm workspace support
-- Refactored event handling in renderer
+🔧 Cambios Técnicos:
+- Sistema de construcción actualizado: src/ → dist/
+- Nuevos scripts: dev, build (ahora incluye Vite)
+- Soporte para pnpm workspace
+- Manejo de eventos refactorizado en renderer
 
-📊 Stats:
-- 9 files changed
-- 704 insertions, 159 deletions
-- 0 breaking changes
-- 100% backward compatible
+📊 Estadísticas:
+- 9 archivos modificados
+- 704 inserciones, 159 eliminaciones
+- 0 cambios críticos
+- 100% compatible con versiones anteriores
 
-🚀 Installation:
+🚀 Instalación:
 pnpm install
-pnpm run dev      # Development
-pnpm run build    # Create installer
+pnpm run dev      # Desarrollo
+pnpm run build    # Crear instalador
 
-📦 Downloads:
-Use the installers in the release assets to install on Windows.
+📦 Descargas:
+Usa los instaladores en los activos de la versión para instalar en Windows.
 
-💡 Notes:
-- No breaking changes from v1.3.0
-- Safe to upgrade
-- Vite provides better development experience and faster builds
+💡 Notas:
+- Sin cambios críticos respecto a v1.3.0
+- Seguro para actualizar
+- Vite proporciona mejor experiencia de desarrollo y construcciones más rápidas
 
-🙏 Special Thanks:
-Contributors and community members for feedback and support!
-
----
-
-Raw Release Notes Copy-Paste Ready:
+🙏 Agradecimientos Especiales:
+¡A los contribuidores y miembros de la comunidad por sus comentarios y apoyo!
 
 ---
 
-Major update with Vite build system integration and modern frontend stack!
+Notas de Lanzamiento Listas para Copiar y Pegar:
 
-🌟 **Key Improvements:**
-- Integrated Vite for ultra-fast bundling and development
-- Upgraded to Quill 2.0.3 editor and highlight.js for better code highlighting
-- Optimized renderer with 45 lines of redundant code removed
-- Improved pnpm configuration with workspace support
+---
 
-📝 **What Changed:**
-- Build process now uses Vite (src/ → dist/)
-- New `dev` script: `vite build && electron .`
-- Updated `build` script with Vite compilation
-- Better dependency management
+¡Actualización importante con integración del sistema Vite y stack frontend moderno!
 
-✅ **Compatibility:**
-- No breaking changes
-- Fully backward compatible
-- Safe to upgrade from v1.3.0
+🌟 **Mejoras Principales:**
+- Integración de Vite para bundling ultrarrápido y desarrollo
+- Actualizado a editor Quill 2.0.3 e highlight.js para mejor resaltado de código
+- Renderer optimizado con 45 líneas de código redundante eliminadas
+- Configuración mejorada de pnpm con soporte de workspace
 
-🚀 **Getting Started:**
+📝 **Qué Cambió:**
+- Proceso de construcción ahora usa Vite (src/ → dist/)
+- Nuevo script `dev`: `vite build && electron .`
+- Script `build` actualizado con compilación de Vite
+- Mejor gestión de dependencias
+
+✅ **Compatibilidad:**
+- Sin cambios críticos
+- Totalmente compatible con versiones anteriores
+- Seguro para actualizar desde v1.3.0
+
+🚀 **Primeros Pasos:**
 ```bash
 pnpm install
-pnpm run dev      # Development
-pnpm run build    # Production installer
+pnpm run dev      # Desarrollo
+pnpm run build    # Instalador de producción
 ```
 
-**Version:** 1.4.0  
-**Release Date:** July 19, 2026  
-**License:** MIT
+**Versión:** 1.4.0  
+**Fecha de Lanzamiento:** 19 de julio de 2026  
+**Licencia:** MIT

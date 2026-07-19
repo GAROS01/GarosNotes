@@ -12,3 +12,7 @@ Thumbs.db
 
 # Archivos de entorno (si usas .env en el futuro)
 .env
+
+# rchivo github release
+*.zip
+GITHUB_RELEASE_TEMPLATE.txt
