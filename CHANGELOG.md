@@ -1,5 +1,10 @@
 # Changelog - GarosNotes
 
+## [2.0.1] - 2026-07-19
+
+### 🐛 Fix
+- **QuillEditor.js**: `syntax: true` → `syntax: { hljs }`. El módulo syntax de Quill 2.0 requiere `hljs` como opción explícita; sin esto fallaba al abrir cualquier nota.
+
 ## [2.0.0] - 2026-07-19
 
 ### 🏗️ Refactor Arquitectónico Completo

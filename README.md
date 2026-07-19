@@ -1,4 +1,4 @@
-# GarosNotes v2.0.0
+# GarosNotes v2.0.1
 
 GarosNotes es una aplicación de escritorio minimalista para tomar y organizar notas, desarrollada con [Electron](https://www.electronjs.org/) y [Vite](https://vitejs.dev/).
 
@@ -244,7 +244,10 @@ Renderer (UI) → window.api (preload) → ipcRenderer.invoke()
 
 ## Versiones Recientes
 
-### v2.0.0 (19 de Julio de 2026) ✨ Actual
+### v2.0.1 (19 de Julio de 2026) ✨ Actual
+- 🐛 **Fix**: Quill syntax module ahora recibe `hljs` como opción explícita — corrige error al abrir notas
+
+### v2.0.0 (19 de Julio de 2026)
 - 🏗️ **Refactor arquitectónico completo** — Separación de responsabilidades
 - 🔌 **EventBus** — Comunicación desacoplada entre módulos (sin `window.*`)
 - 🧩 **App.js + Shortcuts.js** — Orquestador y atajos extraídos de renderer.js
