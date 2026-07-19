@@ -1,6 +1,7 @@
 # Ocultar dependencias y carpetas de build
 node_modules/
 release/
+dist/
 
 # Archivos del sistema
 .DS_Store

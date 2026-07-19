@@ -1,3 +1,6 @@
+import 'quill/dist/quill.snow.css';
+import 'highlight.js/styles/atom-one-dark.css';
+
 import { FolderManager } from "./js/FolderManager.js";
 import { NotesManager } from "./js/NotesManager.js";
 
@@ -192,36 +195,18 @@ function toggleSidebar() {
 document.addEventListener("DOMContentLoaded", () => {
 	console.log("DOM cargado");
 
-	// Esperar a que las librerías estén disponibles
-	const esperarLibrerias = () => {
-		return new Promise((resolve) => {
-			const checkLibs = () => {
-				if (typeof hljs !== "undefined" && typeof Quill !== "undefined") {
-					console.log("✅ Todas las librerías están disponibles");
-					resolve();
-				} else {
-					console.log("⏳ Esperando librerías...");
-					setTimeout(checkLibs, 100);
-				}
-			};
-			checkLibs();
-		});
-	};
+	if (typeof window.api === "undefined") {
+		console.error("window.api no está disponible");
+		return;
+	}
 
-	esperarLibrerias().then(() => {
-		if (typeof window.api === "undefined") {
-			console.error("window.api no está disponible");
-			return;
-		}
+	// Crear instancias
+	folderManager = new FolderManager("folders");
+	notesManager = new NotesManager("file-list");
 
-		// Crear instancias
-		folderManager = new FolderManager("folders");
-		notesManager = new NotesManager("file-list");
-
-		// Resto de la inicialización...
-		window.notesManager = notesManager;
-		window.folderManager = folderManager;
-		registrarEventos();
-		folderManager.mostrarCarpetas();
-	});
+	// Resto de la inicialización...
+	window.notesManager = notesManager;
+	window.folderManager = folderManager;
+	registrarEventos();
+	folderManager.mostrarCarpetas();
 });

@@ -1,3 +1,8 @@
+import Quill from 'quill';
+import hljs from 'highlight.js';
+
+window.hljs = hljs;
+
 class NotesManager {
 	constructor(noteListId) {
 		this.noteList = document.getElementById(noteListId);
@@ -145,23 +150,6 @@ class NotesManager {
 	inicializarQuill() {
 		console.log("=== INICIANDO QUILL CON SYNTAX: TRUE ===");
 
-		// Verificar que highlight.js está disponible
-		if (typeof hljs === "undefined") {
-			console.error("❌ highlight.js NO está disponible");
-			return;
-		} else {
-			console.log("✅ highlight.js está disponible");
-		}
-
-		// Verificar que Quill está disponible
-		if (typeof Quill === "undefined") {
-			console.error("❌ Quill NO está disponible");
-			return;
-		} else {
-			console.log("✅ Quill está disponible");
-		}
-
-		// Configurar highlight.js
 		hljs.configure({
 			languages: [
 				"javascript",
@@ -180,11 +168,10 @@ class NotesManager {
 		});
 		console.log("✅ highlight.js configurado");
 
-		// Inicializar Quill con el módulo syntax: true según la documentación
 		window.quill = new Quill("#editor-container", {
 			theme: "snow",
 			modules: {
-				syntax: true, // ← Esta es la clave según la documentación
+				syntax: true,
 				toolbar: [
 					[{ header: [1, 2, 3, 4, 5, 6, false] }],
 					[{ font: [] }],
@@ -196,7 +183,7 @@ class NotesManager {
 					[{ indent: "-1" }, { indent: "+1" }],
 					[{ direction: "rtl" }],
 					[{ align: [] }],
-					["blockquote", "code-block"], // ← Botón para bloques de código
+					["blockquote", "code-block"],
 					["link", "image", "video"],
 					["clean"],
 				],
