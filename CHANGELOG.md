@@ -1,5 +1,17 @@
 # Changelog - GarosNotes
 
+## [2.2.1] - 2026-08-01
+
+### ⌨️ Navegación en la búsqueda
+- **Nuevo:** Navegación con flechas `↑` / `↓` para recorrer los resultados de búsqueda, con ciclo (al llegar al final vuelve al inicio y viceversa).
+- **Nuevo:** Resaltado visual del resultado activo (`.search-result.activo`) — el primer resultado se selecciona automáticamente al renderizar.
+- **Nuevo:** El resultado activo se mantiene visible en la lista mediante `scrollIntoView`.
+- **Cambio:** `Enter` ahora abre el resultado resaltado (o el primero si no hay selección), en lugar de solo el primer resultado.
+- **Cambio:** Al pasar el mouse por un resultado también se actualiza la selección (teclado y ratón sincronizados).
+- **Cambio:** Accesibilidad: atributo `aria-selected` en los resultados (`role="listbox"` / `option`).
+
+---
+
 ## [2.2.0] - 2026-08-01
 
 ### ✨ Búsqueda Full-text

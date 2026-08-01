@@ -166,14 +166,6 @@ Renderer → window.api → ipcRenderer.invoke() → handlers IPC → fs → res
 ### v2.2.1 (1 de agosto de 2026)
 - Búsqueda global mejorada con navegación por flechas, resaltado del resultado activo y apertura con Enter.
 
-### v2.2.0 (1 de agosto de 2026)
-- Añadida búsqueda full-text en todas las notas con coincidencias insensibles a mayúsculas y acentos.
-
-### v2.1.0 (1 de agosto de 2026)
-- Actualización de Electron de 36.2.1 a 43.2.0.
-
-### v2.0.1 (19 de julio de 2026)
-- Corregido el problema del módulo de sintaxis de Quill al pasar hljs correctamente.
 
 ## Contribuir
 

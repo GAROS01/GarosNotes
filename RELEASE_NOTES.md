@@ -1,31 +1,29 @@
-# 🎉 GarosNotes v2.2.0 — Release Notes
+# 🎉 GarosNotes v2.2.1 — Release Notes
 
 ## Resumen
-Nueva funcionalidad de **búsqueda full-text** en todas tus notas: presiona `Ctrl + F` para buscar cualquier texto, sin preocuparte por mayúsculas o acentos.
+La búsqueda ahora es totalmente navegable por teclado: recorre los resultados con las flechas `↑` / `↓`, un resaltado marca el resultado activo y `Enter` lo abre directamente.
 
 ---
 
-## ✨ Nuevo: Búsqueda full-text (Ctrl + F)
+## ✨ Nuevo: Navegación en los resultados de búsqueda
 
-- **Busca en todas tus notas** a la vez, recorriendo todas las carpetas y archivos `.json`.
-- **Coincidencia inteligente**: insensible a mayúsculas y acentos (normalización NFD) — buscar "electron" encuentra "Electrón".
-- **Resultados con snippet**: muestra un fragmento del contexto con la coincidencia resaltada en `<mark>`.
-- **Apertura directa**: haz clic (o Enter) en un resultado y la app selecciona la carpeta y abre la nota automáticamente.
-- **Debounce de 250 ms** para una búsqueda fluida mientras escribes.
+- **Flechas `↑` / `↓`**: recorren los resultados con ciclo (al llegar al final vuelve al inicio y viceversa).
+- **Resaltado del resultado activo**: el primer resultado se selecciona automáticamente y se distingue con un fondo morado; la lista se desplaza sola para mantenerlo siempre visible.
+- **`Enter`**: abre el resultado resaltado (o el primero si todavía no hay selección).
+- **Mouse sincronizado**: pasar el cursor por un resultado también actualiza la selección, así el teclado y el ratón siempre van en sintonía.
 
 ### Atajos
 - `Ctrl + F`: abrir búsqueda
+- `↑` / `↓`: recorrer resultados
+- `Enter`: abrir el resultado resaltado
 - `Escape`: cerrar búsqueda
-- `Enter`: abrir el primer resultado
 
 ---
 
 ## 🛠️ Técnico
 
-- **Nuevo:** `ipc/search.js` — handler `buscar-notas` + helper `deltaToTexto()` (extrae texto plano del Delta de Quill).
-- **Nuevo:** `src/js/SearchManager.js` — lógica del modal, debounce y renderizado seguro (`textContent` + `<mark>`, sin HTML inseguro).
-- **Nuevo:** `src/styles/search.css` — estilos del modal, input, resultados y resaltado `#9e03d6`.
-- **Cambios:** `preload.js` (expone `buscarNotas`), `main.js` (registra handler), `FolderManager.js` (`seleccionarCarpeta`), `Shortcuts.js` (Ctrl+F / Escape).
+- **Cambios:** `src/js/SearchManager.js` — nuevos métodos `_moverSeleccion()`, `_seleccionarIndice()` y `_abrirSeleccionado()`; el primer resultado se selecciona al renderizar y se usa `aria-selected` para accesibilidad.
+- **Cambios:** `src/styles/search.css` — nuevo estilo `.search-result.activo` con resaltado en morado.
 
 ---
 
@@ -41,3 +39,5 @@ pnpm run dev
 ---
 
 **Lanzamiento:** 2026-08-01
+
+---

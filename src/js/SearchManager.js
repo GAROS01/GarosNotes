@@ -6,6 +6,7 @@ class SearchManager {
         this.input = document.getElementById("search-input");
         this.resultsList = document.getElementById("search-results");
         this.timer = null;
+        this.indiceSeleccionado = -1;
         this._init();
     }
 
@@ -25,9 +26,15 @@ class SearchManager {
         });
 
         this.input.addEventListener("keydown", (e) => {
-            if (e.key === "Enter") {
-                const primero = this.resultsList.querySelector("li.search-result");
-                if (primero) primero.click();
+            if (e.key === "ArrowDown") {
+                e.preventDefault();
+                this._moverSeleccion(1);
+            } else if (e.key === "ArrowUp") {
+                e.preventDefault();
+                this._moverSeleccion(-1);
+            } else if (e.key === "Enter") {
+                e.preventDefault();
+                this._abrirSeleccionado();
             }
         });
     }
@@ -47,6 +54,7 @@ class SearchManager {
     }
 
     _limpiarResultados() {
+        this.indiceSeleccionado = -1;
         this.resultsList.innerHTML = "";
     }
 
@@ -79,10 +87,11 @@ class SearchManager {
             return;
         }
 
-        resultados.forEach((r) => {
+        resultados.forEach((r, i) => {
             const li = document.createElement("li");
             li.className = "search-result";
             li.setAttribute("role", "option");
+            li.setAttribute("aria-selected", "false");
 
             const titulo = document.createElement("div");
             titulo.className = "search-result-titulo";
@@ -101,8 +110,12 @@ class SearchManager {
             li.appendChild(meta);
 
             li.addEventListener("click", () => this._abrirResultado(r));
+            li.addEventListener("mouseenter", () => this._seleccionarIndice(i));
             this.resultsList.appendChild(li);
         });
+
+        // Seleccionar el primer resultado por defecto
+        this._seleccionarIndice(0);
     }
 
     // Añade el texto con <mark> en las coincidencias usando textContent (sin HTML inseguro)
@@ -153,6 +166,46 @@ class SearchManager {
             .normalize("NFD")
             .replace(/[\u0300-\u036f]/g, "")
             .toLowerCase();
+    }
+
+    // Mueve la selección hacia abajo (1) o hacia arriba (-1), con ciclo
+    _moverSeleccion(direccion) {
+        const resultados = this.resultsList.querySelectorAll("li.search-result");
+        if (resultados.length === 0) return;
+
+        let nuevo = this.indiceSeleccionado;
+        if (nuevo < 0 || nuevo >= resultados.length) {
+            nuevo = direccion > 0 ? 0 : resultados.length - 1;
+        } else {
+            nuevo = (nuevo + direccion + resultados.length) % resultados.length;
+        }
+        this._seleccionarIndice(nuevo);
+    }
+
+    // Aplica el resaltado al resultado indicado y lo mantiene visible
+    _seleccionarIndice(indice) {
+        const resultados = this.resultsList.querySelectorAll("li.search-result");
+        if (indice < 0 || indice >= resultados.length) return;
+
+        this.indiceSeleccionado = indice;
+        resultados.forEach((el, i) => {
+            const activo = i === indice;
+            el.classList.toggle("activo", activo);
+            el.setAttribute("aria-selected", activo ? "true" : "false");
+        });
+        resultados[indice].scrollIntoView({ block: "nearest" });
+    }
+
+    // Abre el resultado resaltado (o el primero si no hay selección)
+    _abrirSeleccionado() {
+        const resultados = this.resultsList.querySelectorAll("li.search-result");
+        if (resultados.length === 0) return;
+
+        const indice =
+            this.indiceSeleccionado >= 0 && this.indiceSeleccionado < resultados.length
+                ? this.indiceSeleccionado
+                : 0;
+        resultados[indice].click();
     }
 
     async _abrirResultado(r) {

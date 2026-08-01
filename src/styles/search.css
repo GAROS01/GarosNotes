@@ -60,6 +60,22 @@
     border-left-color: #9e03d6;
 }
 
+/* Resultado activo (navegación con flechas) */
+.search-result.activo,
+.search-result.activo:hover {
+    background: #6b2b7d;
+    border-left-color: #d46ff2;
+    box-shadow: inset 0 0 0 1px rgba(212, 111, 242, 0.45);
+}
+
+.search-result.activo .search-result-titulo {
+    color: #ffffff;
+}
+
+.search-result.activo .search-result-snippet {
+    color: #f0e3f5;
+}
+
 .search-result-titulo {
     font-weight: 600;
     font-size: 14px;
