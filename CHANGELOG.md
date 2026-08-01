@@ -1,5 +1,18 @@
 # Changelog - GarosNotes
 
+## [2.2.0] - 2026-08-01
+
+### ✨ Búsqueda Full-text
+- **Nuevo:** Búsqueda en todas las notas con `Ctrl + F` (modal `#modal-search`).
+- **Nuevo:** `ipc/search.js` — handler `buscar-notas` que recorre carpetas y archivos `.json` bajo `NOTES_BASE`, extrae texto plano del Delta de Quill (`deltaToTexto`) y busca en contenido y título con coincidencia insensible a mayúsculas y acentos (normalización NFD). Devuelve hasta 50 resultados `{ carpeta, nota, snippet, matchIndex }`.
+- **Nuevo:** `src/js/SearchManager.js` — abre/cierra el modal, debounce de 250 ms, renderizado seguro con `textContent` + `<mark>` (sin HTML inseguro), Enter/click abre el resultado.
+- **Nuevo:** `src/styles/search.css` — estilos del modal, input, resultados y `<mark>` con acento `#9e03d6`.
+- **Cambio:** `FolderManager` — nuevo método `seleccionarCarpeta(nombre)` (refactor del `li.onclick`) para abrir resultados de búsqueda desde cualquier estado.
+- **Cambio:** `Shortcuts` — `Ctrl + F` abre la búsqueda; `Escape` también la cierra.
+- **Cambio:** `preload.js` expone `buscarNotas(consulta)`; `main.js` registra `registerSearchHandlers`.
+
+---
+
 ## [2.1.0] - 2026-08-01
 
 ### ⬆️ Dependencias

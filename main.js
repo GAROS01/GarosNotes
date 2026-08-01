@@ -5,6 +5,7 @@ import { dirname } from "path";
 
 import { registerFolderHandlers } from "./ipc/folders.js";
 import { registerNoteHandlers } from "./ipc/note.js";
+import { registerSearchHandlers } from "./ipc/search.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -27,6 +28,7 @@ function createWindow() {
 
 registerFolderHandlers(ipcMain);
 registerNoteHandlers(ipcMain);
+registerSearchHandlers(ipcMain);
 
 app.whenReady().then(createWindow);
 

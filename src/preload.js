@@ -25,4 +25,7 @@ contextBridge.exposeInMainWorld("api", {
 		ipcRenderer.invoke("eliminar-nota", nombreCarpeta, nombreNota),
 	renombrarNota: (nombreCarpeta, nombreViejo, nombreNuevo) =>
 		ipcRenderer.invoke("renombrar-nota", nombreCarpeta, nombreViejo, nombreNuevo),
+
+	// Búsqueda
+	buscarNotas: (consulta) => ipcRenderer.invoke("buscar-notas", consulta),
 });

@@ -1,7 +1,8 @@
 class Shortcuts {
-    constructor({ folderManager, notesManager, toggleSidebar }) {
+    constructor({ folderManager, notesManager, searchManager, toggleSidebar }) {
         this.folderManager = folderManager;
         this.notesManager = notesManager;
+        this.searchManager = searchManager;
         this.toggleSidebar = toggleSidebar;
         this._init();
     }
@@ -13,6 +14,12 @@ class Shortcuts {
                 this.folderManager.cerrarModalEliminar();
                 this.folderManager.cerrarModalRenombrar();
                 this.notesManager.cerrarModalCrearNota();
+                if (this.searchManager) this.searchManager.cerrar();
+            }
+
+            if (e.ctrlKey && (e.key === "f" || e.key === "F")) {
+                e.preventDefault();
+                if (this.searchManager) this.searchManager.abrir();
             }
 
             if (e.ctrlKey && e.key === "b") {

@@ -10,6 +10,7 @@
 		<title>GarosNotes</title>
 		<link rel="stylesheet" href="./styles/layout.css" />
 		<link rel="stylesheet" href="./styles/modals.css" />
+		<link rel="stylesheet" href="./styles/search.css" />
 		<link rel="stylesheet" href="./styles/sidebar.css" />
 		<link rel="stylesheet" href="./styles/quill-theme.css" />
 		<link rel="stylesheet" href="./styles/syntax-highlighting.css" />
@@ -108,6 +109,28 @@
 			</div>
 		</div>
 
+		<div
+			id="modal-search"
+			class="modal"
+			role="dialog"
+			aria-labelledby="modal-search-title"
+			aria-hidden="true"
+		>
+			<div class="modal-inputs modal-search">
+				<h3 id="modal-search-title">🔍 Buscar en notas</h3>
+				<input
+					type="text"
+					id="search-input"
+					placeholder="Buscar en todas tus notas…"
+					aria-label="Buscar en notas"
+				/>
+				<ul id="search-results" role="listbox" aria-label="Resultados de búsqueda"></ul>
+				<div class="modal-buttons">
+					<button class="boton aceptar" id="close-modal-search">Cerrar</button>
+				</div>
+			</div>
+		</div>
+
 		<!-- Aplicación principal -->
 		<div id="app">
 			<!-- Botón para mostrar sidebar -->
@@ -201,6 +224,29 @@
 						<path d="M10 12l4 4"></path>
 						<path d="M10 12l4 -4"></path>
 						<path d="M4 4l0 16"></path>
+					</svg>
+				</button>
+
+				<!-- Botón para buscar (además del atajo Ctrl+F) -->
+				<button
+					id="search-button"
+					aria-label="Buscar en notas (Ctrl+F)"
+					title="Buscar en notas (Ctrl+F)"
+				>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						width="24"
+						height="24"
+						stroke-width="3"
+						aria-hidden="true"
+					>
+						<circle cx="11" cy="11" r="7"></circle>
+						<path d="M21 21l-4.35 -4.35"></path>
 					</svg>
 				</button>
 			</aside>

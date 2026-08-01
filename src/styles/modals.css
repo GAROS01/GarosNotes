@@ -1,4 +1,4 @@
-#modal, #modal-rename, #modal-delete, #modal-create-note {
+#modal, #modal-rename, #modal-delete, #modal-create-note, #modal-search {
     display: none;
     position: fixed;
     top: 0;

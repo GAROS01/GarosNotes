@@ -1,5 +1,6 @@
 import { FolderManager } from "./FolderManager.js";
 import { NotesManager } from "./NotesManager.js";
+import { SearchManager } from "./SearchManager.js";
 import { Shortcuts } from "./Shortcuts.js";
 
 class App {
@@ -17,11 +18,16 @@ class App {
 
         this.folderManager = new FolderManager("folders");
         this.notesManager = new NotesManager("file-list");
+        this.searchManager = new SearchManager({
+            folderManager: this.folderManager,
+            notesManager: this.notesManager,
+        });
 
         this._registrarEventosDOM();
         new Shortcuts({
             folderManager: this.folderManager,
             notesManager: this.notesManager,
+            searchManager: this.searchManager,
             toggleSidebar: () => this._toggleSidebar(),
         });
 
@@ -123,6 +129,11 @@ class App {
 
         if (toggleAsideHide) {
             toggleAsideHide.addEventListener("click", () => this._ocultarSidebar());
+        }
+
+        const searchButton = document.getElementById("search-button");
+        if (searchButton) {
+            searchButton.addEventListener("click", () => this.searchManager.abrir());
         }
     }
 

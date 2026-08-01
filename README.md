@@ -1,4 +1,4 @@
-# GarosNotes v2.1.0
+# GarosNotes v2.2.0
 
 GarosNotes es una aplicación de escritorio minimalista para tomar y organizar notas, desarrollada con [Electron](https://www.electronjs.org/) y [Vite](https://vitejs.dev/).
 
@@ -9,6 +9,7 @@ GarosNotes es una aplicación de escritorio minimalista para tomar y organizar n
 - **Editor de texto enriquecido**: Utiliza [Quill.js 2.0](https://quilljs.com/) con resaltado de sintaxis avanzado para código.
 - **Resaltado de sintaxis**: Soporte para 13+ lenguajes de programación con [Highlight.js](https://highlightjs.org/).
 - **Autoguardado**: Las notas se guardan automáticamente 1 segundo después de dejar de escribir.
+- **Búsqueda full-text**: Encuentra cualquier texto en todas tus notas con Ctrl + F, insensible a mayúsculas y acentos.
 - **Almacenamiento local**: Tus notas se guardan como archivos `.json` (formato Delta de Quill) en `Documents/GarosNotes`.
 - **Interfaz responsive**: Sidebar ocultable con atajos de teclado (Ctrl + B).
 - **Funciona completamente offline**: No requiere conexión a internet.
@@ -123,8 +124,9 @@ GarosNotes/
 ### Atajos de teclado
 
 - **Ctrl + B**: Mostrar/ocultar sidebar
-- **Escape**: Cerrar modales abiertos
-- **Enter**: Confirmar en modales de texto
+- **Ctrl + F**: Buscar en todas las notas
+- **Escape**: Cerrar modales y la búsqueda
+- **Enter**: Confirmar en modales de texto / abrir primer resultado de búsqueda
 
 ## Tecnologías utilizadas
 
@@ -244,7 +246,10 @@ Renderer (UI) → window.api (preload) → ipcRenderer.invoke()
 
 ## Versiones Recientes
 
-### v2.1.0 (1 de Agosto de 2026) ✨ Actual
+### v2.2.0 (1 de Agosto de 2026) ✨ Actual
+- 🔍 **Nuevo**: Búsqueda full-text en todas las notas (Ctrl + F) con coincidencia insensible a mayúsculas y acentos, snippets resaltados y apertura directa del resultado.
+
+### v2.1.0 (1 de Agosto de 2026)
 - ⬆️ **Actualización**: Electron 36.2.1 → 43.2.0
 
 ### v2.0.1 (19 de Julio de 2026)

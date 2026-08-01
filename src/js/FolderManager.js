@@ -105,16 +105,11 @@ class FolderManager {
 							this.abrirModalEliminar(nombre);
 						};
 
-						// Evento click para seleccionar carpeta
-						li.onclick = () => {
-							// Marcar como seleccionada
-							document
-								.querySelectorAll(".folder-item")
-								.forEach((item) => item.classList.remove("selected"));
-							li.classList.add("selected");
+					// Guardar el nombre en un atributo data para localizarlo luego
+					li.dataset.nombre = nombre;
 
-							eventBus.emit("folder:selected", { name: nombre });
-						};
+					// Evento click para seleccionar carpeta
+					li.onclick = () => this.seleccionarCarpeta(nombre);
 
 						controlsDiv.appendChild(btnRenombrar);
 						controlsDiv.appendChild(btnEliminar);
@@ -130,6 +125,20 @@ class FolderManager {
 			console.error("Error en mostrarCarpetas:", error);
 			this.folderList.innerHTML = `<li>Error: ${error.message}</li>`;
 		}
+	}
+
+	seleccionarCarpeta(nombre) {
+		// Marcar como seleccionada
+		document
+			.querySelectorAll(".folder-item")
+			.forEach((item) => item.classList.remove("selected"));
+
+		const li = [...this.folderList.children].find(
+			(item) => item.dataset.nombre === nombre
+		);
+		if (li) li.classList.add("selected");
+
+		eventBus.emit("folder:selected", { name: nombre });
 	}
 
 	abrirModal() {
