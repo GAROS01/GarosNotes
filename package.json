@@ -1,6 +1,6 @@
 {
     "name": "GarosNotes",
-    "version": "2.0.1",
+    "version": "2.1.0",
     "description": "Block de notas con Electron y resaltado de sintaxis",
     "main": "main.js",
     "type": "module",
@@ -69,7 +69,7 @@
     "author": "Oscar Garzon / GarosDev",
     "license": "MIT",
     "devDependencies": {
-        "electron": "^36.2.1",
+        "electron": "^43.2.0",
         "electron-builder": "^26.0.12",
         "vite": "^8.1.5"
     },

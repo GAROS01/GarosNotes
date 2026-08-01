@@ -1,5 +1,12 @@
 # Changelog - GarosNotes
 
+## [2.1.0] - 2026-08-01
+
+### ⬆️ Dependencias
+- **Electron**: 36.2.1 → 43.2.0. Actualización del framework de escritorio a la rama 43.x para mantenerse al día con el ecosistema y aprovechar las mejoras de rendimiento, seguridad y compatibilidad.
+
+---
+
 ## [2.0.1] - 2026-07-19
 
 ### 🐛 Fix
@@ -91,7 +98,7 @@
 ### Compatibilidad
 - ✅ Node.js v18+
 - ✅ pnpm 8.0+
-- ✅ Electron 36.2.1
+- ✅ Electron 43.2.0
 - ✅ Windows 10+
 
 ### Instalación para Desarrolladores

@@ -1,13 +1,20 @@
-# 🎉 GarosNotes v2.0.1 — Release Notes
+# 🎉 GarosNotes v2.1.0 — Release Notes
 
 ## Resumen
-Hotfix para el error "Syntax module requires highlight.js" que impedía abrir notas. El módulo `syntax` de Quill 2.0 requiere recibir `hljs` como opción explícita en lugar de depender únicamente de `window.hljs`.
+Actualización de la plataforma: se actualiza **Electron de 36.2.1 a 43.2.0**, manteniendo la aplicación al día con las versiones recientes del framework y aprovechando sus mejoras de rendimiento, seguridad y compatibilidad.
 
 ---
 
-## 🐛 Fix
+## ⬆️ Actualizaciones
 
-- **QuillEditor.js**: Cambio de `syntax: true` a `syntax: { hljs }` — el módulo syntax ahora recibe `highlight.js` directamente en sus opciones.
+- **Electron 43.2.0**: Actualización del framework de escritorio desde 36.2.1. Incluye mejoras de estabilidad, seguridad y rendimiento de las versiones 37 → 43.
+
+---
+
+## ✅ Verificación
+
+- `pnpm run dev` — Build con Vite exitoso y la aplicación abre correctamente.
+- `pnpm run build` — Instalador NSIS generado: `release/GarosNotes Setup 2.1.0.exe`.
 
 ---
 
@@ -22,4 +29,4 @@ pnpm run dev
 
 ---
 
-**Lanzamiento:** 2026-07-19
+**Lanzamiento:** 2026-08-01
