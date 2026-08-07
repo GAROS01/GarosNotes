@@ -1,4 +1,4 @@
-# GarosNotes v2.2.1
+# GarosNotes v2.3.0
 
 GarosNotes es una aplicación de escritorio minimalista para tomar, organizar y buscar notas, desarrollada con Electron, Vite y Quill. Está pensada para funcionar de forma local y offline, sin depender de servicios externos.
 
@@ -10,6 +10,11 @@ GarosNotes es una aplicación de escritorio minimalista para tomar, organizar y 
 - Resaltado de sintaxis para más de 12 lenguajes de programación con Highlight.js.
 - Autoguardado automático: el contenido se guarda 1 segundo después de dejar de escribir y el título tras 5 segundos de inactividad.
 - Búsqueda global en todas las notas con Ctrl + F, con coincidencias insensibles a mayúsculas y acentos y resultados con snippets.
+- Papelera de reciclaje: eliminar mueve a la papelera, con opción de restaurar o vaciar definitivamente.
+- Validación de nombres según las reglas de Windows: caracteres prohibidos, nombres reservados y protección contra path traversal.
+- Operaciones de archivos 100 % asíncronas: el proceso principal nunca se bloquea.
+- Instancia única: si ya hay una ventana abierta, la segunda instancia se descarta y se enfoca la existente.
+- Flush de cambios al cerrar: el autoguardado pendiente se ejecuta antes de cerrar la ventana.
 - Almacenamiento local en archivos JSON en Documents/GarosNotes.
 - Sidebar ocultable con accesos rápidos por teclado.
 - Funciona completamente offline.
@@ -63,6 +68,9 @@ GarosNotes/
 │   ├── folders.js               # CRUD de carpetas
 │   ├── note.js                  # CRUD de notas
 │   ├── paths.js                 # Rutas base para el almacenamiento local
+│   ├── validate.js              # Validación de nombres (reglas de Windows)
+│   ├── fs-utils.js              # Utilidades de fs asíncronas (existeRuta, papelera)
+│   ├── trash.js                 # Papelera: listar, restaurar, vaciar
 │   └── search.js                # Búsqueda full-text entre notas
 ├── src/                         # Código fuente de la interfaz
 │   ├── index.html               # Estructura principal de la UI
@@ -76,7 +84,8 @@ GarosNotes/
 │   │   ├── NotesManager.js      # Gestión de notas y editor
 │   │   ├── QuillEditor.js       # Wrapper de Quill + Highlight.js
 │   │   ├── SearchManager.js     # Modal de búsqueda y navegación de resultados
-│   │   └── Shortcuts.js         # Atajos de teclado
+│   │   ├── Shortcuts.js         # Atajos de teclado
+│   │   └── TrashManager.js      # Modal de la papelera (restaurar/vaciar)
 │   └── styles/                  # Estilos CSS de la aplicación
 └── release/                     # Instaladores generados
 ```
@@ -163,8 +172,11 @@ Renderer → window.api → ipcRenderer.invoke() → handlers IPC → fs → res
 
 ## Versiones recientes
 
-### v2.2.1 (1 de agosto de 2026)
-- Búsqueda global mejorada con navegación por flechas, resaltado del resultado activo y apertura con Enter.
+### v2.3.0 (7 de agosto de 2026)
+- Seguridad: validación de nombres de carpetas y notas (reglas de Windows, anti path traversal).
+- Rendimiento: operaciones de archivos 100 % asíncronas con fs/promises.
+- Fiabilidad: flush del autoguardado al cerrar la ventana y protección de instancia única.
+- Papelera de reciclaje con interfaz para restaurar o vaciar elementos.
 
 
 ## Contribuir

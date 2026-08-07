@@ -1,29 +1,47 @@
-# 🎉 GarosNotes v2.2.1 — Release Notes
+# 🎉 GarosNotes v2.3.0 — Release Notes
 
 ## Resumen
-La búsqueda ahora es totalmente navegable por teclado: recorre los resultados con las flechas `↑` / `↓`, un resaltado marca el resultado activo y `Enter` lo abre directamente.
+Esta versión endurece la seguridad y la robustez del sistema de archivos: nombres validados según las reglas de Windows, operaciones 100 % asíncronas, autoguardado garantizado al cerrar la ventana, protección de instancia única y una papelera de reciclaje con interfaz para restaurar o borrar definitivamente.
 
 ---
 
-## ✨ Nuevo: Navegación en los resultados de búsqueda
+## 🛡️ Seguridad y robustez
 
-- **Flechas `↑` / `↓`**: recorren los resultados con ciclo (al llegar al final vuelve al inicio y viceversa).
-- **Resaltado del resultado activo**: el primer resultado se selecciona automáticamente y se distingue con un fondo morado; la lista se desplaza sola para mantenerlo siempre visible.
-- **`Enter`**: abre el resultado resaltado (o el primero si todavía no hay selección).
-- **Mouse sincronizado**: pasar el cursor por un resultado también actualiza la selección, así el teclado y el ratón siempre van en sintonía.
+### ✅ Validación de nombres
+- Los nombres de carpetas y notas se validan **antes** de tocar el disco: longitud 1-100, sin caracteres inválidos (`/ \ : * ? " < > |` ni de control), sin espacios o puntos al inicio/final, sin nombres reservados de Windows (CON, PRN, AUX, NUL, COM1-9, LPT1-9) y sin path traversal (`.` / `..`).
+- Si el nombre es inválido, la app lo rechaza con un mensaje claro en lugar de fallar silenciosamente.
 
-### Atajos
-- `Ctrl + F`: abrir búsqueda
-- `↑` / `↓`: recorrer resultados
-- `Enter`: abrir el resultado resaltado
-- `Escape`: cerrar búsqueda
+### ⚡ Operaciones 100 % asíncronas
+- Todos los handlers IPC migran a `fs/promises`: el proceso principal nunca se bloquea con llamadas síncronas, aunque las notas sean grandes o el disco esté lento.
+
+### 💾 Flush al cerrar la ventana
+- Al cerrar, la app guarda de inmediato cualquier cambio pendiente del autoguardado antes de destruir la ventana (con timeout de seguridad de 2 s).
+
+### 🪟 Instancia única
+- Si intentas abrir una segunda ventana, se descarta automáticamente y se enfoca la que ya está abierta.
+
+---
+
+## 🗑️ Papelera de reciclaje
+
+- Eliminar ya no borra para siempre: las carpetas y notas se mueven a una papelera interna (`.papelera/`).
+- Botón 🗑️ en la barra lateral: abre el modal con los elementos eliminados.
+- **Restaurar** cada elemento con un clic — vuelve a su ubicación original.
+- **Vaciar papelera** con confirmación para borrar definitivamente.
+- La papelera queda oculta de las listas y de la búsqueda.
+- El modal de eliminación avisa que el elemento se moverá a la papelera.
 
 ---
 
 ## 🛠️ Técnico
 
-- **Cambios:** `src/js/SearchManager.js` — nuevos métodos `_moverSeleccion()`, `_seleccionarIndice()` y `_abrirSeleccionado()`; el primer resultado se selecciona al renderizar y se usa `aria-selected` para accesibilidad.
-- **Cambios:** `src/styles/search.css` — nuevo estilo `.search-result.activo` con resaltado en morado.
+- **Nuevo:** `ipc/validate.js` — `validarNombre(nombre, tipo)`.
+- **Nuevo:** `ipc/fs-utils.js` — `existeRuta()` y `moverAPapelera()`.
+- **Nuevo:** `ipc/trash.js` — handlers `listar-papelera`, `restaurar-elemento`, `vaciar-papelera`.
+- **Nuevo:** `src/js/TrashManager.js` — UI del modal de la papelera.
+- **Cambio:** `ipc/folders.js`, `ipc/note.js`, `ipc/search.js` — migración a `fs/promises` y filtrado de la papelera en listas y búsqueda.
+- **Cambio:** `main.js` — flush de cierre con confirmación y timeout, e instancia única.
+- **Cambio:** `src/preload.js` — nueva API de papelera (`listarPapelera`, `restaurarElemento`, `vaciarPapelera`).
 
 ---
 
@@ -38,6 +56,6 @@ pnpm run dev
 
 ---
 
-**Lanzamiento:** 2026-08-01
+**Lanzamiento:** 2026-08-07
 
 ---

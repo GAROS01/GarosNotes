@@ -1,5 +1,33 @@
 # Changelog - GarosNotes
 
+## [2.3.0] - 2026-08-07
+
+### 🛡️ Seguridad y robustez del sistema de archivos (FASE 1)
+
+#### ✅ Validación de nombres
+- **Nuevo:** `ipc/validate.js` — `validarNombre(nombre, tipo)` valida carpetas y notas según las reglas de Windows: longitud 1-100, sin caracteres inválidos (`/ \ : * ? " < > |` ni de control), sin espacios/puntos al inicio o final, sin nombres reservados (CON, PRN, AUX, NUL, COM1-9, LPT1-9 — insensible a mayúsculas y con extensión) y sin segmentos `.` / `..` (path traversal).
+- **Cambio:** `ipc/folders.js` e `ipc/note.js` — todos los handlers IPC validan los nombres recibidos antes de tocar el sistema de archivos; ante un nombre inválido devuelven `{ ok: false, error: "Nombre no válido: ..." }`.
+
+#### ⚡ Operaciones de archivos 100 % asíncronas
+- **Cambio:** `ipc/folders.js`, `ipc/note.js` e `ipc/search.js` migrados a `fs/promises` (`mkdir`, `readdir`, `readFile`, `writeFile`, `rename`, `rm`, `unlink`) — el proceso principal ya no se bloquea con llamadas síncronas.
+- **Nuevo:** `ipc/fs-utils.js` — `existeRuta()` (basado en `access()`) reemplaza los 11 usos de `existsSync`.
+
+#### 💾 Flush de cambios al cerrar la ventana
+- **Nuevo:** al cerrar la ventana, el proceso principal avisa al renderer (`app:before-close`), que ejecuta el autoguardado pendiente de inmediato (`NotesManager.flush()` + `AutoSave.flush()`) y confirma el cierre (`app:close-confirmed`) con un timeout de seguridad de 2 s.
+- **Nuevo:** `AutoSave.flush()` ejecuta la operación pendiente al instante en lugar de esperar el debounce (1 s contenido / 5 s título).
+
+#### 🪟 Protección de multi-instancia
+- **Nuevo:** `app.requestSingleInstanceLock()` — si ya hay otra instancia abierta, la nueva se cierra y la existente se restaura y enfoca (evento `second-instance`).
+
+#### 🗑️ Papelera de reciclaje
+- **Nuevo:** eliminar carpetas/notas ya no las borra definitivamente: se mueven a `.papelera/` dentro de `Documents/GarosNotes` (`.papelera/carpetas/` y `.papelera/notas/<carpeta>/`).
+- **Nuevo:** `ipc/trash.js` — handlers `listar-papelera`, `restaurar-elemento` y `vaciar-papelera`.
+- **Cambio:** `listar-carpetas`, `listar-notas` y la búsqueda ocultan la papelera (entradas que empiezan por punto).
+- **Nuevo:** UI de la papelera — botón 🗑️ en la barra lateral y modal con lista de elementos, botón "♻️ Restaurar" por elemento y "Vaciar papelera" con confirmación. El modal de eliminación avisa que el elemento se moverá a la papelera.
+- **Fix:** el modal de la papelera se muestra como overlay sobre la app (mismo comportamiento que el modal de búsqueda).
+
+---
+
 ## [2.2.1] - 2026-08-01
 
 ### ⌨️ Navegación en la búsqueda
