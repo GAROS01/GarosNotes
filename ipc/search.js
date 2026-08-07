@@ -1,4 +1,5 @@
 import fs from "fs";
+import { readdir, readFile } from "fs/promises";
 import { NOTES_BASE, folderPath, notePath } from "./paths.js";
 
 // Extrae el texto plano de un Delta de Quill (JSON) para poder buscarlo.
@@ -80,8 +81,7 @@ export function registerSearchHandlers(ipcMain) {
                 return { ok: true, resultados };
             }
 
-            const carpetas = fs
-                .readdirSync(NOTES_BASE, { withFileTypes: true })
+            const carpetas = (await readdir(NOTES_BASE, { withFileTypes: true }))
                 .filter((dirent) => dirent.isDirectory())
                 .map((dirent) => dirent.name);
 
@@ -89,8 +89,7 @@ export function registerSearchHandlers(ipcMain) {
                 const carpetaRuta = folderPath(carpeta);
                 let notas;
                 try {
-                    notas = fs
-                        .readdirSync(carpetaRuta, { withFileTypes: true })
+                    notas = (await readdir(carpetaRuta, { withFileTypes: true }))
                         .filter((dirent) => dirent.isFile() && dirent.name.endsWith(".json"))
                         .map((dirent) => dirent.name.replace(/\.json$/, ""));
                 } catch {
@@ -100,7 +99,7 @@ export function registerSearchHandlers(ipcMain) {
                 for (const nota of notas) {
                     let texto = "";
                     try {
-                        const contenido = fs.readFileSync(notePath(carpeta, nota), "utf8");
+                        const contenido = await readFile(notePath(carpeta, nota), "utf8");
                         texto = deltaToTexto(contenido);
                     } catch {
                         continue;

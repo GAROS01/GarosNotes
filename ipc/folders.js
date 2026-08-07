@@ -1,4 +1,5 @@
 import fs from "fs";
+import { mkdir, readdir, rm, rename } from "fs/promises";
 import { NOTES_BASE, folderPath } from "./paths.js";
 import { validarNombre } from "./validate.js";
 
@@ -16,7 +17,7 @@ export function registerFolderHandlers(ipcMain) {
         console.log("Creando carpeta:", nombreCarpeta);
         try {
             const ruta = folderPath(nombreCarpeta);
-            fs.mkdirSync(ruta, { recursive: true });
+            await mkdir(ruta, { recursive: true });
             return { ok: true, path: ruta };
         } catch (error) {
             return { ok: false, error: error.message };
@@ -26,10 +27,9 @@ export function registerFolderHandlers(ipcMain) {
     ipcMain.handle("listar-carpetas", async () => {
         try {
             if (!fs.existsSync(NOTES_BASE)) {
-                fs.mkdirSync(NOTES_BASE, { recursive: true });
+                await mkdir(NOTES_BASE, { recursive: true });
             }
-            const carpetas = fs
-                .readdirSync(NOTES_BASE, { withFileTypes: true })
+            const carpetas = (await readdir(NOTES_BASE, { withFileTypes: true }))
                 .filter((dirent) => dirent.isDirectory())
                 .map((dirent) => dirent.name);
             return { ok: true, carpetas };
@@ -48,7 +48,7 @@ export function registerFolderHandlers(ipcMain) {
             if (!fs.existsSync(ruta)) {
                 return { ok: false, error: "La carpeta no existe" };
             }
-            fs.rmSync(ruta, { recursive: true, force: true });
+            await rm(ruta, { recursive: true, force: true });
             return { ok: true, path: ruta };
         } catch (error) {
             return { ok: false, error: error.message };
@@ -73,7 +73,7 @@ export function registerFolderHandlers(ipcMain) {
                 return { ok: false, error: "Ya existe una carpeta con ese nombre" };
             }
 
-            fs.renameSync(rutaVieja, rutaNueva);
+            await rename(rutaVieja, rutaNueva);
             return { ok: true, path: rutaNueva };
         } catch (error) {
             return { ok: false, error: error.message };

@@ -1,4 +1,5 @@
 import fs from "fs";
+import { readdir, readFile, writeFile, rename, unlink } from "fs/promises";
 import { folderPath, notePath } from "./paths.js";
 import { validarNombre } from "./validate.js";
 
@@ -22,7 +23,7 @@ export function registerNoteHandlers(ipcMain) {
             if (!fs.existsSync(carpeta)) {
                 return { ok: false, error: "La carpeta no existe" };
             }
-            fs.writeFileSync(ruta, contenido, "utf8");
+            await writeFile(ruta, contenido, "utf8");
             return { ok: true, path: ruta };
         } catch (error) {
             return { ok: false, error: error.message };
@@ -39,8 +40,7 @@ export function registerNoteHandlers(ipcMain) {
             if (!fs.existsSync(carpeta)) {
                 return { ok: false, error: "La carpeta no existe" };
             }
-            const notas = fs
-                .readdirSync(carpeta, { withFileTypes: true })
+            const notas = (await readdir(carpeta, { withFileTypes: true }))
                 .filter((dirent) => dirent.isFile() && dirent.name.endsWith(".json"))
                 .map((dirent) => dirent.name.replace(".json", ""));
             return { ok: true, notas };
@@ -61,7 +61,7 @@ export function registerNoteHandlers(ipcMain) {
             if (!fs.existsSync(ruta)) {
                 return { ok: false, error: "La nota no existe" };
             }
-            const contenido = fs.readFileSync(ruta, "utf8");
+            const contenido = await readFile(ruta, "utf8");
             return { ok: true, contenido };
         } catch (error) {
             return { ok: false, error: error.message };
@@ -77,7 +77,7 @@ export function registerNoteHandlers(ipcMain) {
         console.log("Guardando nota:", nombreNota, "en carpeta:", nombreCarpeta);
         try {
             const ruta = notePath(nombreCarpeta, nombreNota);
-            fs.writeFileSync(ruta, contenido, "utf8");
+            await writeFile(ruta, contenido, "utf8");
             return { ok: true, path: ruta };
         } catch (error) {
             return { ok: false, error: error.message };
@@ -96,7 +96,7 @@ export function registerNoteHandlers(ipcMain) {
             if (!fs.existsSync(ruta)) {
                 return { ok: false, error: "La nota no existe" };
             }
-            fs.unlinkSync(ruta);
+            await unlink(ruta);
             return { ok: true, path: ruta };
         } catch (error) {
             return { ok: false, error: error.message };
@@ -123,7 +123,7 @@ export function registerNoteHandlers(ipcMain) {
                 return { ok: false, error: "Ya existe una nota con ese nombre" };
             }
 
-            fs.renameSync(rutaVieja, rutaNueva);
+            await rename(rutaVieja, rutaNueva);
             return { ok: true, path: rutaNueva };
         } catch (error) {
             return { ok: false, error: error.message };
