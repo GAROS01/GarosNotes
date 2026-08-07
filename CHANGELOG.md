@@ -1,5 +1,22 @@
 # Changelog - GarosNotes
 
+## [2.3.1] - 2026-08-07
+
+### ⚡ Rendimiento de búsqueda (FASE 3)
+
+#### 📇 Índice de búsqueda en memoria
+- **Nuevo:** `ipc/searchIndex.js` — índice en memoria del proceso principal con una entrada por nota: `{ carpeta, nota, texto, textoNormalizado, tituloNormalizado, timestampModificacion }` (con `stat().mtimeMs` por archivo).
+- **Nuevo:** el índice se construye al arrancar (`app.whenReady`) recorriendo `Documents/GarosNotes` una sola vez; si una búsqueda llega antes de terminar, espera la construcción en curso.
+- **Cambio:** `buscar-notas` consulta el índice y solo relee del disco las notas cuyo `mtimeMs` haya cambiado desde la última indexación; el snippet y el `matchIndex` se mantienen calculados desde el texto original con el mapa de normalización existente.
+- **Nuevo:** reindexación incremental — `crear-nota`, `guardar-nota` y `renombrar-nota` actualizan la entrada del índice y `eliminar-nota` la elimina; también se mantiene el índice al renombrar/eliminar carpetas y al restaurar elementos desde la papelera.
+- **Cambio:** `ipc/search.js` delega en el índice; `ipc/note.js`, `ipc/folders.js` e `ipc/trash.js` actualizan el índice de forma incremental; `main.js` construye el índice al arrancar.
+
+#### 🔄 Debounce correcto y cancelación de peticiones
+- **Cambio:** `src/js/SearchManager.js` — contador de peticiones: cada búsqueda nueva invalida las respuestas en vuelo de búsquedas antiguas, evitando carreras (una búsqueda vieja nunca pisa a una más reciente), además del debounce de 250 ms existente.
+- **Cambio:** al cambiar el input, abrir o cerrar el modal también se invalidan las peticiones en vuelo.
+
+---
+
 ## [2.3.0] - 2026-08-07
 
 ### 🛡️ Seguridad y robustez del sistema de archivos (FASE 1)

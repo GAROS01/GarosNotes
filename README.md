@@ -1,4 +1,4 @@
-# GarosNotes v2.3.0
+# GarosNotes v2.3.1
 
 GarosNotes es una aplicación de escritorio minimalista para tomar, organizar y buscar notas, desarrollada con Electron, Vite y Quill. Está pensada para funcionar de forma local y offline, sin depender de servicios externos.
 
@@ -9,7 +9,7 @@ GarosNotes es una aplicación de escritorio minimalista para tomar, organizar y 
 - Editor enriquecido con Quill.js, incluyendo listas, tablas básicas, estilos de texto, bloques de código y resaltado de sintaxis.
 - Resaltado de sintaxis para más de 12 lenguajes de programación con Highlight.js.
 - Autoguardado automático: el contenido se guarda 1 segundo después de dejar de escribir y el título tras 5 segundos de inactividad.
-- Búsqueda global en todas las notas con Ctrl + F, con coincidencias insensibles a mayúsculas y acentos y resultados con snippets.
+- Búsqueda global en todas las notas con Ctrl + F, con coincidencias insensibles a mayúsculas y acentos y resultados con snippets, respaldada por un índice en memoria que evita releer y re-normalizar todos los archivos en cada pulsación.
 - Papelera de reciclaje: eliminar mueve a la papelera, con opción de restaurar o vaciar definitivamente.
 - Validación de nombres según las reglas de Windows: caracteres prohibidos, nombres reservados y protección contra path traversal.
 - Operaciones de archivos 100 % asíncronas: el proceso principal nunca se bloquea.
@@ -171,6 +171,11 @@ Renderer → window.api → ipcRenderer.invoke() → handlers IPC → fs → res
 ```
 
 ## Versiones recientes
+
+### v2.3.1 (7 de agosto de 2026)
+- Rendimiento: índice de búsqueda en memoria que se construye al arrancar; las búsquedas responden sin releer ni re-normalizar todos los archivos en cada pulsación (solo relee las notas modificadas).
+- Reindexación incremental: crear, guardar, renombrar o eliminar notas/carpetas actualiza el índice al instante (incluida la restauración desde la papelera).
+- Fiabilidad: cancelación de peticiones en la búsqueda — las respuestas de búsquedas antiguas se descartan para evitar carreras.
 
 ### v2.3.0 (7 de agosto de 2026)
 - Seguridad: validación de nombres de carpetas y notas (reglas de Windows, anti path traversal).
