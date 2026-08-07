@@ -82,7 +82,7 @@ export function registerSearchHandlers(ipcMain) {
             }
 
             const carpetas = (await readdir(NOTES_BASE, { withFileTypes: true }))
-                .filter((dirent) => dirent.isDirectory())
+                .filter((dirent) => dirent.isDirectory() && !dirent.name.startsWith("."))
                 .map((dirent) => dirent.name);
 
             for (const carpeta of carpetas) {

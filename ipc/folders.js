@@ -1,5 +1,5 @@
-import { mkdir, readdir, rm, rename } from "fs/promises";
-import { existeRuta } from "./fs-utils.js";
+import { mkdir, readdir, rename } from "fs/promises";
+import { existeRuta, moverAPapelera } from "./fs-utils.js";
 import { NOTES_BASE, folderPath } from "./paths.js";
 import { validarNombre } from "./validate.js";
 
@@ -30,7 +30,7 @@ export function registerFolderHandlers(ipcMain) {
                 await mkdir(NOTES_BASE, { recursive: true });
             }
             const carpetas = (await readdir(NOTES_BASE, { withFileTypes: true }))
-                .filter((dirent) => dirent.isDirectory())
+                .filter((dirent) => dirent.isDirectory() && !dirent.name.startsWith("."))
                 .map((dirent) => dirent.name);
             return { ok: true, carpetas };
         } catch (error) {
@@ -48,8 +48,8 @@ export function registerFolderHandlers(ipcMain) {
             if (!(await existeRuta(ruta))) {
                 return { ok: false, error: "La carpeta no existe" };
             }
-            await rm(ruta, { recursive: true, force: true });
-            return { ok: true, path: ruta };
+            const destino = await moverAPapelera("carpeta", nombreCarpeta);
+            return { ok: true, path: destino };
         } catch (error) {
             return { ok: false, error: error.message };
         }

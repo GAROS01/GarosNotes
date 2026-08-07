@@ -6,6 +6,7 @@ import { dirname } from "path";
 import { registerFolderHandlers } from "./ipc/folders.js";
 import { registerNoteHandlers } from "./ipc/note.js";
 import { registerSearchHandlers } from "./ipc/search.js";
+import { registerTrashHandlers } from "./ipc/trash.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -65,6 +66,7 @@ function createWindow() {
 registerFolderHandlers(ipcMain);
 registerNoteHandlers(ipcMain);
 registerSearchHandlers(ipcMain);
+registerTrashHandlers(ipcMain);
 
 // Protección de multi-instancia: si otra instancia ya tiene el lock, esta se cierra.
 if (!app.requestSingleInstanceLock()) {

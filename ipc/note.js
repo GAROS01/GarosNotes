@@ -1,5 +1,5 @@
-import { readdir, readFile, writeFile, rename, unlink } from "fs/promises";
-import { existeRuta } from "./fs-utils.js";
+import { readdir, readFile, writeFile, rename } from "fs/promises";
+import { existeRuta, moverAPapelera } from "./fs-utils.js";
 import { folderPath, notePath } from "./paths.js";
 import { validarNombre } from "./validate.js";
 
@@ -41,7 +41,12 @@ export function registerNoteHandlers(ipcMain) {
                 return { ok: false, error: "La carpeta no existe" };
             }
             const notas = (await readdir(carpeta, { withFileTypes: true }))
-                .filter((dirent) => dirent.isFile() && dirent.name.endsWith(".json"))
+                .filter(
+                    (dirent) =>
+                        dirent.isFile() &&
+                        !dirent.name.startsWith(".") &&
+                        dirent.name.endsWith(".json")
+                )
                 .map((dirent) => dirent.name.replace(".json", ""));
             return { ok: true, notas };
         } catch (error) {
@@ -96,8 +101,8 @@ export function registerNoteHandlers(ipcMain) {
             if (!(await existeRuta(ruta))) {
                 return { ok: false, error: "La nota no existe" };
             }
-            await unlink(ruta);
-            return { ok: true, path: ruta };
+            const destino = await moverAPapelera("nota", nombreNota, nombreCarpeta);
+            return { ok: true, path: destino };
         } catch (error) {
             return { ok: false, error: error.message };
         }

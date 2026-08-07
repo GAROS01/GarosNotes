@@ -1,4 +1,4 @@
-#modal, #modal-rename, #modal-delete, #modal-create-note, #modal-search {
+#modal, #modal-rename, #modal-delete, #modal-create-note, #modal-search, #modal-trash {
     display: none;
     position: fixed;
     top: 0;
@@ -53,4 +53,85 @@
     border-radius: 5px;
     padding: 8px;
     text-align: center;
+}
+
+#papelera-aviso {
+    color: #ffa500;
+    font-size: 13px;
+    margin: 0;
+    padding: 6px 10px;
+    background-color: rgba(255, 165, 0, 0.1);
+    border: 1px solid rgba(255, 165, 0, 0.4);
+    border-radius: 5px;
+}
+
+/* Panel del modal de la papelera, igual que el de búsqueda */
+.modal-trash {
+    width: 50%;
+    max-width: 620px;
+    min-width: 320px;
+    text-align: left;
+}
+
+#trash-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-height: 320px;
+    overflow-y: auto;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.trash-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    background: #575757;
+    padding: 8px 12px;
+    border-radius: 6px;
+}
+
+.trash-item-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.trash-item-nombre {
+    color: white;
+    font-size: 14px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.trash-item-meta {
+    color: #aaa;
+    font-size: 12px;
+}
+
+.trash-empty {
+    color: #aaa;
+    text-align: center;
+    padding: 20px 0;
+    font-size: 14px;
+}
+
+.restaurar-btn {
+    background-color: #9e03d6;
+    border: none;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: background-color 0.2s ease;
+    flex-shrink: 0;
+}
+
+.restaurar-btn:hover {
+    background-color: #7d02ab;
 }

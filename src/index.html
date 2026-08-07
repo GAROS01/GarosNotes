@@ -77,6 +77,7 @@
 		>
 			<div class="modal-inputs">
 				<h3 id="modal-delete-title">¿Quieres eliminar este elemento?</h3>
+				<p id="papelera-aviso">🗑️ El elemento se moverá a la papelera.</p>
 				<div class="modal-buttons">
 					<button class="boton aceptar" id="delete-file">Confirmar</button>
 					<button class="boton" id="close-modal-delete-file">Cancelar</button>
@@ -127,6 +128,23 @@
 				<ul id="search-results" role="listbox" aria-label="Resultados de búsqueda"></ul>
 				<div class="modal-buttons">
 					<button class="boton aceptar" id="close-modal-search">Cerrar</button>
+				</div>
+			</div>
+		</div>
+
+		<div
+			id="modal-trash"
+			class="modal"
+			role="dialog"
+			aria-labelledby="modal-trash-title"
+			aria-hidden="true"
+		>
+			<div class="modal-inputs modal-trash">
+				<h3 id="modal-trash-title">🗑️ Papelera</h3>
+				<ul id="trash-list" role="list" aria-label="Elementos en la papelera"></ul>
+				<div class="modal-buttons">
+					<button class="boton" id="vaciar-papelera">Vaciar papelera</button>
+					<button class="boton aceptar" id="close-modal-trash">Cerrar</button>
 				</div>
 			</div>
 		</div>
@@ -245,11 +263,37 @@
 						stroke-width="3"
 						aria-hidden="true"
 					>
-						<circle cx="11" cy="11" r="7"></circle>
-						<path d="M21 21l-4.35 -4.35"></path>
+					<circle cx="11" cy="11" r="7"></circle>
+					<path d="M21 21l-4.35 -4.35"></path>
+				</svg>
+			</button>
+
+				<!-- Botón para abrir la papelera -->
+				<button
+					id="trash-button"
+					aria-label="Abrir papelera"
+					title="Papelera"
+				>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						width="24"
+						height="24"
+						stroke-width="3"
+						aria-hidden="true"
+					>
+						<path d="M3 6l18 0"></path>
+						<path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6"></path>
+						<path d="M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2"></path>
+						<path d="M10 11l0 6"></path>
+						<path d="M14 11l0 6"></path>
 					</svg>
 				</button>
-			</aside>
+		</aside>
 
 			<!-- Mensaje de bienvenida -->
 			<div id="placeholder-message" role="main" aria-labelledby="welcome-heading">

@@ -2,6 +2,7 @@ import { FolderManager } from "./FolderManager.js";
 import { NotesManager } from "./NotesManager.js";
 import { SearchManager } from "./SearchManager.js";
 import { Shortcuts } from "./Shortcuts.js";
+import { TrashManager } from "./TrashManager.js";
 
 class App {
     constructor() {
@@ -22,12 +23,17 @@ class App {
             folderManager: this.folderManager,
             notesManager: this.notesManager,
         });
+        this.trashManager = new TrashManager({
+            folderManager: this.folderManager,
+            notesManager: this.notesManager,
+        });
 
         this._registrarEventosDOM();
         new Shortcuts({
             folderManager: this.folderManager,
             notesManager: this.notesManager,
             searchManager: this.searchManager,
+            trashManager: this.trashManager,
             toggleSidebar: () => this._toggleSidebar(),
         });
 
@@ -135,6 +141,11 @@ class App {
         const searchButton = document.getElementById("search-button");
         if (searchButton) {
             searchButton.addEventListener("click", () => this.searchManager.abrir());
+        }
+
+        const trashButton = document.getElementById("trash-button");
+        if (trashButton) {
+            trashButton.addEventListener("click", () => this.trashManager.abrir());
         }
     }
 

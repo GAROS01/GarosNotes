@@ -34,4 +34,10 @@ contextBridge.exposeInMainWorld("api", {
 		ipcRenderer.on("app:before-close", () => callback());
 	},
 	confirmarCierre: () => ipcRenderer.send("app:close-confirmed"),
+
+	// Papelera
+	listarPapelera: () => ipcRenderer.invoke("listar-papelera"),
+	restaurarElemento: (tipo, nombre, carpetaOrigen) =>
+		ipcRenderer.invoke("restaurar-elemento", tipo, nombre, carpetaOrigen),
+	vaciarPapelera: () => ipcRenderer.invoke("vaciar-papelera"),
 });
