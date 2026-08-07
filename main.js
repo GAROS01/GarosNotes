@@ -13,6 +13,10 @@ const __dirname = dirname(__filename);
 // Tiempo máximo de espera al flush de cierre del renderer (ms).
 const TIEMPO_MAXIMO_FLUSH_MS = 2000;
 
+// Referencia a la ventana principal para restaurarla/enfocarla si se lanza
+// una segunda instancia de la app.
+let ventanaPrincipal = null;
+
 function createWindow() {
     const win = new BrowserWindow({
         width: 1100,
@@ -54,14 +58,34 @@ function createWindow() {
 
         ipcMain.once("app:close-confirmed", onConfirmado);
     });
+
+    return win;
 }
 
 registerFolderHandlers(ipcMain);
 registerNoteHandlers(ipcMain);
 registerSearchHandlers(ipcMain);
 
-app.whenReady().then(createWindow);
+// Protección de multi-instancia: si otra instancia ya tiene el lock, esta se cierra.
+if (!app.requestSingleInstanceLock()) {
+    app.quit();
+} else {
+    // Si el usuario intenta abrir una segunda instancia, restaurar y enfocar la
+    // ventana principal en lugar de duplicar la app.
+    app.on("second-instance", () => {
+        if (ventanaPrincipal) {
+            if (ventanaPrincipal.isMinimized()) {
+                ventanaPrincipal.restore();
+            }
+            ventanaPrincipal.focus();
+        }
+    });
 
-app.on("window-all-closed", () => {
-    if (process.platform !== "darwin") app.quit();
-});
+    app.whenReady().then(() => {
+        ventanaPrincipal = createWindow();
+    });
+
+    app.on("window-all-closed", () => {
+        if (process.platform !== "darwin") app.quit();
+    });
+}
