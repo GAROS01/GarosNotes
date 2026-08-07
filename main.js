@@ -7,6 +7,7 @@ import { registerFolderHandlers } from "./ipc/folders.js";
 import { registerNoteHandlers } from "./ipc/note.js";
 import { registerSearchHandlers } from "./ipc/search.js";
 import { registerTrashHandlers } from "./ipc/trash.js";
+import { construirIndice } from "./ipc/searchIndex.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -85,6 +86,13 @@ if (!app.requestSingleInstanceLock()) {
 
     app.whenReady().then(() => {
         ventanaPrincipal = createWindow();
+
+        // Construir el índice de búsqueda en memoria al arrancar. No bloquea la
+        // apertura de la ventana: si una búsqueda llega mientras se construye,
+        // espera a que termine la construcción en curso.
+        construirIndice().catch((error) => {
+            console.error("Error al construir el índice de búsqueda:", error);
+        });
     });
 
     app.on("window-all-closed", () => {

@@ -11,6 +11,7 @@ import {
 } from "./paths.js";
 import { existeRuta } from "./fs-utils.js";
 import { validarNombre } from "./validate.js";
+import { actualizarEntrada, reindexarCarpeta } from "./searchIndex.js";
 
 export function registerTrashHandlers(ipcMain) {
     // Lista los elementos que están en la papelera (carpetas y notas).
@@ -70,6 +71,7 @@ export function registerTrashHandlers(ipcMain) {
                     return { ok: false, error: "Ya existe una carpeta con ese nombre" };
                 }
                 await rename(origen, destino);
+                await reindexarCarpeta(nombre);
                 return { ok: true, path: destino };
             }
 
@@ -93,6 +95,7 @@ export function registerTrashHandlers(ipcMain) {
                 // Si la carpeta original ya no existe, se recrea para poder restaurar
                 await mkdir(folderPath(carpetaOrigen), { recursive: true });
                 await rename(origen, destino);
+                await actualizarEntrada(carpetaOrigen, nombre);
                 return { ok: true, path: destino };
             }
 

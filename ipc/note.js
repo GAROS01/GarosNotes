@@ -2,6 +2,11 @@ import { readdir, readFile, writeFile, rename } from "fs/promises";
 import { existeRuta, moverAPapelera } from "./fs-utils.js";
 import { folderPath, notePath } from "./paths.js";
 import { validarNombre } from "./validate.js";
+import {
+    actualizarEntrada,
+    eliminarEntrada,
+    renombrarEntrada,
+} from "./searchIndex.js";
 
 // Valida un nombre; devuelve el objeto de error si es inválido o null si es válido.
 function validarOError(nombre, tipo) {
@@ -24,6 +29,7 @@ export function registerNoteHandlers(ipcMain) {
                 return { ok: false, error: "La carpeta no existe" };
             }
             await writeFile(ruta, contenido, "utf8");
+            await actualizarEntrada(nombreCarpeta, nombreNota);
             return { ok: true, path: ruta };
         } catch (error) {
             return { ok: false, error: error.message };
@@ -83,6 +89,7 @@ export function registerNoteHandlers(ipcMain) {
         try {
             const ruta = notePath(nombreCarpeta, nombreNota);
             await writeFile(ruta, contenido, "utf8");
+            await actualizarEntrada(nombreCarpeta, nombreNota);
             return { ok: true, path: ruta };
         } catch (error) {
             return { ok: false, error: error.message };
@@ -102,6 +109,7 @@ export function registerNoteHandlers(ipcMain) {
                 return { ok: false, error: "La nota no existe" };
             }
             const destino = await moverAPapelera("nota", nombreNota, nombreCarpeta);
+            eliminarEntrada(nombreCarpeta, nombreNota);
             return { ok: true, path: destino };
         } catch (error) {
             return { ok: false, error: error.message };
@@ -129,6 +137,7 @@ export function registerNoteHandlers(ipcMain) {
             }
 
             await rename(rutaVieja, rutaNueva);
+            await renombrarEntrada(nombreCarpeta, nombreViejo, nombreNuevo);
             return { ok: true, path: rutaNueva };
         } catch (error) {
             return { ok: false, error: error.message };
