@@ -1,5 +1,5 @@
-import fs from "fs";
 import { readdir, readFile, writeFile, rename, unlink } from "fs/promises";
+import { existeRuta } from "./fs-utils.js";
 import { folderPath, notePath } from "./paths.js";
 import { validarNombre } from "./validate.js";
 
@@ -20,7 +20,7 @@ export function registerNoteHandlers(ipcMain) {
         try {
             const ruta = notePath(nombreCarpeta, nombreNota);
             const carpeta = folderPath(nombreCarpeta);
-            if (!fs.existsSync(carpeta)) {
+            if (!(await existeRuta(carpeta))) {
                 return { ok: false, error: "La carpeta no existe" };
             }
             await writeFile(ruta, contenido, "utf8");
@@ -37,7 +37,7 @@ export function registerNoteHandlers(ipcMain) {
         console.log("Listando notas de carpeta:", nombreCarpeta);
         try {
             const carpeta = folderPath(nombreCarpeta);
-            if (!fs.existsSync(carpeta)) {
+            if (!(await existeRuta(carpeta))) {
                 return { ok: false, error: "La carpeta no existe" };
             }
             const notas = (await readdir(carpeta, { withFileTypes: true }))
@@ -58,7 +58,7 @@ export function registerNoteHandlers(ipcMain) {
         console.log("Leyendo nota:", nombreNota, "de carpeta:", nombreCarpeta);
         try {
             const ruta = notePath(nombreCarpeta, nombreNota);
-            if (!fs.existsSync(ruta)) {
+            if (!(await existeRuta(ruta))) {
                 return { ok: false, error: "La nota no existe" };
             }
             const contenido = await readFile(ruta, "utf8");
@@ -93,7 +93,7 @@ export function registerNoteHandlers(ipcMain) {
         console.log("Eliminando nota:", nombreNota, "de carpeta:", nombreCarpeta);
         try {
             const ruta = notePath(nombreCarpeta, nombreNota);
-            if (!fs.existsSync(ruta)) {
+            if (!(await existeRuta(ruta))) {
                 return { ok: false, error: "La nota no existe" };
             }
             await unlink(ruta);
@@ -116,10 +116,10 @@ export function registerNoteHandlers(ipcMain) {
             const rutaVieja = notePath(nombreCarpeta, nombreViejo);
             const rutaNueva = notePath(nombreCarpeta, nombreNuevo);
 
-            if (!fs.existsSync(rutaVieja)) {
+            if (!(await existeRuta(rutaVieja))) {
                 return { ok: false, error: "La nota no existe" };
             }
-            if (fs.existsSync(rutaNueva)) {
+            if (await existeRuta(rutaNueva)) {
                 return { ok: false, error: "Ya existe una nota con ese nombre" };
             }
 

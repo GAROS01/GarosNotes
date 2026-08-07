@@ -1,5 +1,5 @@
-import fs from "fs";
 import { readdir, readFile } from "fs/promises";
+import { existeRuta } from "./fs-utils.js";
 import { NOTES_BASE, folderPath, notePath } from "./paths.js";
 
 // Extrae el texto plano de un Delta de Quill (JSON) para poder buscarlo.
@@ -77,7 +77,7 @@ export function registerSearchHandlers(ipcMain) {
         const LIMITE = 50;
 
         try {
-            if (!fs.existsSync(NOTES_BASE)) {
+            if (!(await existeRuta(NOTES_BASE))) {
                 return { ok: true, resultados };
             }
 

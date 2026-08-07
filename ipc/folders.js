@@ -1,5 +1,5 @@
-import fs from "fs";
 import { mkdir, readdir, rm, rename } from "fs/promises";
+import { existeRuta } from "./fs-utils.js";
 import { NOTES_BASE, folderPath } from "./paths.js";
 import { validarNombre } from "./validate.js";
 
@@ -26,7 +26,7 @@ export function registerFolderHandlers(ipcMain) {
 
     ipcMain.handle("listar-carpetas", async () => {
         try {
-            if (!fs.existsSync(NOTES_BASE)) {
+            if (!(await existeRuta(NOTES_BASE))) {
                 await mkdir(NOTES_BASE, { recursive: true });
             }
             const carpetas = (await readdir(NOTES_BASE, { withFileTypes: true }))
@@ -45,7 +45,7 @@ export function registerFolderHandlers(ipcMain) {
         console.log("Eliminando carpeta:", nombreCarpeta);
         try {
             const ruta = folderPath(nombreCarpeta);
-            if (!fs.existsSync(ruta)) {
+            if (!(await existeRuta(ruta))) {
                 return { ok: false, error: "La carpeta no existe" };
             }
             await rm(ruta, { recursive: true, force: true });
@@ -66,10 +66,10 @@ export function registerFolderHandlers(ipcMain) {
             const rutaVieja = folderPath(nombreViejo);
             const rutaNueva = folderPath(nombreNuevo);
 
-            if (!fs.existsSync(rutaVieja)) {
+            if (!(await existeRuta(rutaVieja))) {
                 return { ok: false, error: "La carpeta no existe" };
             }
-            if (fs.existsSync(rutaNueva)) {
+            if (await existeRuta(rutaNueva)) {
                 return { ok: false, error: "Ya existe una carpeta con ese nombre" };
             }
 
