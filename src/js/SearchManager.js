@@ -6,6 +6,10 @@ class SearchManager {
         this.input = document.getElementById("search-input");
         this.resultsList = document.getElementById("search-results");
         this.timer = null;
+        // Contador de peticiones: cada búsqueda nueva incrementa el contador y
+        // las respuestas de peticiones antiguas se descartan si su id ya no
+        // coincide, evitando que una búsqueda vieja pise a una más reciente.
+        this.contadorPeticion = 0;
         this.indiceSeleccionado = -1;
         this._init();
     }
@@ -17,6 +21,10 @@ class SearchManager {
 
         this.input.addEventListener("input", () => {
             clearTimeout(this.timer);
+            // Invalidar cualquier petición en vuelo en cuanto cambia el input,
+            // incluso durante la ventana de debounce: así una respuesta de la
+            // consulta anterior nunca se renderiza con un input más reciente.
+            this.contadorPeticion++;
             const consulta = this.input.value.trim();
             if (!consulta) {
                 this._limpiarResultados();
@@ -40,6 +48,7 @@ class SearchManager {
     }
 
     abrir() {
+        this.contadorPeticion++; // invalidar peticiones en vuelo de un uso anterior
         this.modal.style.display = "block";
         this.input.value = "";
         this._limpiarResultados();
@@ -48,6 +57,7 @@ class SearchManager {
 
     cerrar() {
         clearTimeout(this.timer);
+        this.contadorPeticion++; // descartar respuestas que lleguen tras cerrar
         this.modal.style.display = "none";
         this.input.value = "";
         this._limpiarResultados();
@@ -67,14 +77,19 @@ class SearchManager {
     }
 
     async _buscar(consulta) {
+        // Registrar esta petición como la más reciente; las que lleven un id
+        // anterior se descartan al resolver para evitar carreras.
+        const idPeticion = ++this.contadorPeticion;
         try {
             const res = await window.api.buscarNotas(consulta);
+            if (idPeticion !== this.contadorPeticion) return; // respuesta antigua
             if (res.ok) {
                 this._renderizar(res.resultados, consulta);
             } else {
                 this._mostrarMensaje("Error: " + res.error);
             }
         } catch (error) {
+            if (idPeticion !== this.contadorPeticion) return;
             console.error("Error en búsqueda:", error);
             this._mostrarMensaje("Error al buscar: " + error.message);
         }
