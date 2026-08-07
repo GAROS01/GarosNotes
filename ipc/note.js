@@ -1,8 +1,20 @@
 import fs from "fs";
 import { folderPath, notePath } from "./paths.js";
+import { validarNombre } from "./validate.js";
+
+// Valida un nombre; devuelve el objeto de error si es inválido o null si es válido.
+function validarOError(nombre, tipo) {
+    const validacion = validarNombre(nombre, tipo);
+    return validacion.ok ? null : { ok: false, error: `Nombre no válido: ${validacion.error}` };
+}
 
 export function registerNoteHandlers(ipcMain) {
     ipcMain.handle("crear-nota", async (_event, nombreCarpeta, nombreNota, contenido = "") => {
+        let invalido = validarOError(nombreCarpeta, "carpeta");
+        if (invalido) return invalido;
+        invalido = validarOError(nombreNota, "nota");
+        if (invalido) return invalido;
+
         console.log("Creando nota:", nombreNota, "en carpeta:", nombreCarpeta);
         try {
             const ruta = notePath(nombreCarpeta, nombreNota);
@@ -18,6 +30,9 @@ export function registerNoteHandlers(ipcMain) {
     });
 
     ipcMain.handle("listar-notas", async (_event, nombreCarpeta) => {
+        const invalido = validarOError(nombreCarpeta, "carpeta");
+        if (invalido) return invalido;
+
         console.log("Listando notas de carpeta:", nombreCarpeta);
         try {
             const carpeta = folderPath(nombreCarpeta);
@@ -35,6 +50,11 @@ export function registerNoteHandlers(ipcMain) {
     });
 
     ipcMain.handle("leer-nota", async (_event, nombreCarpeta, nombreNota) => {
+        let invalido = validarOError(nombreCarpeta, "carpeta");
+        if (invalido) return invalido;
+        invalido = validarOError(nombreNota, "nota");
+        if (invalido) return invalido;
+
         console.log("Leyendo nota:", nombreNota, "de carpeta:", nombreCarpeta);
         try {
             const ruta = notePath(nombreCarpeta, nombreNota);
@@ -49,6 +69,11 @@ export function registerNoteHandlers(ipcMain) {
     });
 
     ipcMain.handle("guardar-nota", async (_event, nombreCarpeta, nombreNota, contenido) => {
+        let invalido = validarOError(nombreCarpeta, "carpeta");
+        if (invalido) return invalido;
+        invalido = validarOError(nombreNota, "nota");
+        if (invalido) return invalido;
+
         console.log("Guardando nota:", nombreNota, "en carpeta:", nombreCarpeta);
         try {
             const ruta = notePath(nombreCarpeta, nombreNota);
@@ -60,6 +85,11 @@ export function registerNoteHandlers(ipcMain) {
     });
 
     ipcMain.handle("eliminar-nota", async (_event, nombreCarpeta, nombreNota) => {
+        let invalido = validarOError(nombreCarpeta, "carpeta");
+        if (invalido) return invalido;
+        invalido = validarOError(nombreNota, "nota");
+        if (invalido) return invalido;
+
         console.log("Eliminando nota:", nombreNota, "de carpeta:", nombreCarpeta);
         try {
             const ruta = notePath(nombreCarpeta, nombreNota);
@@ -74,6 +104,13 @@ export function registerNoteHandlers(ipcMain) {
     });
 
     ipcMain.handle("renombrar-nota", async (_event, nombreCarpeta, nombreViejo, nombreNuevo) => {
+        let invalido = validarOError(nombreCarpeta, "carpeta");
+        if (invalido) return invalido;
+        invalido = validarOError(nombreViejo, "nota");
+        if (invalido) return invalido;
+        invalido = validarOError(nombreNuevo, "nota");
+        if (invalido) return invalido;
+
         console.log("Renombrando nota:", nombreViejo, "→", nombreNuevo, "en carpeta:", nombreCarpeta);
         try {
             const rutaVieja = notePath(nombreCarpeta, nombreViejo);
