@@ -4,6 +4,7 @@ class AutoSave {
         this.onSave = onSave;
         this.onRename = onRename;
         this.timer = null;
+        this._pendiente = null;
         this.tituloListenersAttached = false;
         this._quillCallback = null;
     }
@@ -35,9 +36,21 @@ class AutoSave {
         this._clearTimer();
     }
 
+    // Ejecuta de inmediato la operación pendiente (si hay alguna), en lugar de
+    // esperar el delay, y devuelve su promesa. Si no hay nada pendiente, no hace nada.
+    flush() {
+        const fn = this._pendiente;
+        this._clearTimer();
+        if (fn) return fn();
+    }
+
     _schedule(fn, delay) {
         this._clearTimer();
-        this.timer = setTimeout(fn, delay);
+        this._pendiente = fn;
+        this.timer = setTimeout(() => {
+            this._pendiente = null;
+            fn();
+        }, delay);
     }
 
     _clearTimer() {
@@ -45,6 +58,7 @@ class AutoSave {
             clearTimeout(this.timer);
             this.timer = null;
         }
+        this._pendiente = null;
     }
 }
 

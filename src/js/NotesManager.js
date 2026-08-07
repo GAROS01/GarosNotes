@@ -248,6 +248,29 @@ class NotesManager {
 		}
 	}
 
+	async flush() {
+		if (!this.notaActual || !this.quillEditor.editor) {
+			console.log("Flush: no hay nota abierta, nada que guardar");
+			return;
+		}
+
+		console.log("=== FLUSH ANTES DE CERRAR ===");
+
+		// Ejecutar de inmediato el guardado/renombrado pendiente del autoguardado
+		await this.autoSave.flush();
+
+		// Garantizar el guardado del contenido actual
+		await this.guardarNotaActual();
+
+		// Si el título cambió y el autoguardado no lo renombró aún, renombrar
+		const tituloActual = document.getElementById("titulo-nota").value.trim();
+		if (tituloActual && tituloActual !== this.notaActual.nombre) {
+			await this.renombrarNotaActual();
+		}
+
+		console.log("Flush completado");
+	}
+
 	mostrarIndicadorGuardado(mensaje = "✓ Guardado") {
 		let indicador = document.getElementById("save-indicator");
 		if (!indicador) {

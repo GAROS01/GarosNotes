@@ -32,6 +32,7 @@ class App {
         });
 
         this.folderManager.mostrarCarpetas();
+        this._registrarCierre();
     }
 
     _registrarEventosDOM() {
@@ -134,6 +135,24 @@ class App {
         const searchButton = document.getElementById("search-button");
         if (searchButton) {
             searchButton.addEventListener("click", () => this.searchManager.abrir());
+        }
+    }
+
+    _registrarCierre() {
+        if (typeof window.api.onBeforeClose !== "function") return;
+        window.api.onBeforeClose(() => this._flushAntesDeCerrar());
+    }
+
+    // Flushea los cambios pendientes (autoguardado) antes de que la ventana se cierre
+    async _flushAntesDeCerrar() {
+        try {
+            await this.notesManager.flush();
+        } catch (error) {
+            console.error("Error al flushear antes de cerrar:", error);
+        } finally {
+            if (typeof window.api.confirmarCierre === "function") {
+                window.api.confirmarCierre();
+            }
         }
     }
 

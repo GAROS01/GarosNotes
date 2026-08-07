@@ -28,4 +28,10 @@ contextBridge.exposeInMainWorld("api", {
 
 	// Búsqueda
 	buscarNotas: (consulta) => ipcRenderer.invoke("buscar-notas", consulta),
+
+	// Cierre con flush de cambios pendientes
+	onBeforeClose: (callback) => {
+		ipcRenderer.on("app:before-close", () => callback());
+	},
+	confirmarCierre: () => ipcRenderer.send("app:close-confirmed"),
 });
