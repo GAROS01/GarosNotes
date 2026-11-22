@@ -1,4 +1,4 @@
-# GarosNotes v2.3.1
+# GarosNotes v2.4.0
 
 GarosNotes es una aplicación de escritorio minimalista para tomar, organizar y buscar notas, desarrollada con Electron, Vite y Quill. Está pensada para funcionar de forma local y offline, sin depender de servicios externos.
 
@@ -6,6 +6,7 @@ GarosNotes es una aplicación de escritorio minimalista para tomar, organizar y 
 
 - Gestión de carpetas: crear, renombrar y eliminar carpetas desde la barra lateral.
 - Gestión de notas: crear, editar, renombrar y eliminar notas dentro de cada carpeta.
+- Favoritos: fija notas con el botón 📌 para que aparezcan al principio de la lista; el estado se conserva al renombrar notas o carpetas.
 - Editor enriquecido con Quill.js, incluyendo listas, tablas básicas, estilos de texto, bloques de código y resaltado de sintaxis.
 - Resaltado de sintaxis para más de 12 lenguajes de programación con Highlight.js.
 - Autoguardado automático: el contenido se guarda 1 segundo después de dejar de escribir y el título tras 5 segundos de inactividad.
@@ -66,6 +67,7 @@ GarosNotes/
 ├── pnpm-lock.yaml               # Lockfile de pnpm
 ├── ipc/                         # Handlers IPC del proceso principal
 │   ├── folders.js               # CRUD de carpetas
+│   ├── favorites.js             # Notas fijadas (favoritos)
 │   ├── note.js                  # CRUD de notas
 │   ├── paths.js                 # Rutas base para el almacenamiento local
 │   ├── validate.js              # Validación de nombres (reglas de Windows)
@@ -172,16 +174,14 @@ Renderer → window.api → ipcRenderer.invoke() → handlers IPC → fs → res
 
 ## Versiones recientes
 
+### v2.4.0 (22 de noviembre de 2026)
+- Favoritos: botón 📌 en cada nota para fijarla; las notas fijadas se muestran al principio de la lista con un acento visual propio.
+- El estado se guarda en un archivo oculto (`Documents/GarosNotes/.favoritos.json`) y se conserva al renombrar la nota o su carpeta.
+
 ### v2.3.1 (7 de agosto de 2026)
 - Rendimiento: índice de búsqueda en memoria que se construye al arrancar; las búsquedas responden sin releer ni re-normalizar todos los archivos en cada pulsación (solo relee las notas modificadas).
 - Reindexación incremental: crear, guardar, renombrar o eliminar notas/carpetas actualiza el índice al instante (incluida la restauración desde la papelera).
 - Fiabilidad: cancelación de peticiones en la búsqueda — las respuestas de búsquedas antiguas se descartan para evitar carreras.
-
-### v2.3.0 (7 de agosto de 2026)
-- Seguridad: validación de nombres de carpetas y notas (reglas de Windows, anti path traversal).
-- Rendimiento: operaciones de archivos 100 % asíncronas con fs/promises.
-- Fiabilidad: flush del autoguardado al cerrar la ventana y protección de instancia única.
-- Papelera de reciclaje con interfaz para restaurar o vaciar elementos.
 
 
 ## Contribuir

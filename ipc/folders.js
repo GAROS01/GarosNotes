@@ -2,6 +2,7 @@ import { mkdir, readdir, rename } from "fs/promises";
 import { existeRuta, moverAPapelera } from "./fs-utils.js";
 import { NOTES_BASE, folderPath } from "./paths.js";
 import { validarNombre } from "./validate.js";
+import { renombrarCarpetaFavoritos } from "./favorites.js";
 import { eliminarCarpetaEntradas, renombrarCarpetaEntradas } from "./searchIndex.js";
 
 // Valida un nombre; devuelve el objeto de error si es inválido o null si es válido.
@@ -77,6 +78,7 @@ export function registerFolderHandlers(ipcMain) {
 
             await rename(rutaVieja, rutaNueva);
             await renombrarCarpetaEntradas(nombreViejo, nombreNuevo);
+            await renombrarCarpetaFavoritos(nombreViejo, nombreNuevo);
             return { ok: true, path: rutaNueva };
         } catch (error) {
             return { ok: false, error: error.message };

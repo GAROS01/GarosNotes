@@ -75,15 +75,28 @@ class NotesManager {
 	async mostrarNotasDeCarpeta(nombreCarpeta) {
 		this.carpetaActual = nombreCarpeta;
 		try {
-			const res = await window.api.listarNotas(nombreCarpeta);
+			const [res, resFavoritos] = await Promise.all([
+				window.api.listarNotas(nombreCarpeta),
+				window.api.listarFavoritos(nombreCarpeta),
+			]);
 			this.noteList.innerHTML = "";
 			if (res.ok) {
 				if (res.notas.length === 0) {
 					this.noteList.innerHTML = "<li>No hay notas</li>";
 				} else {
-					res.notas.forEach((nombre) => {
+					// Las notas fijadas se muestran al principio; dentro de cada grupo
+					// se conserva el orden que devuelve el proceso principal.
+					const favoritos = new Set(
+						resFavoritos && resFavoritos.ok ? resFavoritos.favoritos : []
+					);
+					const notas = [...res.notas].sort(
+						(a, b) => Number(favoritos.has(b)) - Number(favoritos.has(a))
+					);
+
+					notas.forEach((nombre) => {
+						const esFavorita = favoritos.has(nombre);
 						const li = document.createElement("li");
-						li.className = "file-item";
+						li.className = esFavorita ? "file-item fijada" : "file-item";
 
 						// Crear el contenedor del nombre de la nota
 						const nombreSpan = document.createElement("span");
@@ -92,6 +105,19 @@ class NotesManager {
 						// Crear el contenedor de botones de control
 						const controlsDiv = document.createElement("div");
 						controlsDiv.className = "controls-folders";
+
+						// Botón de fijar / quitar de favoritos
+						const btnFijar = document.createElement("button");
+						btnFijar.className = esFavorita ? "pin-btn fijada" : "pin-btn";
+						btnFijar.textContent = "📌";
+						btnFijar.title = esFavorita
+							? "Quitar de favoritos"
+							: "Fijar en la parte superior";
+						btnFijar.setAttribute("aria-pressed", esFavorita ? "true" : "false");
+						btnFijar.onclick = (e) => {
+							e.stopPropagation();
+							this.alternarFavorito(nombre);
+						};
 
 						// Botón de eliminar
 						const btnEliminar = document.createElement("button");
@@ -106,6 +132,7 @@ class NotesManager {
 							this.abrirNota(nombreCarpeta, nombre);
 						};
 
+						controlsDiv.appendChild(btnFijar);
 						controlsDiv.appendChild(btnEliminar);
 						li.appendChild(nombreSpan);
 						li.appendChild(controlsDiv);
@@ -118,6 +145,28 @@ class NotesManager {
 		} catch (error) {
 			console.error("Error en mostrarNotasDeCarpeta:", error);
 			this.noteList.innerHTML = `<li>Error: ${error.message}</li>`;
+		}
+	}
+
+	async alternarFavorito(nombreNota) {
+		if (!this.carpetaActual) return;
+
+		try {
+			const res = await window.api.alternarFavorito(
+				this.carpetaActual,
+				nombreNota
+			);
+
+			if (res.ok) {
+				// Reordenar la lista: fijadas primero
+				await this.mostrarNotasDeCarpeta(this.carpetaActual);
+			} else {
+				console.error("Error al alternar favorito:", res.error);
+				alert("Error: " + res.error);
+			}
+		} catch (error) {
+			console.error("Error en alternarFavorito:", error);
+			alert("Error al cambiar favorito: " + error.message);
 		}
 	}
 

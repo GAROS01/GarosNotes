@@ -3,6 +3,10 @@ import os from "os";
 
 const NOTES_BASE = path.join(os.homedir(), "Documents", "GarosNotes");
 
+// Archivo oculto con el estado de las notas fijadas (favoritos). Vive en la
+// raíz de NOTES_BASE, así que nunca se lista ni se indexa como una nota.
+const FAVORITOS = path.join(NOTES_BASE, ".favoritos.json");
+
 // Papelera interna dentro de NOTES_BASE (oculta de las listas).
 const PAPELERA = path.join(NOTES_BASE, ".papelera");
 const PAPELERA_CARPETAS = path.join(PAPELERA, "carpetas");
@@ -26,6 +30,7 @@ function papeleraNotasPath(nombreCarpeta, nombreNota) {
 
 export {
     NOTES_BASE,
+    FAVORITOS,
     PAPELERA,
     PAPELERA_CARPETAS,
     PAPELERA_NOTAS,

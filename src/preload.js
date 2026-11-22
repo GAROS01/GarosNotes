@@ -26,6 +26,12 @@ contextBridge.exposeInMainWorld("api", {
 	renombrarNota: (nombreCarpeta, nombreViejo, nombreNuevo) =>
 		ipcRenderer.invoke("renombrar-nota", nombreCarpeta, nombreViejo, nombreNuevo),
 
+	// Favoritos (notas fijadas)
+	listarFavoritos: (nombreCarpeta) =>
+		ipcRenderer.invoke("listar-favoritos", nombreCarpeta),
+	alternarFavorito: (nombreCarpeta, nombreNota) =>
+		ipcRenderer.invoke("alternar-favorito", nombreCarpeta, nombreNota),
+
 	// Búsqueda
 	buscarNotas: (consulta) => ipcRenderer.invoke("buscar-notas", consulta),
 

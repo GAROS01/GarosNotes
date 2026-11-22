@@ -2,6 +2,7 @@ import { readdir, readFile, writeFile, rename } from "fs/promises";
 import { existeRuta, moverAPapelera } from "./fs-utils.js";
 import { folderPath, notePath } from "./paths.js";
 import { validarNombre } from "./validate.js";
+import { renombrarFavorito } from "./favorites.js";
 import {
     actualizarEntrada,
     eliminarEntrada,
@@ -138,6 +139,7 @@ export function registerNoteHandlers(ipcMain) {
 
             await rename(rutaVieja, rutaNueva);
             await renombrarEntrada(nombreCarpeta, nombreViejo, nombreNuevo);
+            await renombrarFavorito(nombreCarpeta, nombreViejo, nombreNuevo);
             return { ok: true, path: rutaNueva };
         } catch (error) {
             return { ok: false, error: error.message };

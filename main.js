@@ -4,6 +4,7 @@ import { fileURLToPath } from "url";
 import { dirname } from "path";
 
 import { registerFolderHandlers } from "./ipc/folders.js";
+import { registerFavoriteHandlers } from "./ipc/favorites.js";
 import { registerNoteHandlers } from "./ipc/note.js";
 import { registerSearchHandlers } from "./ipc/search.js";
 import { registerTrashHandlers } from "./ipc/trash.js";
@@ -65,6 +66,7 @@ function createWindow() {
 }
 
 registerFolderHandlers(ipcMain);
+registerFavoriteHandlers(ipcMain);
 registerNoteHandlers(ipcMain);
 registerSearchHandlers(ipcMain);
 registerTrashHandlers(ipcMain);

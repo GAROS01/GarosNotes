@@ -100,6 +100,16 @@
     background-color: #575757;
 }
 
+/* Notas fijadas (favoritos): se muestran al principio de la lista */
+.file-item.fijada {
+    background-color: #3f3347;
+    border-left: 3px solid #9e03d6;
+}
+
+.file-item.fijada:hover {
+    background-color: #4d3d56;
+}
+
 .controls-folders {
     display: flex;
     gap: 2px;
@@ -130,6 +140,16 @@
 .controls-folders button:hover {
     opacity: 1;
     background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* El pin se atenúa cuando la nota no está fijada y se resalta cuando sí lo está */
+.controls-folders .pin-btn {
+    opacity: 0.3;
+}
+
+.controls-folders .pin-btn:hover,
+.controls-folders .pin-btn.fijada {
+    opacity: 1;
 }
 
 #toggle-aside {

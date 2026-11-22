@@ -1,34 +1,33 @@
-# 🎉 GarosNotes v2.3.1 — Release Notes
+# 🎉 GarosNotes v2.4.0 — Release Notes
 
 ## Resumen
-Esta versión acelera la búsqueda global con un **índice en memoria** en el proceso principal: el índice se construye una sola vez al arrancar y las búsquedas siguientes responden **sin releer ni re-normalizar todos los archivos** en cada pulsación. Además se eliminan las carreras de peticiones en el modal de búsqueda.
+Esta versión añade **favoritos**: fija tus notas importantes con un clic y aparecerán **al principio de la lista**, siempre visibles y destacadas. El estado se guarda de forma local y se conserva al renombrar notas o carpetas.
 
 ---
 
-## ⚡ Rendimiento de búsqueda
+## 📌 Favoritos / notas fijadas
 
-### 📇 Índice en memoria
-- El proceso principal mantiene un índice de todas las notas (`{ carpeta, nota, texto, textoNormalizado, tituloNormalizado, timestampModificacion }`).
-- Se construye al arrancar la app recorriendo `Documents/GarosNotes` **una sola vez**.
-- `buscar-notas` consulta el índice y **solo relee del disco las notas cuyo archivo cambió** (comprobación por fecha de modificación).
-- Los snippets y la posición de la coincidencia (`matchIndex`) se siguen calculando desde el texto original.
+### Fijar y desfijar
+- Cada nota de la lista incorpora un botón **📌** para fijarla o quitarla de favoritos.
+- Las notas fijadas se muestran **antes que el resto**, con fondo y borde de acento (`#9e03d6`).
+- Dentro de cada grupo (fijadas y no fijadas) se mantiene el orden habitual de la lista.
 
-### 🔄 Reindexación incremental
-- Crear, guardar, renombrar o eliminar una nota actualiza el índice **al instante**.
-- Renombrar o eliminar carpetas, y **restaurar desde la papelera**, también mantienen el índice sincronizado.
-
-### 🔄 Debounce y cancelación de peticiones
-- La búsqueda ya no sufre carreras: si una búsqueda antigua responde después de una más reciente, su resultado se **descarta** automáticamente.
+### Persistencia local
+- El estado se guarda en `Documents/GarosNotes/.favoritos.json`, un archivo oculto que no aparece en la lista de notas ni en los resultados de búsqueda.
+- Renombrar una nota o una carpeta **no pierde** los favoritos.
+- El estado sobrevive al cierre y reapertura de la app.
 
 ---
 
 ## 🛠️ Técnico
 
-- **Nuevo:** `ipc/searchIndex.js` — índice en memoria (`construirIndice`, `buscar`, `actualizarEntrada`, `eliminarEntrada`, `renombrarEntrada`, `reindexarCarpeta`, `eliminarCarpetaEntradas`, `renombrarCarpetaEntradas`) y utilidades de texto compartidas (`deltaToTexto`, `normalizar`, `indiceEnOriginal`, `crearSnippet`).
-- **Cambio:** `ipc/search.js` — el handler `buscar-notas` delega en el índice.
-- **Cambio:** `ipc/note.js`, `ipc/folders.js` e `ipc/trash.js` — actualizan el índice de forma incremental tras cada operación.
-- **Cambio:** `main.js` — construye el índice tras `app.whenReady` sin bloquear la apertura de la ventana.
-- **Cambio:** `src/js/SearchManager.js` — contador de peticiones para descartar respuestas antiguas.
+- **Nuevo:** `ipc/favorites.js` — `listarFavoritosDeCarpeta`, `alternarFavorito`, `renombrarFavorito`, `renombrarCarpetaFavoritos` y los handlers `listar-favoritos` / `alternar-favorito`.
+- **Cambio:** `ipc/paths.js` — nueva constante `FAVORITOS`.
+- **Cambio:** `ipc/note.js` e `ipc/folders.js` — sincronizan el estado de favoritos al renombrar.
+- **Cambio:** `main.js` — registra `registerFavoriteHandlers`.
+- **Cambio:** `src/preload.js` — expone `listarFavoritos(carpeta)` y `alternarFavorito(carpeta, nota)`.
+- **Cambio:** `src/js/NotesManager.js` — ordena las fijadas primero y renderiza el botón 📌.
+- **Cambio:** `src/styles/sidebar.css` — estilos de nota fijada y del botón.
 
 ---
 
@@ -43,6 +42,6 @@ pnpm run dev
 
 ---
 
-**Lanzamiento:** 2026-08-07
+**Lanzamiento:** 2026-11-22
 
 ---

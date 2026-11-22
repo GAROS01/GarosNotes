@@ -1,5 +1,18 @@
 # Changelog - GarosNotes
 
+## [2.4.0] - 2026-11-22
+
+### 📌 Favoritos / notas fijadas
+
+- **Nuevo:** `ipc/favorites.js` — estado de las notas fijadas persistido en `Documents/GarosNotes/.favoritos.json`, un archivo oculto en la raíz de `NOTES_BASE` que nunca se lista ni se indexa como nota. Formato `{ "Carpeta/Nota": true }`.
+- **Nuevo:** handlers IPC `listar-favoritos` y `alternar-favorito`, con la misma validación de nombres que el resto de handlers.
+- **Nuevo:** `src/js/NotesManager.js` — la lista de notas muestra primero las fijadas y cada nota incorpora un botón 📌 para fijar/desfijar.
+- **Nuevo:** estilos `.file-item.fijada` y `.pin-btn` en `src/styles/sidebar.css` (acento `#9e03d6`).
+- **Cambio:** `ipc/note.js` e `ipc/folders.js` — el estado de favoritos se conserva al renombrar una nota o una carpeta.
+- **Cambio:** `ipc/paths.js` expone `FAVORITOS`; `main.js` registra los handlers; `preload.js` expone `listarFavoritos` y `alternarFavorito`.
+
+---
+
 ## [2.3.1] - 2026-08-07
 
 ### ⚡ Rendimiento de búsqueda (FASE 3)
